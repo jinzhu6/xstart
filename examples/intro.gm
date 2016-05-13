@@ -1,0 +1,6 @@
+global FRAME = Frame("Introduction", 0, 0, 1280, 720, "#003366").toggle().showCursor(true);
+
+while(1) {
+	FRAME.render();
+	yield();
+}

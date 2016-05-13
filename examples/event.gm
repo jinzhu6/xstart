@@ -1,0 +1,21 @@
+RES_X = 800;
+RES_Y = 600;
+
+frame = Frame("main", 100, 100, RES_X, RES_Y, "#000000").toggle().showCursor(true);
+frame.root["bg"]   = Texture("images/background.jpg", 0, 0, RES_X, RES_Y);
+frame.root["next"] = Texture("images/button_next.png", RES_X - 64 - 64, RES_Y - 64 - 32);
+frame.root["prev"] = Texture("images/button_prev.png", 64, RES_Y - 64 - 32);
+
+global eventHandler = function(e) {
+	log("Frame: " + this.toString() + " - Received event: "+e.toString());
+	log("    key: " + e.key + "  x: " + e.x + "  y: " + e.y + "  button: " + e.button + "\n");
+	if(e.id == "Close") { exit(); }
+};
+
+frame.onClose = eventHandler;
+frame.root["next"].onMouseDown = eventHandler;
+frame.root["prev"].onMouseDown = eventHandler;
+frame.onKeyUp = eventHandler;
+frame.onKeyDown = eventHandler;
+
+while(true) { frame.render(); yield(); }

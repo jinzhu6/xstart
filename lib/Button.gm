@@ -1,0 +1,16 @@
+
+global Button = function(id, x, y, w, h, text, fillColor, strokeColor, strokeWidth, roundness, callback) {
+	local button = Canvas(null, x, y, w, h, "#ffffff00");
+	button["text"] = text;
+	button.onMouseUp = callback;
+	button.clear();
+	button.newPath();
+	button.roundedRectangle(0, 0, w, h, roundness);
+	button.closePath();
+	button.setSolid(fillColor);
+	button.fill();
+	button.setSolid(strokeColor);
+	button.stroke(2);
+	return button;
+};
+

@@ -1,0 +1,206 @@
+#include "lib/Theme.gm"
+#include "lib/String.gm"
+
+global MONITOR = monitor(0);
+global FRAME = Frame("Udoo-Connect", MONITOR.right - 325, MONITOR.bottom-530, 320, 480, "#F0F0F0").showCursor(true);
+global FRAME_MIN = Frame("Udoo-Connect", MONITOR.right - 295, MONITOR.bottom-530+445, 290, 32, "#F0F0F0").showCursor(true);
+global THEME = Theme();
+global UDOOS = Map();
+global SELECTED = 0;
+global SELECTED_IP = "192.168.0.1";
+global FONT_LIST = Font("lib/data/arialuni.ttf", 13);
+
+THEME.bgImage = null;
+THEME.buttonText = "#000000d0";
+THEME.buttonColor1 = "#e0e0e0";
+THEME.buttonColor2 = "#a0a0a0";
+THEME.strokeColor = "#ffffff";
+THEME.strokeWidth = 1.3;
+THEME.roundness = 3;
+THEME.setFont("button", "lib/data/defaultb.ttf", 12);
+FRAME.setDimensions(320, 480);
+
+FRAME.root["rect_app"] = THEME.Rectangle(0,0,320,480, "#000000", "#000000");
+FRAME.root["bg"] = Texture("bg.jpg", 1, 1, 320-2, 480-2);
+FRAME.root["rect_list"] = THEME.Rectangle(10,10,300,420, "#ffffff70", "#ffffff80");
+//FRAME.root["caption"] = Text("Select device and protocol ...", Font("lib/data/defaultb.ttf", 20), 160, 24, "#ffffff", null).update().center().middle();
+//FRAME.root["caption"].outline = 3;  FRAME.root["caption"].outlineColor = "#000000";
+FRAME.root["button_vncp"] = THEME.Button("VNC", 16 + 300/5 * 1  - 64, 455, 300/5-4, 36, "#C661B9e0", function(e) {Run("vncp"); return true;} ).update().middle();
+FRAME.root["button_vncv"] = THEME.Button("Files", 16 + 300/5 * 2  - 64, 455, 300/5-4, 36, "#61C678e0", function(e) {Run("vncv"); return true;} ).update().middle();
+FRAME.root["button_scp"] = THEME.Button("Editor", 16 + 300/5 * 3  - 64, 455, 300/5-4, 36, "#C67F61e0", function(e) {Run("wscp"); return true;}).update().middle();
+FRAME.root["button_ssh"] = THEME.Button("SSH", 16 + 300/5 * 4  - 64, 455, 300/5-4, 36, "#B2C661e0", function(e) {Run("mssh"); return true;}).update().middle();
+FRAME.root["button_web"] = THEME.Button("Webmin", 16 + 300/5 * 5  - 64, 455, 300/5-4, 36, "#8C61C6e0", function(e) {Run("webm"); return true;}).update().middle();
+FRAME.root["select_box"] = THEME.Rectangle(160,36,290,40, "#ffffff90", "#00000050").update().center().middle();
+//FRAME.root["button_scan"] = THEME.Button("Reset List", 160,400, 70, 32, "#ffcfa090", function(e) { thread(LoadAni); } ).update().center().middle();
+FRAME.root["rect_loading"] = THEME.Rectangle(0, 0, 320, 480, "#000000E0", "#000000E0");
+FRAME.root["text_loading"] = Text("Loading ...", Font("lib/data/defaultb.ttf", 16), 160, 290, "#ffffff", null).update().center().middle();
+FRAME.root["rect_loading"].visible = false;
+FRAME.root["text_loading"].visible = false;
+FRAME.root["load_ani"] = Texture("load.png", 160, 240).update().center().middle();
+FRAME.root["rect_loading"].onMouseUp = function(e) { return true; };
+
+FRAME.root["rect_pin"] = THEME.Rectangle(320-4-23,4, 24,24, "#ffffffd0", "#000000E0").update().right().top();
+FRAME.root["pin"] = Texture("pin.png", 320-4-23,4, 24,24).update().right().top();
+FRAME.root["pin"].onMouseUp = function(e) { FRAME.toggle(); };
+FRAME.root["rect_minimize"] = THEME.Rectangle(320-4-23*2,4, 24,24, "#ffffffd0", "#000000E0").update().right().top();
+FRAME.root["minimize"] = Texture("minimize.png", 320-4-23*2,4, 24,24).update().right().top();
+FRAME.root["minimize"].onMouseUp = function(e) { FRAME.show(false); FRAME_MIN.show(true); };
+FRAME.root["rect_close"] = THEME.Rectangle(320-4,4, 24,24, "#ffffffd0", "#000000E0").update().right().top();
+FRAME.root["close"] = Texture("close.png", 320-4,4, 24,24).update().right().top();
+FRAME.root["close"].onMouseUp = function(e) { FRAME.close(); exit(); };
+
+FRAME_MIN.root["rect_app"] = THEME.Rectangle(0,0,290,32, "#000000", "#000000");
+FRAME_MIN.root["bg"] = Texture("bg.jpg", 1, 1, 290-2, 32-2);
+FRAME_MIN.root["rect_ip"] = THEME.Rectangle(104+5,6,101,21, "#ffffffc0", "#ffffff80");
+FRAME_MIN.root["rect_pin"] = THEME.Rectangle(290-4-23,4, 24,24, "#ffffffd0", "#000000E0").update().right().top();
+FRAME_MIN.root["pin"] = Texture("pin.png", 290-4-23,4, 24,24).update().right().top();
+FRAME_MIN.root["pin"].opacity = 0.4;
+FRAME_MIN.root["rect_minimize"] = THEME.Rectangle(290-4-23*2,4, 24,24, "#ffffffd0", "#000000E0").update().right().top();
+FRAME_MIN.root["minimize"] = Texture("maximize.png", 290-4-23*2,4, 24,24).update().right().top();
+FRAME_MIN.root["minimize"].onMouseUp = function(e) { FRAME.show(true); FRAME_MIN.show(false); };
+FRAME_MIN.root["rect_ip"].onMouseUp = function(e) { FRAME.show(true); FRAME_MIN.show(false); };
+FRAME_MIN.root["rect_close"] = THEME.Rectangle(290-4,4, 24,24, "#ffffffd0", "#000000E0").update().right().top();
+FRAME_MIN.root["close"] = Texture("close.png", 290-4,4, 24,24).update().right().top();
+FRAME_MIN.root["close"].onMouseUp = function(e) { FRAME.close(); exit(); };
+FRAME_MIN.root["ip"] = Text(SELECTED_IP, FONT_LIST, 104+55+1, 16, "#000000", null).update().center().middle();
+
+FRAME_MIN.root["button_vncp"] = THEME.Button("V", 5,7, 20,20, "#C661B9e0", function(e) {Run("vncp"); return true;} ).update();
+FRAME_MIN.root["button_vncv"] = THEME.Button("F", 25,7, 20,20, "#61C678e0", function(e) {Run("vncv"); return true;} ).update();
+FRAME_MIN.root["button_scp"] = THEME.Button("E", 45,7, 20,20, "#C67F61e0", function(e) {Run("wscp"); return true;}).update();
+FRAME_MIN.root["button_ssh"] = THEME.Button("S", 65,7, 20,20, "#B2C661e0", function(e) {Run("mssh"); return true;}).update();
+FRAME_MIN.root["button_web"] = THEME.Button("W", 85,7, 20,20, "#8C61C6e0", function(e) {Run("webm"); return true;}).update();
+
+FRAME_MIN.show(true);
+FRAME.show(false);
+UDOOS = Map();
+
+monWidth = MONITOR.right - MONITOR.left;
+global FRAME_NOTIFICATION = Frame("Udoo-Connect", MONITOR.left + monWidth / 2 - 320, MONITOR.bottom-130, 640, 48, "#ffffff").showCursor(true);
+FRAME_NOTIFICATION.root["rect_app"] = THEME.Rectangle(0,0,640,48, "#000000", "#000000");
+FRAME_NOTIFICATION.root["bg"] = Texture("bg.jpg", 1, 1, 640-2, 48-2);
+FRAME_NOTIFICATION.root["rect_list"] = THEME.Rectangle(10,5,620,38, "#ffffffa0", "#ffffffff");
+FRAME_NOTIFICATION.onMouseUp = function(e) { FRAME_NOTIFICATION.show(false); };
+global OpenNotification = function(text) {
+    FRAME_NOTIFICATION.root["text"] = Text(text, Font("lib/data/defaultb.ttf", 20), 320, 24, "#000000", null).update().center().middle();
+    FRAME_NOTIFICATION.show(true);
+    FRAME_NOTIFICATION.render();
+    sleep(10.0);
+    FRAME_NOTIFICATION.show(false);
+};
+
+global LoadAni = function() {
+	//FRAME.root["button_scan"].visible = false;
+	FRAME.root["load_ani"].visible = true;
+	sleep(0.2);
+	global SELECTED_IP;
+	SELECTED_IP = "192.168.0.1";
+	for(n=0; n<20; n+=1) { FRAME.root[""+n] = null; }
+	UpdateUI();
+	for(i=0; i<200; i+=1) {
+		FRAME.root["load_ani"].rotate += 0.15;
+		yield();
+	}
+	//FRAME.root["button_scan"].visible = true;
+	FRAME.root["load_ani"].visible = false;
+	return;
+};
+thread(LoadAni);
+
+global HideLoading = function() {
+	sleep(5.0);
+	FRAME.root["rect_loading"].visible = false;
+	FRAME.root["text_loading"].visible = false;
+};
+
+global Run = function(cmd) {
+	log("Running "+cmd+" on "+SELECTED_IP);
+	FRAME.root["rect_loading"].visible = true;
+	FRAME.root["text_loading"].visible = true;
+    thread(LoadAni);
+	thread(HideLoading);
+    if(cmd == "vncp") { start("vncviewer.exe " + SELECTED_IP + ":5900"); }
+	//if(cmd == "vncv") { start("vncviewer.exe " + SELECTED_IP + ":5901"); }
+    if(cmd == "vncv") { start("explorer.exe \\\\" + SELECTED_IP); }
+	//if(cmd == "wscp") { start("WinSCP.exe ubuntu@" + SELECTED_IP); }
+    if(cmd == "wscp") { start("MobaXterm_Personal_7.6.exe -hideterm -exitwhendone -exec \"sshpass -p 1199 ssh -o StrictHostKeyChecking=no ubuntu@" + SELECTED_IP + " 'scite &'\""); }
+	//if(cmd == "mssh") { start("MobaXterm_Personal_7.6.exe -closewhendone -exec \"ssh ubuntu@" + SELECTED_IP); }
+    if(cmd == "mssh") { start("MobaXterm_Personal_7.6.exe -closewhendone -exec \"sshpass -p 1199 ssh -o StrictHostKeyChecking=no ubuntu@" + SELECTED_IP + "\""); }
+	if(cmd == "webm") { start("explorer.exe http://" + SELECTED_IP + ":10000"); }
+};
+
+global UpdateUI = function() {
+	global SELECTED;
+	global SELECTED_IP;
+	local i = 0;
+	foreach(ip in UDOOS) {
+        if(time() - UDOOS[ip].timestamp > 16.0) {
+            thread(OpenNotification, "Connection to "+UDOOS[ip].name+" was lost.");
+            sleep(0.5);
+            UDOOS.set(ip, null); continue;
+        }
+        if(FRAME.root[""+i] == null) {
+            FRAME.root[""+i] = Text(UDOOS[ip].name, FONT_LIST, 20, 36 + i * 30, "#000000FF").update().middle();
+            FRAME.root[""+i+"_uptime"] = Text(UDOOS[ip].uptime, FONT_LIST, 300, 36 + i * 30, "#000000FF").update().right().middle();
+        }
+		if(SELECTED == i) {
+			FRAME.root[""+i].text = UDOOS[ip].name;
+            FRAME.root["select_box"].y = 36 + i * 30;
+            SELECTED_IP = ip;
+            FRAME_MIN.root["ip"].text = ip;
+            FRAME_MIN.root["ip"].update().center();
+		} else {
+			FRAME.root[""+i].text = UDOOS[ip].name;
+		}
+		FRAME.root[""+i].index = i;
+		FRAME.root[""+i].onMouseDown = function(e) { global SELECTED = e.sender.index; UpdateUI(); return true; };
+        FRAME.root[""+i+"_uptime"].text = UDOOS[ip].uptime;
+		i += 1;
+	}
+    for(i=i; i<40; i+=1) {
+        FRAME.root[""+i] = null;
+        FRAME.root[""+i+"_uptime"] = null;
+    }
+};
+
+global AddUdoo = function(ip, name, uptime) {
+	local entry = Object(ip + " : " + name);
+    if(ip == "192.168.0.1") { entry.name = name + " - WiFi"; }
+    else { entry.name = name + " - " + ip; }
+    entry.ip = ip;
+    entry.uptime = uptime;
+
+	if(UDOOS.get(ip) == null)  { thread(OpenNotification, ""+name+" - "+ip+" is online!"); }
+		UDOOS.set(ip, entry);
+        UDOOS[ip].timestamp = time();
+//		UpdateUI();
+//	}
+};
+
+global QueryUdoos = function() {
+	global UDOOS;
+
+	local listener = Listener();
+	if(!listener.listenUDP("", 5555)) { fatal("Socket is busy! There may be a running instance already."); }
+	listener.setTimeout(0);
+
+	while(true) {
+		sleep(1.0);
+		len = listener.receive(1024);
+		if(len > 0) {
+			log("IN "+listener.client+" ("+len+"): "+listener.data.toString());
+			//log("UDP-IN FROM '" + listener.client + "': "+listener.buffer);
+            name = split(listener.data.toString(), '(', true)[0];
+            uptime = substr(split(listener.data.toString(), '(', true)[1],0,-2);
+			AddUdoo(listener.client, name, uptime);
+		}
+        UpdateUI();
+	}
+};
+
+thread(QueryUdoos);
+while(true) {
+	FRAME.render();
+    FRAME_MIN.render();
+	pause(1.0/30.0);
+	yield();
+}

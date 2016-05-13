@@ -1,0 +1,77 @@
+
+global exp = function(f, m, e) {
+	while(e) {
+		f *= m;
+		e -= 1;
+	}
+	return f;
+};
+
+global div = function(f, m, e) {
+	while(e) {
+		f /= m;
+		e -= 1;
+	}
+	return f;
+};
+
+global max = function(a, b) {
+	if(a >= b) { return a; }
+	return b;
+};
+
+global min = function(a, b) {
+	if(a <= b) { return a; }
+	return b;
+};
+
+global minmax = function(v, min, max) {
+	if(v < min) { v = min; }
+	if(v > max) { v = max; }
+	return v;
+};
+
+global toInt = function(f) {
+	local s = "" + f;
+	return s.Int();
+};
+
+global roundFloat = function(f, p) {
+	local a = div(0.5, 10, p);
+	local t = exp(f + a, 10, p);
+	local t = toInt(t);
+	while(p) {
+		t /= 10.0;
+		p -= 1;
+	}
+	return t;
+};
+
+global formatFloat = function(f, p) {
+//	f = roundFloat(f, p);
+	local s = "" + f;
+	local o = "";
+
+	if(p > 0) { p += 1; }
+	for(n = 0; n < s.Length(); n += 1) {
+		if( ascii(s[n]) == "." ) {
+			for(i = 0; i < p; i += 1) {
+				if(n+i >= s.Length()) { break; }
+				o += ascii(s[n+i]);
+			}
+			return o;
+
+		}
+		o += ascii(s[n]);
+	}
+	return o;
+};
+
+global floatToTimer = function(f) {
+	local m = toInt(f);
+	local s = (f - m) * 60.0;
+	local s = "" + formatFloat(s, 0);
+	if(s.Length() < 2) { s = "0" + s; }
+	return "" + m + ":" + s;
+};
+

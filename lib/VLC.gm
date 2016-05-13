@@ -1,0 +1,68 @@
+global VLC_EXE = "\"c:\\Program Files\\VideoLAN\\VLC\\vlc.exe\"";
+global VLC_OPT_COMMON = " --no-video-title-show --no-embedded-video --qt-system-tray --qt-start-minimized --autoscale --qt-video-autoresize --video-on-top ";
+//global VLC_OPT_REMOTE = " --intf=web --http-host=localhost --http-port=8085 ";
+global VLC_OPT_FRAMELESS = " --no-video-deco --no-embedded-video ";
+system("taskkill /F /IM vlc.exe");
+
+global VLC = function(video, x, y, w, h, port) {
+    object = NodeEx("VLC");
+    object.video = video;
+    object.videos = Array();
+    object.status = 0;
+    object.x = x;
+    object.y = y;
+    object.width = w;
+    object.height = h;
+    object.port = port;
+    object.loop = false;
+    object.isOpen = false;
+
+    object.open = function(video) {
+        if(video != this.video) { this.close(); }
+        this.video = video;
+        if(this.isOpen) { return this; }
+        local VLC_POS = " --video-x="+this.x+" --video-y="+this.y+" --width="+this.width+" --height="+this.height;
+        local VLC_REMOTE = " --intf=web --http-host=localhost --http-port=" + this.port + " ";
+        local cmd = VLC_EXE + " \"" + this.video + "\" " + VLC_OPT_COMMON + VLC_OPT_FRAMELESS + VLC_REMOTE + VLC_POS;
+        log(cmd);
+        start(cmd);
+        sleep(0.5);
+        this.isOpen = true;
+        return this;
+    };
+    object.close = function() { system("taskkill /F /IM vlc.exe"); this.isOpen = false; return this; };
+    object.play = function() { this.open(this.video); start("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=pl_play"); return this; };
+    //object.add = function(mrl) { if(mrl==null || mrl=="") { error("No input file selected."); return; } this.videos.add(mrl); start("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=in_enqueue&input="+mrl+"\"");  return this; };
+    //object.play = function(file) {  };
+    object.stop = function() { if(!this.isOpen) {return this;} system("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=pl_stop\""); return this; };
+    object.pause = function() { this.open(this.video); system("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=pl_pause\""); return this; };
+    object.seekTo = function(percent) { this.open(this.video); system("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=seek&val="+percent+"%\""); return this; };
+    object.seekForward = function(percent) { this.open(this.video); system("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=seek&val=+"+percent+"%\""); return this; };
+    object.seekBackward = function(percent) { this.open(this.video); system("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=seek&val=-"+percent+"%\""); return this; };
+    object.loop = function(doLoop) { this.open(this.video); if(this.loop != doLoop) { this.loop = !this.loop; system("curl \"http://localhost:"+this.port+"/requests/status.xml?command=pl_loop");  } return this; };
+    object.next = function() { this.open(this.video); system("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=pl_next\""); return this; };
+    object.previous = function() { this.open(this.video); system("curl -s \"http://localhost:"+this.port+"/requests/status.xml?command=pl_previous\""); return this; };
+    object.volume = function(percent) { this.open(this.video); volume = (volume * 2.56).Int(); system("curl -s \"http://localhost:8085/requests/status.xml?command=volume&val="+volume+"\""); return this; };
+    /*object.getVideoId = function(video) {
+        if(video == null) { return 0; }
+        id = this.videos.find(video);
+        if(id < 0) { this.add(video); sleep(0.25); }
+        id = this.videos.find(video);
+        print("Video '"+video+"' has id "+id+"\n");
+        return id;
+    };*/
+    object.getPosition = function() {
+        if(!this.isOpen) { return -1.0; }
+        xml = system("curl -s \"http://localhost:"+this.port+"/requests/status.xml\"");
+        if(xml.Length() <= 2) { return -1.0; }
+        //File("status.txt","w").write(xml).close();
+        //xml = XMLDocument("status.txt");
+        xml = XMLDocument(xml);
+        return xml.root.getChild("position",0).content.Float();
+    };
+
+    //object.open();
+    //if(video) { object.play(video); }
+
+    return object;
+};

@@ -1,0 +1,11 @@
+global l = List();
+
+l.push(Object("a"));
+l.push(Object("b"));
+l.push(Object("c"));
+l.pop();
+l.push(Object("d"));
+l.pop();
+
+log(l.toString());
+log("Count: "+l.count());

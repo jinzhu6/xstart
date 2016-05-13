@@ -1,0 +1,973 @@
+string version()
+exit()
+throw()
+string ascii(int ascii)
+string system(string command)
+string start(string command)
+float random( (optional) float (or) int scale)
+float time()
+print(string)
+log(string message)
+warning(string error)
+error(string error)
+fatal(string error)
+popup(string info)
+string ask(string question)
+redirect(string file)
+string get(string key)
+save(string key, string value)
+instance(string class)
+pause( float s)
+eval(string code)
+debug(int level)
+colors(int enable)
+arg(int number)
+sound(string file)
+askFile() : string
+monitor(int index) : Rect
+Object((optional) string id)
+toString() : string
+id : string
+_key : string
+_table : table
+Array((optional) string id)
+toString() : string
+get(int index) : Object
+add(Object object) : Object
+set(int index, Object object) : this
+remove(int index) : this
+find(Object object) : int
+length() : int
+parse(string json) : this
+id : string
+_key : string
+_table : table
+List((optional) string id)
+toString() : string
+count() : int
+clear() : this
+first() : Object
+last() : Object
+fromIndex(int index) : Object
+pop() : this
+popFirst() : this
+popLast() : this
+randomPop(Object object) : this
+remove(Object object) : this
+push(Object object) : this
+pushBack(Object object) : this
+pushFront(Object object) : this
+id : string
+_key : string
+_table : table
+Map((optional) string id)
+toString() : string
+get(string key) : Object
+set(string key, object value) : this
+length() : int
+id : string
+_key : string
+_table : table
+Data((optional) string id)
+toString() : string
+loadRaw(string file) : this
+saveRaw(string file) : this
+appendRaw(string file) : this
+peek(int addr) : int
+poke(int addr, int value)
+resize(int newsize) : int
+copyFrom(Data source) : this
+insert(Data source, int position) : this
+id : string
+_key : string
+_table : table
+size : int
+loop : int
+readCursor : int
+writeCursor : int
+Vector((optional) float x, (optional) float y, (optional) float z)  or  (Vector copy)
+toString() : string
+id : string
+_key : string
+_table : table
+x : float
+y : float
+z : float
+Color((optional) string id)
+toString() : string
+fromStringRGBA(string rgba) : this
+toStringRGBA() : string
+updateYCbCr() : this
+updateRGB() : this
+id : string
+_key : string
+_table : table
+r : float
+g : float
+b : float
+a : float
+y : float
+cb : float
+cr : float
+h : float
+s : float
+v : float
+Rect((optional) string id)
+toString() : string
+id : string
+_key : string
+_table : table
+left : float
+top : float
+right : float
+bottom : float
+Date((optional) string id)
+toString() : string
+id : string
+_key : string
+_table : table
+year : int
+month : int
+day : int
+hour : int
+minute : int
+second : int
+_weekday : int
+_yearday : int
+File(string file, string mode)
+toString() : string
+open(string fileName, string mode) : this
+close()
+write(string data, (optional) int length) : this
+read( (optional) int length) : string
+exists(string fileName) : int
+delete(string fileName) : int
+id : string
+_key : string
+_table : table
+bytes : int
+toString() : string
+id : string
+_key : string
+_table : table
+XMLDocument((optional) string id)
+toString() : string
+id : string
+_key : string
+_table : table
+root : object
+XMLNode((optional) string id)
+toString() : string
+get(int index) : Object
+add(Object object) : Object
+set(int index, Object object) : this
+remove(int index) : this
+find(Object object) : int
+length() : int
+parse(string json) : this
+id : string
+_key : string
+_table : table
+name : string
+content : string
+isCDATA : int
+attributes : object
+Bitmap(string imageFile)
+toString() : string
+create(int width, int height) : this
+load(string file) : int
+save(string file) : int
+clear(string color) : this
+flipX() : this
+flipY() : this
+swapRB() : this
+resize(int width, int height, int bilinear : this
+duplicate() : Bitmap
+cut(int x, int y, int width, int height) : Bitmap
+paste(Bitmap, int x, int y
+softenEdge(int width)
+multiply(Bitmap mask, float offset, float scale)
+saturateMask(Bitmap mask, float offset, float scale)
+getWidth() : int
+getHeight() : int
+id : string
+_key : string
+_table : table
+Font(string fontFile, (optional) int fontSize), (optional) int righToLeft
+toString() : string
+load(string fontFile, int fontSize) : this
+measure(string text, (optional) int outlineWidth) : Vector
+drawText(Texture texture, string text, string color, int x, int y), (optional) int outlineWidth, string outlineColor : int
+id : string
+_key : string
+_table : table
+rightToLeft : int
+Frame(string id, int pos_x, int pos_y, int width, int height, (optional) string color)
+toString() : string
+_open(int pos_x, int pos_y, int width, int height, (optional) string color) : this
+close() : this
+render() : this
+toggle() : this
+showCursor(int show) : this
+setDimensions(int width, int height) : this
+id : string
+_key : string
+_table : table
+root : Node
+width : float
+height : float
+mirrorX : int
+mirrorY : int
+Event((optional) string id)
+toString() : string
+id : string
+_key : string
+_table : table
+sender : Object
+key : int
+button : int
+x : float
+y : float
+Handler((optional) string id)
+toString() : string
+id : string
+_key : string
+_table : table
+Node((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+NodeEx((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+Texture((optional) string file, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height), (optional) string clearColor
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+setBitmap(Bitmap bitmap) : int
+getBitmap() : Bitmap
+load(string file) : this
+save(string file : this
+create(int width, int height) : int
+duplicate() : Texture
+clear((optional) string color) : this
+pick(int x, int y) : string
+resize(int width, int height, (optional) int bilinear) : this
+_center()
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+clearColor : string
+opacity : float
+Canvas((optional) string file, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height), (optional) string clearColor
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+setBitmap(Bitmap bitmap) : int
+getBitmap() : Bitmap
+load(string file) : this
+save(string file : this
+create(int width, int height) : int
+duplicate() : Texture
+clear() : this
+pick(int x, int y) : string
+resize(int width, int height, (optional) int bilinear) : this
+_center()
+setSolid(string color) : this
+setLinear2(string color1, string color2, (optional) float horizonalScale, (optional) float verticalScale) : this
+newPath() : this
+closePath() : this
+fill() : this
+stroke(float lineWidth) : this
+moveTo(float x, float y) : this
+lineTo(float x, float y) : this
+curveTo(float x1, float y1, float x2, float y2, float x3, float y3) : this
+rectangle(float x, float y, float width, float height) : this
+roundedRectangle(float x, float y, float width, float height, float cornerRadius) : this
+arc(float centerX, float centerY, float radius, float angle1, float angle2) : this
+clear() : this
+drawText(Font font, string text, int x, int y, string solidColor, (optional) int outlineWidth, (optional) string outlineColor) : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+clearColor : string
+opacity : float
+Text(string text, string font, int x, int y, string color)
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+setBitmap(Bitmap bitmap) : int
+getBitmap() : Bitmap
+load(string file) : this
+save(string file : this
+create(int width, int height) : int
+duplicate() : Texture
+clear((optional) string color) : this
+pick(int x, int y) : string
+resize(int width, int height, (optional) int bilinear) : this
+_center()
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : string
+clearColor : string
+opacity : float
+font : object
+text : string
+color : string
+outline : int
+password : int
+passwordLength : int
+outlineColor : string
+Model((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+setPosition(int index, float x, float y, float z) : this
+setTexCoord(int index, float u, float v, float w) : this
+setNormal(int index) : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+texture : object
+texture0 : object
+texture1 : object
+texture2 : object
+texture3 : object
+Shader(string vertexShaderFile, string fragmentShaderFile)
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+load(string vertexShaderFile, string fragmentShaderFile), (optional) int fromFiles : int
+setFloat(float x) : this
+setFloat2(float x, float y) : this
+setFloat3(float x, float y, float z) : this
+setFloat4(float x, float y, float z, float w) : this
+setInt(int n) : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+active : int
+Framebuffer((optional) string file, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height), (optional) string clearColor
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+setBitmap(Bitmap bitmap) : int
+getBitmap() : Bitmap
+load(string file) : this
+save(string file : this
+create(int width, int height) : int
+duplicate() : Texture
+clear((optional) string color) : this
+pick(int x, int y) : string
+resize(int width, int height, (optional) int bilinear) : this
+_center()
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+clearColor : string
+opacity : float
+enabled : int
+Recorder((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+save(string folder : this
+getFrame(int index) : Texture
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+numFrames : int
+enabled : int
+record : int
+recordWidth : int
+recordHeight : int
+Detector((optional) string file)
+toString() : string
+loadHaarCascade(sting file) : int
+detect(Bitmap bitmap, int minSize) : int
+getFinding(int index) : Rect
+id : string
+_key : string
+_table : table
+Socket((optional) string id)
+toString() : string
+setTimeout(int seconds) : this
+id : string
+_key : string
+_table : table
+data buffer. You may use <i>toString()</i> on this to get a string representation. : Received
+Listener((optional) string id)
+toString() : string
+setTimeout(int seconds) : this
+id : string
+_key : string
+_table : table
+data : Data
+client : string
+HttpServer(string port)
+toString() : string
+id : string
+_key : string
+_table : table
+SerialPort((optional) string id)
+toString() : string
+open((optional) string port, (optional) int baudrate) : this
+close() : this
+flush() : this
+peek() : int
+write(string data) : this
+writeData(Data data) : this
+read() : string
+read(int maxChar, int endChar, int timeout) : string
+id : string
+_key : string
+_table : table
+Logo((optional) string id)
+toString() : string
+connect(string ip) : this
+close()
+id : string
+_key : string
+_table : table
+connected : int
+mpi : int
+rack : int
+slot : int
+Astro((optional) Date Date)
+toString() : string
+setDate(Date date) : this
+getJulianDay() : float
+getSunDistance() : float
+getMoonDistance() : float
+getMoonPhase() : float
+getMoonDisk() : float
+getAxialTilt((optional) int day) : float
+getPlanetDisk(int day, float offset : float
+getPlanetEarthDistance(int planet) : float
+getPlanetSunDistance(int planet) : float
+getPlanetRST(int planetId, float offset, float longitude, float latitude) : Vector
+getPlanetHorizontalPosition(int planetId, float offset, float longitude, float latitude) : Vector
+id : string
+_key : string
+_table : table
+ID : Moon
+ID : Sun
+ID : Mercury
+ID : Venus
+ID : Earth
+ID : Mars
+ID : Jupiter
+ID : Saturn
+ID : Uranus
+ID : Neptune
+ADDevice((optional) string deviceId)
+toString() : string
+connect((optional) string deviceId) : int
+disconnect() : this
+findAnalogRange(int channel, float volt) : int
+getAnalogValue(int channel, int range) : int
+getAnalogVolt(int channel, int range) : float
+setAnalogVolt(int channel, float volt) : this
+getDigitalBits(int channel) : int
+setDigitalBits(int channel, int bits) : this
+id : string
+_key : string
+_table : table
+handle : int
+device : string
+connected : int
+Dmx((optional) string id)
+toString() : string
+id : string
+_key : string
+_table : table
+AudioDevice(int sampleRate, int channels, int bufferSize, int deviceInIndex, int deviceOutIndex)
+toString() : string
+open(int sampleRate, int channels, int bufferSize, int deviceInIndex, int deviceOutIndex) : this
+close() : this
+pause() : this
+unpause() : this
+play(AudioData source) : this
+stop(AudioData buffer : this
+id : string
+_key : string
+_table : table
+input : object
+output : object
+AudioDeviceInfo(int index, (optional) string name, (optional) string api, (optional) int minOutputChannels, (optional) int minInputChannels)
+toString() : string
+getDevice(int index, (optional) string name, (optional) string api, (optional) int minInputChannels, (optional) int minOutputChannels) : this
+id : string
+_key : string
+_table : table
+numDevices : int
+index : int
+name : string
+apiIndex : int
+api : string
+inputChannels : int
+outputChannels : int
+sampleRate : float
+lowInputLatency : float
+lowOutputLatency : float
+highInputLatency : float
+highOutputLatency : float
+AudioFile(string file)
+toString() : string
+loadRaw(string file) : this
+saveRaw(string file) : this
+appendRaw(string file) : this
+peek(int addr) : int
+poke(int addr, int value)
+resize(int newsize) : int
+copyFrom(Data source) : this
+insert(Data source, int position) : this
+convert(int sampleRate, int bitsPerSample : this
+load(string fileName) : this
+save(string fileName) : this
+id : string
+_key : string
+_table : table
+size : int
+loop : int
+readCursor : int
+writeCursor : int
+multiplay : int
+playing : int
+volume : float
+AudioFilter(AudioData source)
+toString() : string
+loadRaw(string file) : this
+saveRaw(string file) : this
+appendRaw(string file) : this
+peek(int addr) : int
+poke(int addr, int value)
+resize(int newsize) : int
+copyFrom(Data source) : this
+insert(Data source, int position) : this
+convert(int sampleRate, int bitsPerSample : this
+id : string
+_key : string
+_table : table
+size : int
+loop : int
+readCursor : int
+writeCursor : int
+multiplay : int
+playing : int
+volume : float
+enabled : int
+seconds : int
+source : AudioData
+history : AudioData
+outputFile : string
+AudioPitch(AudioData source)
+toString() : string
+loadRaw(string file) : this
+saveRaw(string file) : this
+appendRaw(string file) : this
+peek(int addr) : int
+poke(int addr, int value)
+resize(int newsize) : int
+copyFrom(Data source) : this
+insert(Data source, int position) : this
+convert(int sampleRate, int bitsPerSample : this
+id : string
+_key : string
+_table : table
+size : int
+loop : int
+readCursor : int
+writeCursor : int
+multiplay : int
+playing : int
+volume : float
+enabled : int
+seconds : int
+source : AudioData
+history : AudioData
+outputFile : string
+pitch : float
+AudioDelay(AudioData source)
+toString() : string
+loadRaw(string file) : this
+saveRaw(string file) : this
+appendRaw(string file) : this
+peek(int addr) : int
+poke(int addr, int value)
+resize(int newsize) : int
+copyFrom(Data source) : this
+insert(Data source, int position) : this
+convert(int sampleRate, int bitsPerSample : this
+id : string
+_key : string
+_table : table
+size : int
+loop : int
+readCursor : int
+writeCursor : int
+multiplay : int
+playing : int
+volume : float
+enabled : int
+seconds : int
+source : AudioData
+history : AudioData
+outputFile : string
+delay : float
+delayVolume : float
+Sound(string file)
+toString() : string
+open(string file) : int
+close() : this
+play(int loop) : this
+stop() : this
+isPlaying() : int
+id : string
+_key : string
+_table : table
+Video(string file, int pos_x, int pos_y, int width, int height)
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+setBitmap(Bitmap bitmap) : int
+getBitmap() : Bitmap
+load(string file) : this
+save(string file : this
+create(int width, int height) : int
+duplicate() : Texture
+clear((optional) string color) : this
+pick(int x, int y) : string
+resize(int width, int height, (optional) int bilinear) : this
+_center()
+open(string file) : int
+start() : this
+stop() : this
+pause() : this
+setPosition(float position) : this
+getPosition() : float
+getDuration() : float
+setSpeed(float speed) : this
+update() : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+clearColor : string
+opacity : float
+Camera(sting (or) int device, int pos_x, int pos_y, int width, int height, int bits
+toString() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+setBitmap(Bitmap bitmap) : int
+getBitmap() : Bitmap
+load(string file) : this
+save(string file : this
+create(int width, int height) : int
+duplicate() : Texture
+clear((optional) string color) : this
+pick(int x, int y) : string
+resize(int width, int height, (optional) int bilinear) : this
+_center()
+open(sting (or) int device, int width, int height, int bits) : int
+update() : this
+config() : this
+setFocus(int focus) : this
+setZoom(int zoom) : this
+setExposure(int exposure) : this
+setWhiteBalance(int balance) : this
+setBrightness(int brightness) : this
+setContrast(int contrast) : this
+setSaturation(int saturation) : this
+setPowerlineFrequency(int frequency) : this
+snapshot() : Texture
+snapshotBitmap((optional)Bitmap dst) : Bitmap
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+clearColor : string
+opacity : float
+

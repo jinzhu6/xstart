@@ -1,0 +1,6 @@
+doc = XMLDocument("misc/test.xml");
+log("Subnodes of "+doc.root.name);
+
+foreach(n in doc.root.childs) {
+	log(""+n.name+" = "+n.content);
+}

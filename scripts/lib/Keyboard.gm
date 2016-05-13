@@ -1,0 +1,386 @@
+#include "lib/Blink.gm"
+
+global KEYBOARD_EMAIL = "1 2 3 4 5 6 7 8 9 0 <delete> \\ q w e r t z u i o p - \\ a s d f g h j k l @ \\ _ y x c v b n m . , ? \\ <shift> <space> <shift>";
+//global KEYBOARD_EMAIL = "1 2 3 4 5 6 7 8 9 0 \\ q w e r t z u i o p \\ a s d f g h j k l \\ <shift> y x c v b n m <delete>";
+global KEYBOARD_NAME = "q w e r t z u i o p <delete> \\ a s d f g h j k l . \\ y x c v b n m , \\ <shift> <space> <shift>";
+
+global KEYBOARD_MAX = 4;
+
+
+/*================================================================================================
+* CreateImageButton
+*   Creates a button node object from an image, text and fonts.
+* ------------------------------------------------------------------------------------------------
+*   Package: -
+*   Dependencies: -
+* ------------------------------------------------------------------------------------------------
+*   (string) label    = button text
+*   (Font) font       = font for the button text
+*   (Image) image     = background image for the button
+*   (float) x,y       = position of the button
+*   (float) w,h       = width and height of the button; use 0 to use image dimension
+*   (func) callback   = callback function for button press
+* ------------------------------------------------------------------------------------------------
+*   Returns: The button node object.
+* ================================================================================================*/
+global CreateImageButton = function(label, font, color, image, x, y, w, h, xcenter, ycenter, callback) {
+	// check width and height
+	if(w <= 0) { w = image.width; }
+	if(h <= 0) { h = image.height; }
+
+	// size image to button
+	image.width = w;
+	image.height = h;
+
+	// create text1 label object for button
+	text = Text(label, font);
+	text.color = color;
+	text.update().middle().center();
+	text.x = w * xcenter;
+	text.y = h * ycenter;
+
+	// create button node object
+	node = NodeEx("button_"+label);
+	node.onMouseUp = callback;
+
+	// assign text and image as the childs
+	node["image"] = image;
+	node["text1"] = text;
+
+	// set position and dimension of node
+	node.x = x;  node.y = y;
+	node.width = w;  node.height = h;
+
+	return node;
+};
+global CreateImageButtonEx = function(label1, label2, font, color, image, x, y, w, h, xcenter, ycenter1, ycenter2, callback) {
+	// check width and height
+	if(w <= 0) { w = image.width; }
+	if(h <= 0) { h = image.height; }
+
+	// size image to button
+	image.width = w;
+	image.height = h;
+
+	// create text1 label object for button
+	text1 = Text(label1, font);
+	text1.color = color;
+	text1.update();
+	text1._center();
+	text1.x = w * xcenter;
+	text1.y = h * ycenter1;
+
+
+	// create text2 label object for button
+	text2 = Text(label2, font);
+	text2.color = color;
+	text2.update();
+	text2._center();
+	text2.x = w * xcenter;
+	text2.y = h * ycenter2;
+
+	// create button node object
+	node = Node("button_"+label1);
+	node.onMouseDown = callback;
+
+	// assign text and image as the childs
+	node["image"] = image;
+	node["text1"] = text1;
+	node["text2"] = text2;
+
+	// set position and dimension of node
+	node.x = x;  node.y = y;
+	node.width = w;  node.height = h;
+
+	return node;
+};
+
+
+
+/*================================================================================================
+* _VirtualKeyboardCallback
+*   The global callback for key-presses on the virtual-keyboard.
+*   Depends on a global text-box to input the text there!
+* ------------------------------------------------------------------------------------------------
+*   Package: vkeyboard
+*   Dependencies: vkeyboard
+* ------------------------------------------------------------------------------------------------
+*   (Event) e         = event object
+* ================================================================================================*/
+global _VirtualKeyboardCallback = function(event) {
+	local key = event.sender.key;
+	local keyboard = event.sender.proxy.keyboard;
+	local input = keyboard.proxy.textbox;
+	
+	Blink(event.sender["text1"], 1, 0.25, BLINK_MODE_SCALE);
+	
+	if(input.text.Length() >= KEYBOARD_MAX && key.Lower() != "<delete>") {
+		input.color = "#990000";
+		return;
+	}
+	else {
+		input.color = "#000000";
+	}
+	
+	if(key.Lower() == "<delete>") {
+		// delete key was pressed
+		if(input.text.Length() > 0) {
+			newText = "";
+			for(i = 0; i < input.text.Length() - 1; i+=1) {
+				newText += ascii(input.text[i]);
+			}
+			input.text = newText;
+		}
+	} else if(key.Lower() == "<space>") {
+		// space key was pressed
+		input.text += " ";
+	} else if(key.Lower() == "<shift>") {
+		// the shift key was pressed
+		i = 0;
+		k = keyboard.getChild(i);
+		keyboard.isShifted = !keyboard.isShifted;
+		while(k) {
+			if(k.key) {
+				if(k.key[0] >= 'a' && k.key[0] <= 'z') {
+					k.key = k.key.Upper();
+					k = k.getChild(1);
+					k.text = k.text.Upper();
+				} else if(k.key[0] >= 'A' && k.key[0] <= 'Z') {
+					k.key = k.key.Lower();
+					k = k.getChild(1);
+					k.text = k.text.Lower();
+				}
+			}
+			i += 1;
+			k = keyboard.getChild(i);
+		}
+	} else if(key.Lower() == "<submit>") {
+		// the submit button was pressed
+		App.changeState("send");
+	} else {
+		// normal text input (no special key)
+		input.text += event.sender.key;
+		
+		// unshift keyboard
+		if(keyboard.isShifted) {
+			i = 0;
+			k = keyboard.getChild(i);
+			keyboard.isShifted = !keyboard.isShifted;
+			while(k) {
+				if(k.key) {
+					if(k.key[0] >= 'a' && k.key[0] <= 'z') {
+						k.key = k.key.Upper();
+						k = k.getChild(1);
+						k.text = k.text.Upper();
+					} else if(k.key[0] >= 'A' && k.key[0] <= 'Z') {
+						k.key = k.key.Lower();
+						k = k.getChild(1);
+						k.text = k.text.Lower();
+					}
+				}
+				i += 1;
+				k = keyboard.getChild(i);
+			}
+		}
+	}
+	input.update().center().middle();
+	return true;
+};
+
+
+
+/*================================================================================================
+* _ParseKeysToArray
+*   Used by CreateKeyboard() to parse a keyboard definition string to an array of lines for the
+*   virtual keyboard creation.
+* ------------------------------------------------------------------------------------------------
+*   Package: vkeyboard
+*   Dependencies: -
+* ------------------------------------------------------------------------------------------------
+*   (string) keys     = keyboard definition string
+* ------------------------------------------------------------------------------------------------
+*   Returns: An array of lines for the keyboard generation.
+*   Result is like this: lines[line[key]]].
+*   A 'key' will have the attributes: key (keycode), width and image
+* ================================================================================================*/
+global _ParseKeysToArray = function(keys, theme) {
+	local imageNormal = Texture("images/key-normal.png");
+	local imageShift = Texture("images/key-shift.png");
+	local imageSubmit = Texture("images/key-submit.png");
+	local imageDelete = Texture("images/key-delete.png");
+	local imageSpace = Texture("images/key-space.png");
+
+	/*local imageNormal = theme.Button("", 0, 0, 64, 64, null);
+	local imageShift  = theme.Button("", 0, 0, 96, 64, null);
+	local imageSpace  = theme.Button("", 0, 0, 256, 64, null);
+	local imageSubmit = theme.Button("", 0, 0, 96, 64, null);
+	local imageDelete = theme.Button("", 0, 0, 64, 64, null);*/
+
+	// the lines array is the result of this function
+	local lines = Array();
+	lines.maxWidth = 0;
+	lines.count = 1;
+
+	// the line array will contain an array of keys
+	local line = Array();
+	line.lineWidth = 0;
+	lines.add(line);
+
+	local key = Object();
+	key.key = "";
+	key.width = "";
+
+	local tmp = "";
+	local keys = keys + " ";
+	local parseWidth = false;
+
+	for(i=0; i<keys.Length(); i+=1) {
+		k = ascii(keys[i]);
+
+		if(k == "\\") {
+
+			line = Array();
+			line.lineWidth = 0;
+
+			lines.add(line);
+			lines.count += 1;
+
+			i += 1; // skip next space
+
+			continue;
+		}
+
+		if(k == " " || k == "\t") {
+
+			if(parseWidth == true) {
+				key.width = tmp;
+			} else {
+				key.key = tmp;
+			}
+
+			key.width = key.width.Int();
+			if(key.width == 0) { key.width = 1; }
+
+			if(key.key == "<delete>") { key.image = imageDelete; }
+			if(key.key == "<shift>") { key.image = imageShift; }
+			if(key.key == "<space>") { key.image = imageSpace; }
+			if(key.key == "<submit>") { key.image = imageSubmit; }
+			if(key.image == null) { key.image = imageNormal; /*key.image = Texture("images/key_normal.png");*/ }
+
+			line.lineWidth += key.image.width;
+
+			if(lines.maxWidth < line.lineWidth) {
+				lines.maxWidth = line.lineWidth;
+			}
+
+			line.add(key);
+
+			key = Object();
+			key.key = "";
+			key.width = "";
+			tmp = "";
+
+			continue;
+		}
+
+		if(k == ":" && tmp.Length() > 0 && parseWidth == false) {
+			key.key = tmp;
+			tmp = "";
+			parseWidth = true;
+			continue;
+		}
+
+		tmp += k;
+	}
+
+	return lines;
+};
+
+
+
+/*================================================================================================
+* CreateKeyboard
+*   Used by CreateKeyboard() to parse a keyboard definition string to an array of lines for the
+*   virtual keyboard creation.
+* ------------------------------------------------------------------------------------------------
+*   Package: vkeyboard
+*   Dependencies: -
+* ------------------------------------------------------------------------------------------------
+*   (string) keys     = keyboard definition string
+* ------------------------------------------------------------------------------------------------
+*   Returns: An array of lines for the keyboard generation.
+* ================================================================================================*/
+global CreateKeyboard = function(inKeys, theme, screenWidth, screenHeight) {
+	local font = theme.getFont("button");
+	local root = Node();
+	root.isShifted = false;
+	
+	// parse the keyboard-defintion string to a lines-array
+	local lines = _ParseKeysToArray(inKeys, theme);
+	
+	// keyboard screen position offset
+	local off_x = (screenWidth / 2)/* - (lines.totalWidth * image.width) / 2*/;
+	local off_y = (screenHeight / 2) - (lines.count * 72) / 2;
+	
+	// create buttons for each keyboard key
+	local cur_x = 0;
+	local cur_y = off_y;
+	local counter = 0;
+	foreach(l in lines) {
+		cur_x = off_x + -l.lineWidth / 2;
+
+		local h = 0;
+		foreach(k in l) {
+			if(k.image == null) { continue; }
+
+			// create the key buttons
+			if(k.key[0] == '<') {
+				keyNode = CreateImageButton("  ", font, "#000000", k.image, cur_x, cur_y, 0, 0, 0.5, 0.5, _VirtualKeyboardCallback);
+			} else {
+				keyNode = CreateImageButton(" "+k.key+" ", font, "#000000", k.image, cur_x, cur_y, 0, 0, 0.43, 0.53, _VirtualKeyboardCallback);
+			}
+
+			// store keyboard root node in key
+			keyNode.proxy = Object("_proxy");
+			keyNode.proxy.keyboard = root;
+
+			/*keyNode.onMouseDown = function(evt) {
+				bmp = this["image"].getBitmap();
+				bmp.swapRB();
+				this["image"].setBitmap(bmp);
+				return true;
+			};
+
+			keyNode.onMouseUp = function(evt) {
+				bmp = this["image"].getBitmap();
+				bmp.swapRB();
+				this["image"].setBitmap(bmp);
+				_VirtualKeyboardCallback(evt);
+				return true;
+			};*/
+
+			if(h < k.image.height) { h = k.image.height; }
+			cur_x += k.image.width;  //  + 10
+			keyNode.key = k.key;
+			//root["_"+k.key] = keyNode;
+			root["_"+counter] = keyNode;
+			
+			//keyNode["image"].update().center().middle();
+			//keyNode["text1"].update().center().middle();
+
+			counter += 1;
+		}
+
+		cur_y += h;  //  + 10
+	}
+
+	// register function to change keyboard textbox
+	root.SetTextbox = function(tb) {
+		log("Textbox of keyboard set to " + tb.toString());
+		this.proxy = Object();
+		this.proxy.textbox = tb;
+	};
+
+	// return keyboard node
+	return root;
+};

@@ -1,0 +1,17 @@
+m = Map();
+m.set("das", Object("das!"));
+m.set("ist", Object("ist!"));
+m.set("ein", Object("ein!"));
+m.set("test", Object("Test!"));
+
+m["und"] = Object(" Und ");
+m["noch"] = Object(" noch ");
+m["einer"] = Object(" einer.");
+
+m["test"] = Object("TEST");
+m["test"] = null;
+m["test"] = Object("TEST");
+
+foreach(e in m) {
+	log("- " + e.id);
+}

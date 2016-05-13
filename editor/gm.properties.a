@@ -1,0 +1,14 @@
+# Define SciTE settings for GM
+
+file.patterns.gm=*.gm
+filter.gm=GameMonkey (gm)|*.gm|
+lexer.$(file.patterns.gm)=d
+
+api.$(file.patterns.gm)=$(SciteDefaultHome)\gm.api
+autocomplete.gm.start.characters=.
+
+# D keywords
+keywords.$(file.patterns.gm)=if else for foreach in and or while dowhile function return continue break null global local member table true false this
+
+# keywords2
+keywords2.$(file.patterns.gm)=

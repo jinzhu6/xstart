@@ -1,0 +1,40 @@
+8
+
+dir
+333
+http://solo/svn/sockets/tags/Release_clsockets_1_4_0/examples
+http://solo/svn/sockets
+
+
+
+2008-11-18T22:58:01.430577Z
+252
+carrier
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+eeaa4c0b-9212-417a-97db-b2c7f0bbccf9
+
+RecvAsync.cpp
+file
+
+
+
+
+2010-02-22T23:21:09.000000Z
+9719519f6c9e0f6d25de9851506a77f8
+2008-11-18T22:58:01.430577Z
+252
+carrier
+

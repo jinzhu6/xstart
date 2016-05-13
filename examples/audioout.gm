@@ -1,0 +1,15 @@
+
+global aout = AudioOut();
+aout.create();
+
+global sound1 = AudioBuffer("misc/sound.wav");
+sound1.volume = 1.0;
+
+global sound2 = AudioBuffer("misc/snap.wav");
+sound2.volume = 1.0;
+
+aout.play(sound1, false);
+//aout.play(sound2, true);
+aout.start();
+
+sleep(3.0);

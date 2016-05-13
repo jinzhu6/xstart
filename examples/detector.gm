@@ -1,0 +1,31 @@
+global FRAME = Frame("main", 0, 0, 640, 480, "#ff00ff").toggle().showCursor(true);
+FRAME.onKeyDown = function(e) {   if(e.key == 'C') { e.sender.root["camera"].config(); }   };
+FRAME.root["camera"] = Camera(0, 0, 0, 640, 480, 0);
+FRAME.root["found"] = Texture("images/face_detect.png", 0,0, 0,0);
+
+global DETECTOR = Detector("haar/haarcascade_frontalface_default.xml");
+
+while(1) {
+    FRAME.root["camera"].update();
+	local numFindings = DETECTOR.detect(FRAME.root["camera"].snapshotBitmap().flipY().flipX(), 200);
+	
+	local i = 0;
+	local finding = 0;
+	FRAME.root["found"].visible = false;
+	
+	while(1) {
+		finding = DETECTOR.getFinding(i);
+		if(!finding) { break; }
+		i += 1;
+		
+		FRAME.root["found"].x = finding.left;
+		FRAME.root["found"].y = finding.top;
+		FRAME.root["found"].width = finding.right - finding.left;
+		FRAME.root["found"].height = finding.bottom - finding.top;
+		
+		FRAME.root["found"].visible = true;
+	}
+	
+    FRAME.render();
+	yield();
+}

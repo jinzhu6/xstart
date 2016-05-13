@@ -1,0 +1,12 @@
+#ifndef _STRM_SPEEX_H_
+#define _STRM_SPEEX_H_
+
+
+#include "sdy_def.h"
+
+sdyDword	SDYSTRMAPI	SPEEX_Stream	(void* pInfo, sdyByte *lpbyBuffer, sdyDword dwBytes);
+void*		SDYSTRMAPI	SPEEX_Open		(const char* szFile, SDY_WFX* pWfx, SDY_IO* pIO, sdyDword dwFlags);
+sdyBool 	SDYSTRMAPI	SPEEX_Close 	(void* pInfo);
+
+
+#endif

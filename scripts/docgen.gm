@@ -1,0 +1,250 @@
+global SECTION_CLASS = 0;
+global SECTION_FUNCTIONS = 1;
+global SECTION_MEMBERS = 2;
+global SECTION_END = 3;
+
+
+
+global HelpGenerator = function(classId, help) {
+	doc = "";
+	api = "";
+    
+    //log("Generating help for: "+classId);
+	
+	section = SECTION_CLASS;
+	buffer = "";
+	html = "";
+	inAt = false;
+	part = 0;
+	
+	clazz = Object();
+	clazz.id = classId;
+	clazz.functions = Array();
+	clazz.members = Array();
+	
+	entry = Object();
+	entry.id = "";
+	entry.decl = "";
+	entry.help = "";
+	
+	for(i = 0; i < help.Length(); i+=1)
+	{
+		c = help[i];
+		
+		if(c == '{') {
+			html += buffer;
+			html += "<i>";
+			buffer = "";
+			continue;
+		}
+		if(c == '}') {
+			html += buffer + "</i>";
+			buffer = "";
+			continue;
+		}
+		
+		if(c == '[') {
+			html += buffer;
+			html += "<a href='#";
+			buffer = "";
+			continue;
+		}
+		if(c == ']') {
+			if(buffer == "this") { html += clazz.id + "'>" + buffer + "</a>"; }
+			else { html += buffer + "'>" + buffer + "</a>"; }
+			buffer = "";
+			continue;
+		}
+		
+		if(c == '@' && !inAt) {
+			html += buffer;
+			html += "<a href='#" + clazz.id + ".";
+			buffer = "";
+			inAt = true;
+			continue;
+		}
+		if(c == ' ') {
+			
+			if(inAt) {
+				inAt = false;
+				html += buffer + "'>" + buffer + "</a>";
+				buffer = "";
+			}
+			
+			html += buffer;
+			buffer = "";
+		}
+		
+		if(c == '\n') {
+			part = 0;
+			
+			//print("id: "+entry.id+"\n  decl: "+entry.decl+"\n  help: "+entry.help+"\n");
+			
+			if(section == SECTION_CLASS) {
+				clazz.name = entry.id;
+				clazz.decl = entry.decl;
+				clazz.help = entry.help;
+			}
+			
+			if(section == SECTION_FUNCTIONS) {
+				clazz.functions.add(entry);
+			}
+			
+			if(section == SECTION_MEMBERS) {
+				clazz.members.add(entry);
+			}
+			
+			entry = Object();
+			entry.id = "";
+			entry.decl = "";
+			entry.help = "";
+			
+			if(help[i+1] == '\n') {
+				i += 1;
+				section += 1;
+				if(section == SECTION_END) { break; }
+			}
+			
+			continue;
+		}
+		
+		if(c == '\t') {
+			
+			html += buffer;
+			//print(html);
+			
+			if(part == 0) {
+				entry.id = html;
+			}
+			if(part == 1) {
+				entry.decl = html;
+			}
+			if(part == 2) {
+				entry.help = html;
+			}
+			
+			html += buffer;
+			html = "";
+			buffer = "";
+			part += 1;
+			
+			continue;
+		}
+		
+		buffer += ascii(c);
+	}
+	
+	return clazz;
+};
+
+
+global ObjectClassIntrospection = function(obj) {
+	return HelpGenerator(obj.id, obj._help());
+};
+
+global ParseClassList = function(cl) {
+	arr = Array();
+	name = "";
+	for(i = 0; i < cl.Length(); i+=1) {
+		c = cl[i];
+		if(c == '\n') {
+			if(name == "") {
+				return arr;
+			}
+			arr.add( Object(name) );
+			name = "";
+			continue;
+		}
+		name += ascii(c);
+	}
+	return arr;
+};
+
+
+log("Generating reference documentation ...");
+
+api = Object();
+api.classes = Array();
+
+api.classes.add( HelpGenerator("Global", _help()) );
+api.classes.add( ObjectClassIntrospection(Object()) );
+
+classlist = ParseClassList(_classlist());
+
+foreach(c in classlist) {
+	//log("Adding API class: "+c.id);
+	print(" "+c.id);
+	api.classes.add( ObjectClassIntrospection(instance(c.id)) );
+}
+
+doc = "";
+index = "<h1>xstart Script API " + version() + "</h1><div class='index'>";
+
+header = "<html><head><style>";
+header += "body { font-family: Verdana; font-size: 12px; }\n";
+header += "h1 { margin:6px; }\n";
+header += "h3 { margin:6px; }\n";
+header += "pre { margin:6px; margin-left:30px; font-weight:bold; }\n";
+header += "i { color: #3333a0; }\n";
+header += "p.caption { font-weight:bold; margin:15px; margin-left:30px; margin-bottom:3px; padding-top:5px; }\n";
+header += "p.help { margin:15px; margin-left:30px; }\n";
+header += "div.example { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #f0fff0; }\n";
+header += "div.function { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #eeeeff; }\n";
+header += "div.member { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #ffeeee; }\n";
+header += "div.index { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; }\n";
+header += "</style></head><body>";
+
+foreach(clazz in api.classes) {
+	index += "<h3><a href='#"+clazz.name+"'>"+clazz.name+"</a></h3>";
+	
+	doc += "<div class='class'>";
+	doc += "<h2 id='"+clazz.name+"'>"+clazz.name+"</h2>";
+	doc += "<pre>"+clazz.name + clazz.decl+"</pre>";
+	doc += "<p class='help'>"+clazz.help+"</p>";
+	
+	local exFile = File();
+	if(exFile.exists("../examples/" + clazz.name + ".gm")) {
+		local example = exFile.open("../examples/" + clazz.name + ".gm", "rb").read();
+		doc += "<p class='caption'>Example:</p>";
+		doc += "<div class='example'>";
+		doc += "<pre>" + example + "</pre>";
+		doc += "</div>";
+		exFile.close();
+	}
+	
+	if(clazz.functions.length() > 0) { doc += "<p class='caption'>Functions:</p>"; }
+	foreach(func in clazz.functions) {
+		if(func.id[0] == '_') { continue; }
+		doc += "<div class='function'>";
+		doc += "<h3 id='"+clazz.name+"."+func.id+"'>"+func.id+"</h3>";
+		//if(func.decl == "") { func.decl = "<i>unknown</i>"; }
+		if(func.help == "") { func.help = "<i>no help found</i>"; }
+		if(func.decl != "") { doc += "<pre>"+func.decl+"</pre>"; }
+		if(func.help != "") { doc += "<p class='help'>"+func.help+"</p>"; }
+		doc += "</div>";
+	}
+	
+	if(clazz.members.length() > 0) { doc += "<p class='caption'>Members:</p>"; }
+	foreach(memb in clazz.members) {
+		if(memb.id[0] == '_') { continue; }
+		doc += "<div class='member'>";
+//		doc += "<h3 id='"+clazz.name+"."+memb.id+"'>"+memb.id+"</h3>";
+//		doc += "<pre>"+memb.decl+"</pre>";
+		doc += "<h3 id='"+clazz.name+"."+memb.id+"'>"+memb.decl+"</h3>";
+		doc += "<p class='help'>"+memb.help+"</p>";
+		doc += "</div>";
+	}
+	
+	doc += "</div>";
+	doc += "<hr/>";
+}
+
+index += "</div><hr/>";
+
+doc = header + index + doc;
+doc += "</body></html>";
+
+redirect("..\\editor\\help.htm");
+print(doc);
+
+//system("explorer ..\\editor\\help.htm");

@@ -1,0 +1,28 @@
+global DIM_X = 800;
+global DIM_Y = 800;
+global BLUR = 2;
+
+global OnKeyDown = function(e) {
+    global BLUR;
+	if((e.key == 187 || e.key == 107) && BLUR < 10) { BLUR += 1; SHADER.setInt("FILTER_SIZE", BLUR); }
+	if((e.key == 189 || e.key == 109) && BLUR > 0)  { BLUR -= 1; SHADER.setInt("FILTER_SIZE", BLUR); }
+	FRAME.root["info"].text = "Blur: "+BLUR;
+};
+
+global FRAME = Frame("main", 200, 100, DIM_X, DIM_Y);
+FRAME.onKeyDown = OnKeyDown;
+
+global SHADER = Shader("shaders/basic.vs", "shaders/blur.fs");
+SHADER.setInt("FILTER_SIZE", BLUR);
+SHADER.setFloat2("FILTER_SCALE", 1.0 / DIM_X, 1.0 / DIM_Y);
+
+FRAME.root["shader"] = SHADER;
+FRAME.root["shader"]["image"] = Texture("images/background.jpg", 0, 0, DIM_X, DIM_Y);
+
+FRAME.root["help"] = Text("Press + and - to adjust blur filter size.", Font("fonts/arial.ttf", 20));
+FRAME.root["info"] = Text("Blur: "+BLUR, Font("fonts/arial.ttf", 20), 0, 30);
+
+while(1) {
+    FRAME.render();
+    yield();
+}

@@ -1,0 +1,13 @@
+d = Date().now();
+print("\nNow is " + d.format("%d %B %Y - %H:%M:%S (UTC)") + "\n");
+ts = d.getUnix();
+print("The current unix timestamp is " + ts + "\n");
+d.setUnix(ts);
+print("Now is " + d.format("%d %B %Y - %H:%M:%S (UTC)") + "\n\n");
+
+d = Date().today();
+print("Today is " + d.format("%d %B %Y - %H:%M:%S (UTC)") + "\n");
+ts = d.getUnix();
+print("The current unix timestamp is " + ts + "\n");
+d.setUnix(ts);
+print("Today is " + d.format("%d %B %Y - %H:%M:%S (UTC)") + "\n\n");

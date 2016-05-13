@@ -1,0 +1,167 @@
+/* Bastian von Halem	30.Nov.2005 */ 
+/* streams lossless compressed FLAC streams */ 
+
+#include "sdy_def.h"
+#include <memory.h>
+
+#define FLAC__NO_DLL 1
+#include <FLAC/all.h>
+#pragma comment(lib, "libFLAC_static.lib")
+
+#pragma warning(disable:4018)
+#pragma warning(disable:4244)
+
+
+typedef struct FLAC_INFO
+{
+	sdyPtr	hf;
+	SDY_IO	io;
+	FLAC__StreamDecoder* pStream;
+	SDY_WFX wfx;
+	
+	sdyByte* pBuffer;	/* ringbuffer */ 
+	sdyDword dwSize;	/* ringbuffer length */ 
+	sdyDword dwCur; 	/* write cursor */ 
+	sdyDword dwPos; 	/* position of data */ 
+	sdyDword dwLen; 	/* length of data */ 
+	
+} FLAC_INFO;
+
+
+void FLAC_Error(
+	const FLAC__StreamDecoder*		pStream,
+	FLAC__StreamDecoderErrorStatus	Status,
+	FLAC_INFO*						pInfo)
+{
+	return;
+}
+
+void FLAC_Metadata(
+	const FLAC__StreamDecoder*		pStream,
+	const FLAC__StreamMetadata* 	pMetadata,
+	FLAC_INFO*						pInfo)
+{
+	switch(pMetadata->type)
+	{
+	case FLAC__METADATA_TYPE_STREAMINFO:
+		pInfo->wfx.nSamplesPerSec	= pMetadata->data.stream_info.sample_rate;
+		pInfo->wfx.nChannels		= pMetadata->data.stream_info.channels;
+		pInfo->wfx.wBitsPerSample	= pMetadata->data.stream_info.bits_per_sample;
+		pInfo->wfx.cbSize			= pMetadata->data.stream_info.total_samples;
+		pInfo->wfx.wFormatTag		= 1;
+		pInfo->wfx.nBlockAlign		= pInfo->wfx.nChannels * pMetadata->data.stream_info.bits_per_sample / 8;
+		pInfo->wfx.nAvgBytesPerSec	= pInfo->wfx.nSamplesPerSec * pInfo->wfx.nBlockAlign;
+		pInfo->dwSize = pMetadata->data.stream_info.max_blocksize * pInfo->wfx.nBlockAlign;
+		pInfo->pBuffer = malloc(pInfo->dwSize);
+		break;
+	}
+}
+
+FLAC__StreamDecoderWriteStatus FLAC_Write(
+	const FLAC__StreamDecoder*		pStream,
+	const FLAC__Frame*				pFrame,
+	const sdyByte*			  const pBuffer[],
+	FLAC_INFO*						pInfo)
+{
+	sdyDword n,i,u,s;
+	
+	for(s=0,n=0; s<pFrame->header.blocksize;s++)
+	{
+		for(i=0; i<pInfo->wfx.nChannels; i++)
+		{
+			for(u=0; u<pInfo->wfx.wBitsPerSample/8; u++)
+			{
+				pInfo->dwLen++;
+				pInfo->pBuffer[pInfo->dwCur++] = pBuffer[i][n+u];
+				if(pInfo->dwCur >= pInfo->dwSize) pInfo->dwCur = 0;
+			}
+		}
+		n+=pInfo->wfx.wBitsPerSample/8*2;
+	}
+	
+	return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
+}
+
+FLAC__StreamDecoderReadStatus FLAC_Read(
+	const FLAC__StreamDecoder*		pStream, 
+	FLAC__byte* 					pBuffer, 
+	unsigned*						pnBytes, 
+	FLAC_INFO*						pInfo)
+{
+	sdyDword dwBytesRead = pInfo->io.read(pBuffer, 1, *pnBytes, pInfo->hf);
+	*pnBytes = dwBytesRead;
+	return dwBytesRead ? FLAC__STREAM_DECODER_READ_STATUS_CONTINUE : FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
+}
+
+void* SDYSTRMAPI FLAC_Open(
+	const char* 		szFile,
+	SDY_WFX*			pwfx,
+	SDY_IO* 			pIO,
+	sdyDword			dwFlags)
+{
+	FLAC_INFO* pInfo;
+	pInfo = malloc(sizeof(FLAC_INFO));
+	memset(pInfo, 0, sizeof(FLAC_INFO));
+	pInfo->io = *pIO;
+	pInfo->hf = pIO->open(szFile, "rb");
+	if(!pInfo->hf) { free(pInfo); return 0; }
+	pInfo->pStream = FLAC__stream_decoder_new();
+	
+	FLAC__stream_decoder_set_read_callback(pInfo->pStream, (FLAC__StreamDecoderReadCallback)FLAC_Read);
+	FLAC__stream_decoder_set_write_callback(pInfo->pStream, (FLAC__StreamDecoderWriteCallback)FLAC_Write);
+	FLAC__stream_decoder_set_metadata_callback(pInfo->pStream, (FLAC__StreamDecoderMetadataCallback)FLAC_Metadata);
+	FLAC__stream_decoder_set_error_callback(pInfo->pStream, (FLAC__StreamDecoderErrorCallback)FLAC_Error);
+	FLAC__stream_decoder_set_client_data(pInfo->pStream, pInfo);
+	
+	FLAC__stream_decoder_init(pInfo->pStream);
+	FLAC__stream_decoder_process_until_end_of_metadata(pInfo->pStream);
+	
+	*pwfx = pInfo->wfx;
+	
+	return pInfo;
+}
+
+sdyDword SDYSTRMAPI FLAC_Stream(
+	void*				_pInfo, 
+	sdyByte*			pBuffer,
+	sdyDword			dwBytes)
+{
+	sdyDword n = 0;
+	FLAC_INFO* pInfo = _pInfo;
+	
+	while(dwBytes)
+	{
+		if(pInfo->dwLen == 0)
+		{
+			FLAC__stream_decoder_process_single(pInfo->pStream);
+			if(pInfo->dwLen == 0)
+				break;
+		}
+		
+		pBuffer[n++] = pInfo->pBuffer[pInfo->dwPos++];
+		if(pInfo->dwPos >= pInfo->dwSize) pInfo->dwPos = 0;
+		
+		pInfo->dwLen--;
+		dwBytes--;
+	}
+	
+	return n;
+}
+
+
+sdyBool SDYSTRMAPI FLAC_Close(void* _pInfo)
+{
+	FLAC_INFO* pInfo = _pInfo;
+	if(!pInfo) return sdyFalse;
+	
+	if(pInfo->hf)
+		pInfo->io.close(pInfo->hf);
+	
+	FLAC__stream_decoder_finish(pInfo->pStream);
+	FLAC__stream_decoder_delete(pInfo->pStream);
+		
+	free(pInfo->pBuffer);
+	free(pInfo);
+	
+	return sdyTrue;
+}

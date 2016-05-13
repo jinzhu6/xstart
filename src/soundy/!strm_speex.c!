@@ -1,0 +1,71 @@
+#include "sdy_def.h"
+#include <speex/speex.h>
+
+#include <memory.h>
+#include <malloc.h>
+
+#pragma comment(lib, "libspeex.lib")
+
+typedef struct SPEEX_INFO
+{
+	void* hf;
+	SDY_IO io;
+	
+	SpeexBits bits;
+	void* dec_state;
+	
+	int frame_size;
+	sdyByte* tmp;
+	float* buf;
+	
+} SPEEX_INFO;
+
+void* SDYSTRMAPI SPEEX_Open(
+	const char* 		szFile,
+	SDY_WFX*			pwfx,
+	SDY_IO* 			io,
+	sdyDword			dwFlags)
+{
+	SPEEX_INFO* pInfo;
+	
+	pInfo = malloc(sizeof(SPEEX_INFO));
+	memset(pInfo, 0, sizeof(SPEEX_INFO));
+	pInfo->hf = io->open(szFile, "rb");
+	if(!pInfo->hf) { free(pInfo); return 0; }
+	pInfo->io = *io;
+	
+	speex_bits_init(&pInfo->bits);
+	pInfo->dec_state = speex_decoder_init(&speex_wb_mode);
+	
+	speex_decoder_ctl(pInfo->dec_state, SPEEX_GET_FRAME_SIZE, &pInfo->frame_size);
+	pInfo->tmp = malloc(sizeof(sdyByte) * pInfo->frame_size);
+	pInfo->buf = malloc(sizeof(float) * pInfo->frame_size);
+	
+	return pInfo;
+}
+
+sdyDword SDYSTRMAPI SPEEX_Stream(
+	void*				_pInfo, 
+	sdyByte*			pBuffer,
+	sdyDword			dwBytes)
+{
+	int len;
+	SPEEX_INFO* pInfo = _pInfo;
+	
+	if(!pInfo->io.read(&len, 4, 1, pInfo->hf)) return 0;
+	pInfo->io.read(pInfo->tmp, len, 1, pInfo->hf);
+	speex_bits_read_from(&pInfo->bits, pInfo->tmp, len);
+	speex_decode(pInfo->dec_state, &pInfo->bits, pInfo->buf);
+	
+	return 0;
+}
+
+sdyBool SDYSTRMAPI SPEEX_Close(void* _pInfo)
+{
+	SPEEX_INFO* pInfo = _pInfo;
+	if(pInfo->hf) pInfo->io.close(pInfo->hf);
+	speex_bits_destroy(&pInfo->bits);
+	speex_decoder_destroy(pInfo->dec_state);
+	free(pInfo);
+	return sdyTrue;
+}

@@ -1,0 +1,12 @@
+#ifndef _STRM_MOD_H_
+#define _STRM_MOD_H_
+
+
+#include "sdy_def.h"
+
+sdyDword	SDYSTRMAPI	MOD_Stream		(void* pInfo, sdyByte *lpbyBuffer, sdyDword dwBytes);
+void*		SDYSTRMAPI	MOD_Open		(const char* szFile, SDY_WFX* pwfx, SDY_IO* pIO, sdyDword dwFlags);
+sdyBool 	SDYSTRMAPI	MOD_Close		(void* pInfo);
+
+
+#endif

@@ -1,0 +1,26 @@
+local midi = Midi();
+if(!midi.load("C:\\Projekte\\_CURRENT\\07727-MusicalCorridor\\piano\\MusicalCorridor_Song1.mid")) { fatal("Error while loading midi file!"); }
+
+log("Loaded midi file with " + midi.getTrackCount() + " tracks.\n");
+log("time  \tcmd       \tpar1  \tpar2  \t|\tkey  \tchan. \tdur");
+log("---------------------------------------------------------------------------------");
+
+midi.joinTracks();
+track = 0;
+for(i=0; i<midi.getEventCount(track); i+=1) {
+	local e = midi.getEvent(track, i);
+	local c = "UNKNOWN ("+e.command+")";
+	if(e.command == 0x80) { c = "NoteOff "; }
+	if(e.command == 0x90) { c = "NoteOn  "; }
+	if(e.command == 0xA0) { c = "Aftert  "; }
+	if(e.command == 0xB0) { c = "CntCtrl "; }
+	if(e.command == 0xC0) { c = "PatChng "; }
+	if(e.command == 0xD0) { c = "ChaPres "; }
+	if(e.command == 0xE0) { c = "PitBend "; }
+	if(e.command == 0xF0) { c = "NonMus  "; }
+	if(e.command == 0x80 || e.command == 0x90) {
+		log("[" + e.seconds + "]\t" + c + "\t" + e.param + "\t" + e.paramex + "\t|\t" + e.key + "\t" + e.channel + "\t" + e.duration);
+	} else {
+		log("[" + e.seconds + "]\t" + c + "\t" + e.param + "\t" + e.paramex);
+	}
+}

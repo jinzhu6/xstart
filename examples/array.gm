@@ -1,0 +1,15 @@
+ar = Array();
+ar.add(Object("Das"));
+ar.add(Object("ist"));
+ar.add(Object("ein"));
+obj = ar.add(Object("Test"));
+
+ar.remove(0);
+ar.remove(1);
+ar.set(0, Object("Ein"));
+
+print(obj.toString()+" is at index "+ar.find(obj)+"\n");
+
+foreach(e in ar) {
+	print(e.id + "+");
+}

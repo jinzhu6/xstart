@@ -1,0 +1,165 @@
+#include <mikmod.h>
+#include <malloc.h>
+#include <memory.h>
+#include "sdy_def.h"
+
+static BOOL g_MikMod;
+static int g_nRefs;
+
+static volatile LPBYTE g_lpbyBuffer;
+static volatile DWORD g_dwReadBytes;
+static volatile DWORD g_dwReaded;
+
+/* SDY_IsThere - verifies the presence of the custom MikMod driver */ 
+static BOOL SDY_IsThere(void)
+{
+	/* allways present */ 
+	return 1;
+}
+
+/* SDY_Update - read data into buffer, called by Player_Update() from inside MikMod. */ 
+static void SDY_Update(void)
+{
+	g_dwReaded = VC_WriteBytes(g_lpbyBuffer, g_dwReadBytes);
+}
+
+/* MikMod driver structure for initialization */ 
+MDRIVER drv_sdy = 
+{
+	NULL, 
+	"SoundY", 
+	"SoundY Driver v1.1", 
+	0, 255, 
+	"sdy2", 
+	"-",
+	NULL,
+	SDY_IsThere, 
+	VC_SampleLoad,
+	VC_SampleUnload,
+	VC_SampleSpace,
+	VC_SampleLength,
+	VC_Init,
+	VC_Exit,
+	NULL,
+	VC_SetNumVoices,
+	VC_PlayStart,
+	VC_PlayStop,
+	SDY_Update,
+	NULL,
+	VC_VoiceSetVolume,
+	VC_VoiceGetVolume,
+	VC_VoiceSetFrequency,
+	VC_VoiceGetFrequency,
+	VC_VoiceSetPanning,
+	VC_VoiceGetPanning,
+	VC_VoicePlay,
+	VC_VoiceStop,
+	VC_VoiceStopped,
+	VC_VoiceGetPosition,
+	VC_VoiceRealVolume
+};
+
+/*-------------------------------------------------------------------------------------
+// sdyMOD_Init - Initialize MikMod
+// 
+//	Called only from inside sdyMOD_Open() - see below.
+//-------------------------------------------------------------------------------------*/
+static int MOD_Init(void)
+{
+	MikMod_RegisterDriver(&drv_sdy);
+	MikMod_RegisterAllLoaders();
+	md_mixfreq = 44100;
+	//md_mode |= DMODE_SOFT_MUSIC;
+	md_mode |= DMODE_INTERP | DMODE_STEREO | DMODE_SURROUND;
+	//md_reverb = 1;
+	if(MikMod_Init("")) return -1;
+	g_MikMod = TRUE;
+	atexit(MikMod_Exit);
+	return 0;
+}
+
+/*-------------------------------------------------------------------------------------
+// -
+//-------------------------------------------------------------------------------------*/
+void* SDYSTRMAPI MOD_Open(const char *szFile, SDY_WFX *pWfx, SDY_IO *pIO, sdyDword dwReserved)
+{
+	void* pMod;
+	
+	if(!g_MikMod)
+		if(MOD_Init() != 0)
+			return sdyNull;
+	
+	pMod = Player_Load((char*)szFile, 32, 0);
+	if(!pMod)
+		return sdyNull;
+	
+	Player_Start(pMod);
+	
+	if(pWfx)
+	{
+		pWfx->wFormatTag		= 1;
+		pWfx->nChannels 		= (md_mode & DMODE_STEREO) ? 2 : 1;
+		pWfx->nSamplesPerSec	= md_mixfreq;
+		pWfx->nAvgBytesPerSec	= md_mixfreq * ( (md_mode & DMODE_STEREO) ? 2 : 1 ) * ( (md_mode & DMODE_16BITS) ? 2 : 1 );
+		pWfx->nBlockAlign		= ( (md_mode & DMODE_16BITS) ? 2 : 1 ) * ( (md_mode & DMODE_STEREO) ? 2 : 1 );
+		pWfx->wBitsPerSample	= (md_mode & DMODE_16BITS) ? 16 : 8;
+		pWfx->cbSize			= 0;
+	}
+	
+	g_nRefs++;
+	
+	return pMod;
+}
+
+
+/*-------------------------------------------------------------------------------------
+// sdyMOD_Stream - Stream sound-data to buffer.
+//
+//	Returns number streamed bytes, which can be less
+// than dwBytes in case the sound has found its end.
+//-------------------------------------------------------------------------------------*/
+sdyDword SDYSTRMAPI MOD_Stream(void *pMOD, sdyByte *lpbyBuffer, sdyDword dwBytes)
+{
+	/* make values global so that SDY_Update can modify them		*/ 
+	g_lpbyBuffer = lpbyBuffer;
+	g_dwReadBytes = dwBytes;
+	
+	/* Only update when a mod-sound is playing. 					*/ 
+	/*																*/ 
+	/* NOTE: only one mod-sound can currently be played at once,	*/ 
+	/*		 due to the internal structure of the MikMod library!	*/ 
+	if(Player_Active())
+		/* MikMod_Update() calls SDY_Update() (see above)			*/ 
+		/* so g_lpbyBuffer and g_dwReadBytes will be updated.		*/ 
+		MikMod_Update();
+	else
+		return 0;
+	
+	return g_dwReaded;
+}
+
+
+/*-------------------------------------------------------------------------------------
+// -
+//-------------------------------------------------------------------------------------*/
+sdyBool SDYSTRMAPI MOD_Close(void	*pMOD)
+{
+	if(!pMOD) return sdyFalse;
+	
+	Player_Stop();
+	Player_Free(pMOD);
+	
+	g_nRefs--;
+	
+/*	if(g_nRefs <= 0)
+	{
+		MikMod_Exit();
+		g_MikMod = sdyFalse;
+		g_nRefs = 0;
+	}*/
+	
+	//if(pMOD->pFile)
+	//	pMOD->sdyIO.close_func(pMOD->pFile);
+	
+	return sdyTrue;
+}

@@ -1,0 +1,128 @@
+global SECTION_CLASS = 0;
+global SECTION_FUNCTIONS = 1;
+global SECTION_MEMBERS = 2;
+global SECTION_END = 3;
+
+
+global APIGenerator = function(classId, help) {
+	api = "";
+
+	section = SECTION_CLASS;
+	buffer = "";
+	inAt = false;
+	cutReturn = true;
+	part = 0;
+
+	for(i = 0; i < help.Length(); i+=1)
+	{
+		c = help[i];
+
+		if(c == '{' || c == '}' || c == '[' || c == ']') { continue; }
+
+		if(c == '\n') {
+			part = 0;
+			cutReturn = true;
+			rettype = "";
+
+			if(help[i+1] == '\n') {
+				i += 1;
+				section += 1;
+				if(section == SECTION_END) { break; }
+			}
+
+			continue;
+		}
+
+		if(c == '\t') {
+			if(part == 0) {		}
+			if(part == 1) {
+				if(section == SECTION_CLASS && buffer != ""  && buffer != " ") {
+					api += classId + buffer + "\n";
+				}
+				else if(section == SECTION_FUNCTIONS && buffer != "") {
+					if(rettype != "") {
+						api += buffer+" : "+rettype+"\n";
+					} else {
+						api += buffer+"\n";
+					}
+				}
+				else if(section == SECTION_MEMBERS && buffer != "") {
+					if(rettype != "") {
+						api += buffer+" : "+rettype+"\n";
+					} else {
+						api += buffer+"\n";
+					}
+				}
+			}
+			if(part == 2) {		}
+
+			buffer = "";
+			part += 1;
+			continue;
+		}
+
+		if(c == '(') {
+			cutReturn = false;
+		}
+
+		if(c == ' ' && part == 1 && cutReturn) {
+			rettype = buffer;
+			buffer = "";
+			cutReturn = false;
+			continue;
+		}
+
+		buffer += ascii(c);
+	}
+
+	return api;
+};
+
+
+global GetObjectAPI = function(obj) {
+	return APIGenerator(obj.id, obj._help());
+};
+
+
+global ParseClassList = function(cl) {
+	arr = Array();
+	name = "";
+	for(i = 0; i < cl.Length(); i+=1) {
+		c = cl[i];
+		if(c == '\n') {
+			if(name == "") {
+				return arr;
+			}
+			arr.add( Object(name) );
+			name = "";
+			continue;
+		}
+		name += ascii(c);
+	}
+	return arr;
+};
+
+log("Generating editor auto-completion ...");
+//log("\nCLASS-LIST:\n\n"+_classlist());
+
+classlist = ParseClassList(_classlist());
+
+local gmPropsFile = File("..\\editor\\gm.properties", "wb");
+gmPropsFile.write(File("..\\editor\\gm.properties.a").read());
+
+api = APIGenerator("", _help());
+api += GetObjectAPI(Object());
+foreach(c in classlist) {
+	log("->"+c.id);
+    local inst = instance(""+c.id);
+    if(!inst) { error("Failed to create instance for object '"+c.id+"'!"); }
+	api += GetObjectAPI(inst);
+	gmPropsFile.write(c.id + " ");
+}
+
+gmPropsFile.write(File("..\\editor\\gm.properties.b").read());
+gmPropsFile.close();
+
+redirect("..\\editor\\gm.api");
+print(api);
+

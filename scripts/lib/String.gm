@@ -1,0 +1,34 @@
+
+global substr = function(s, start, end) {
+    local len = s.Length().Int();
+    if(end < 0) { end = len + end + 1; }
+    if(start < 0) { start = len + start + 1; }
+    if(end > len) { end = len; }
+    if(start > len-1) { start = len-1; }
+    if(start > end) { warning("substr: start is behind end."); return ""; }
+    local str = "";
+    for(i=start; i<end; i+=1) { str += ascii(s.GetAt(i)); }
+    return str;
+};
+
+global trim = function(s) {
+	return s.TrimLeft().TrimRight();
+};
+
+global split = function(s, d, dotrim) {
+	local o = Array();
+	local buffer = "";
+	for(i=0; i<s.Length(); i+=1) {
+		if(s[i] == d) {
+			if(dotrim) { buffer = trim(buffer); }
+            o.add(buffer);
+			buffer = "";
+		}
+		else {
+			buffer += ascii(s[i]);
+		}
+	}
+	if(dotrim) { buffer = trim(buffer); }
+	if(buffer.Length() > 0) { o.add(buffer); }
+	return o;
+};

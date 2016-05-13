@@ -1,0 +1,19 @@
+global SCREEN_WIDTH = 1024;
+global SCREEN_HEIGHT = 768;
+
+global FRAME = Frame("Scene Test", 50, 50, SCREEN_WIDTH, SCREEN_HEIGHT, "#003333").showCursor(true).toggle();
+
+FRAME.root["parent"] = Node();
+FRAME.root["parent"].x = SCREEN_WIDTH / 2;
+FRAME.root["parent"].y = SCREEN_HEIGHT / 2;
+FRAME.root["parent"].scale = 0.5;
+
+FRAME.root["parent"]["image"] = Texture("images/texture.png").update().center().middle();
+//FRAME.root["parent"]["image"].x = SCREEN_WIDTH / 2;
+//FRAME.root["parent"]["image"].y = SCREEN_HEIGHT / 2;
+
+while(1) {
+	FRAME.render();
+	FRAME.root["parent"].rotate += 0.2 / 5.0;
+	sleep( 1.0 / 80.0 );
+}

@@ -1,0 +1,43 @@
+frame = Frame("font-bg", 200,200, 800,600, "#ff");
+frame.onClose = exit;
+frame.onMouseMove = function(event) { text.x = event.x; text.y = event.y; };
+
+bg = Texture();
+bg.create(50,600);
+bg.clear("#00ff00");
+
+bg3 = Texture();
+bg3.create(50,600);
+bg3.clear("#0000ff");
+bg3.x = 120;
+
+bg2 = Texture();
+bg2.create(50,600);
+bg2.clear("#ff0000");
+bg2.x = 60;
+
+global text = Text();
+text.font = Font("fonts/arial.ttf", 22);
+text.text = "Hello World! 1234567890";
+text.color = "#ff0000ff";
+text.clearColor = "#00000000";
+
+//font.drawText(texture, "多数 在庫一掃セール!", "#ff0000ff", 0, 0);
+
+frame.root["bg"] = bg;
+frame.root["bg2"] = bg2;
+frame.root["bg3"] = bg3;
+frame.root["text"] = text;
+
+it = 0;
+while(1) {
+	it+=10000;
+	
+/*	text.text = "Count: "+it;
+	text.update();
+	text.center = Vector(text.width/2, text.height/2, 0.0);*/
+	
+	frame.render();
+	
+	yield();
+}

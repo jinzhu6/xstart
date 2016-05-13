@@ -1,0 +1,15 @@
+global SERVER = HttpServer("8091");
+SERVER.onRequest = function(url, get, post, auth) {
+    if(auth != "bastian:asdf") { this.sendAuthRequest("Tellurium Login"); return; }
+    this.send("Welcome "+auth);
+};
+SERVER._hello = function(url, get, post, auth) {
+    this.send("hello you too");
+};
+
+while(true) {
+    log("Polling ...");
+    SERVER.poll(1.0);
+    yield();
+}
+
