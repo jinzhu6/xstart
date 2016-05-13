@@ -13,6 +13,8 @@
 #include <list>
 #undef GetObject
 
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+
 using namespace soundtouch;
 
 static char* paHostApis[] = {"DirectSound","ASIO","SoundManager","CoreAudio","N/A","OSS","ALSA","AL","BeOS","WDMKS","JACK","WASAPI","AudioScienceHPI"}; // may not be accurate on all OS
@@ -46,7 +48,7 @@ public:
 	}
 
 	bool saveBegin(const char* fileName) {
-		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveBegin() - Filehandle to '%s' already open!", outputFile); }
+		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveBegin() - Filehandle to '%s' already open!", outputFile.c_str()); }
 		// write header to file
 		FILE* _hf = fopen(fileName, "wb");
 		if(!_hf) { Log(LOG_ERROR, "Error in saveWav() while opening '%s' for writing!", fileName); return false; }
@@ -63,7 +65,7 @@ public:
 		fclose(_hf);
 	}
 	bool saveEnd(const char* fileName) {
-		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveEnd() - Filehandle to '%s' still open!", outputFile); }
+		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveEnd() - Filehandle to '%s' still open!", outputFile.c_str()); }
 		// write final buffer-size in header
 		FILE* _hf = fopen(fileName, "r+b");
 		if(!_hf) { Log(LOG_ERROR, "Error in saveWav() while patching '%s'!", fileName); return false; }
@@ -288,7 +290,7 @@ public:
 		// save to file
 		if(outputFile != "") {
 			if(hf == 0) {
-				Log(LOG_DEBUG, "Starting audio recording of file '%s' ...", outputFile);
+				Log(LOG_DEBUG, "Starting audio recording of file '%s' ...", outputFile.c_str());
 				saveBegin(outputFile.c_str());
 				hf = fopen(outputFile.c_str(), "r+b");
 				fseek(hf, 0, SEEK_END);

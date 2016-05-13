@@ -1,7 +1,7 @@
 #include "Audio.h"
 
 FILE* _fopen_nolock(const char* filename, const char* mode) {
-	return _fsopen(filename, mode, _SH_DENYNO);
+	return fopen(filename, mode);
 }
 
 //-----------------------------------------------------------------------------

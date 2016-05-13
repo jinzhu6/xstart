@@ -138,7 +138,9 @@ long long backend_query_duration(void) {
 	return cur;
 }
 
-void backend_reset(void) {	backend_seek_absolute(0); }
+void backend_reset(void) {
+	backend_seek_absolute(0);
+}
 
 void backend_deinit(void) {
 	if(gst_is_initialized()) { gst_deinit(); }

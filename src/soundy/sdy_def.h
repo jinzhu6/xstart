@@ -111,7 +111,7 @@ typedef struct SDY_WFX {
 /* *******************************************************************
 // IO CALLBACKS
 //******************************************************************* */
-typedef unsigned int size_t;
+//typedef unsigned int size_t;
 typedef void*	(*sdyio_fopen)	(const char* filename, const char* mode);
 typedef size_t	(*sdyio_fread)	(void *buffer, size_t size, size_t nmemb, void *handle);
 typedef int 	(*sdyio_fseek)	(void *handle, long offset, int whence);

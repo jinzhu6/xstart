@@ -1,5 +1,7 @@
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/xstart ${CMAKE_SOURCE_DIR}/src/corela ${CMAKE_SOURCE_DIR}/src/freetype ${CMAKE_SOURCE_DIR}/src/cairo ${CMAKE_SOURCE_DIR}/src/opencv2 ${CMAKE_SOURCE_DIR}/src/libnova ${CMAKE_SOURCE_DIR}/src/midifile ${CMAKE_SOURCE_DIR}/src/mongoose)
 
+set(CMAKE_CXX_FLAGS "-fpermissive")
+
 file(GLOB FILE_LIST_CPP *.cpp)
 file(GLOB FILE_LIST_C *.c)
 file(GLOB FILE_LIST_H *.h)

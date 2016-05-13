@@ -4,6 +4,8 @@
 #ifdef _WIN32
 #include <direct.h>
 #define getcwd _getcwd
+#else
+#include <unistd.h>
 #endif
 
 bool FileExists(const char* file) {
@@ -24,7 +26,7 @@ coDword FileGetSize(const char* file) {
 		Log(LOG_ERROR, "File \"%s\" not found!", file);
 		return 0;
 	}
-	_fseek_nolock(hf, 0, SEEK_END);
+	fseek(hf, 0, SEEK_END);
 	unsigned int size = ftell(hf);
 	fclose(hf);
 	return size;

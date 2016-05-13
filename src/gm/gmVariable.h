@@ -20,6 +20,8 @@
 #define GM_MARK_PERSIST 0
 #define GM_MARK_START 1
 
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+
 // fwd decls
 class gmMachine;
 class gmStringObject;

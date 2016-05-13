@@ -20,6 +20,8 @@
 #include "gmStringObject.h"
 #include "gmUserObject.h"
 
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+
 class gmFunctionObject;
 class gmStringObject;
 class gmTableObject;

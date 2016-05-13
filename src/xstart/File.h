@@ -160,9 +160,9 @@ public:
 
 	unsigned int size() {
 		long pos = ftell(hf);
-		_fseek_nolock(hf, 0, SEEK_END);
+		fseek(hf, 0, SEEK_END);
 		unsigned int size = ftell(hf);
-		_fseek_nolock(hf, pos, SEEK_SET);
+		fseek(hf, pos, SEEK_SET);
 		return size;
 	}
 
