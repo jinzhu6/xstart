@@ -1,5 +1,5 @@
-global frame = Frame("main", 0, 0, 1920, 1080, "#ffffff");
-frame.root["canvas"] = Canvas(null, 0, 0, 1920, 1080, "#666666ff");
+global frame = Frame("main", 0, 0, 800, 600, "#ffffff");
+frame.root["canvas"] = Canvas(null, 0, 0, 800, 600, "#666666ff");
 frame.root["canvas"].fill();
 frame.root["canvas"].onMouseDown = function(event) {
     event.sender.lineTo(event.x, event.y);

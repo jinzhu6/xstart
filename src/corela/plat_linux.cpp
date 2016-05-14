@@ -198,7 +198,7 @@ FRAME* FrameCreate(const char* name, EVENT_CALLBACK callback, void* user, long x
 #endif
 
 	// fullscreen borderless window
-	_FrameNoBorder(display, win);
+//	_FrameNoBorder(display, win);
 
 	// set hints and properties
 #if 1

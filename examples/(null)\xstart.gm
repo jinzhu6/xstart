@@ -1,27 +1,29 @@
-global f = Frame("test", 0, 0, 640, 480, "#00cccc").showCursor(true);
-f.root["image"] = Texture("images/texture.png", 320, 240).update().center().middle();
-//f.onKeyDown = function(evt) { exit(); };
-f.root["fps"] = Text("...", Font("fonts/arial.ttf", 40), 10, 10, "#ff000080");
+global DIM_X = 800;
+global DIM_Y = 600;
+global BLUR = 2;
 
-f.root["image"].onMouseDown = function(e) { e.sender.rotate += 3.1415 / 4; };
-f.root["image"].onMouseUp = function(e) { e.sender.rotate -= 3.1415 / 4; };
-
-global fps_count = 0;
-
-global FramesPerSecond = function() {
-	global f;
-	global fps_count;
-	while(true) {
-		f.root["fps"].text = "" + fps_count;
-		fps_count = 0;
-		sleep(1.0);
-	}
+global OnKeyDown = function(e) {
+    global BLUR;
+    log("key: "+e.key);
+	if((e.key == 187 || e.key == 107 || e.key == 35 || e.key == 86) && BLUR < 5) { BLUR += 1; SHADER.setInt("FILTER_SIZE", BLUR); }
+	if((e.key == 189 || e.key == 109 || e.key == 61 || e.key == 82) && BLUR > 0) { BLUR -= 1; SHADER.setInt("FILTER_SIZE", BLUR); }
+	FRAME.root["info"].text = "Blur: "+BLUR;
 };
 
-thread(FramesPerSecond);
+global FRAME = Frame("main", 200, 100, DIM_X, DIM_Y);
+FRAME.onKeyDown = OnKeyDown;
+
+global SHADER = Shader("shaders/basic.vs", "shaders/blur.fs");
+SHADER.setInt("FILTER_SIZE", BLUR);
+SHADER.setFloat2("FILTER_SCALE", 1.0 / DIM_X * 2.0, 1.0 / DIM_Y * 2.0);
+
+FRAME.root["shader"] = SHADER;
+FRAME.root["shader"]["image"] = Texture("images/background.jpg", 0, 0, DIM_X, DIM_Y);
+
+FRAME.root["help"] = Text("Press + and - to adjust blur filter size.", Font("fonts/arial.ttf", 20));
+FRAME.root["info"] = Text("Blur: "+BLUR, Font("fonts/arial.ttf", 20), 0, 30);
 
 while(1) {
-	fps_count += 1;
-	f.render();
-	yield();
+    FRAME.render();
+    yield();
 }

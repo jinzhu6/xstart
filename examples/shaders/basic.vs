@@ -1,5 +1,5 @@
 
-out vec2 TexCoord;
+varying vec2 TexCoord;
 
 void main(void) {
 	TexCoord = gl_MultiTexCoord0.st;

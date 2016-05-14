@@ -14,4 +14,4 @@ include_directories(${OPENGL_INCLUDE_DIRS} ${GLIB2_INCLUDE_DIRS})
 
 target_link_libraries(corela gmscript expat freetype zlib ${OPENGL_LIBRARIES})
 
-set(CMAKE_C_FLAGS "-I/usr/include/gstreamer-0.10 -I/usr/include/glib-2.0 -I/usr/lib/arm-linux-gnueabihf/glib-2.0/include -I/usr/include/libxml2")
+set(CMAKE_C_FLAGS "-I /usr/lib/x86_64-linux-gnu/glib-2.0/include/ -I/usr/include/gstreamer-0.10 -I/usr/include/glib-2.0 -I/usr/lib/arm-linux-gnueabihf/glib-2.0/include -I/usr/include/libxml2")

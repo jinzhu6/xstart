@@ -1,4 +1,4 @@
-global FRAME = Frame("main", 0, 0, 1024, 768, "#336666");
+global FRAME = Frame("main", 0, 0, 800, 600, "#336666");
 
 FRAME.root["canvas"] = Canvas(null, 10, 10, 512, 512, "#99ffff00");
 //FRAME.root["canvas"].clear();
