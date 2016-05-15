@@ -1,4 +1,4 @@
-/* Bastian von Halem	05.March.2002 - 29.Apr.2004 */
+/* Bastian von Halem	05.March.2002 - 15.May.2016 */
 /* streams uncompressed WAV files with external io callbacks */
 
 #include "soundy/sdy_def.h"
@@ -73,11 +73,11 @@ INLINE sdyDword PCM_RIFF_Goto(sdyPtr hFile, sdyString szSubChunk, SDY_IO* pIO) {
 	pIO->seek( hFile, 0, SEEK_SET );
 
 	// read header
-	pIO->read( &rh, sizeof(RIFF_HEADER), 1, hFile );
+	pIO->read( &rh, 12/*sizeof(RIFF_HEADER)*/, 1, hFile );
 
 	// search
 search: {
-		readed = pIO->read(&rsc, sizeof(rsc), 1, hFile);
+		readed = pIO->read(&rsc, 8/*sizeof(rsc)*/, 1, hFile);
 		if(PCM_FOURCC_Cmp(&rsc.szID[0], szSubChunk))
 			return rsc.Size;
 		if(readed == 0)
@@ -149,11 +149,11 @@ void* SDYSTRMAPI PCM_Open(
 
 
 	/* open file */
-	pSWI->hFile =
-	    pSWI->io.open(szFile, "rb");
+	pSWI->hFile = pSWI->io.open(szFile, "rb");
 
 	if(!pSWI->hFile) {
 		free(pSWI);
+		printf("Audio-File '%s' not found!\n", szFile);
 		return sdyNull;
 	}
 
@@ -163,28 +163,41 @@ void* SDYSTRMAPI PCM_Open(
 
 	if(wfx.cbSize == 0) {
 		free(pSWI);
+		printf("Audio-File '%s' 'fmt' tag not found!\n", szFile);
 		return sdyNull;
 	}
 
-	wfx.cbSize = sizeof(SDY_WFX); // TODO: CHECK THIS HOTFIX!
+	wfx.cbSize = 20 /*sizeof(SDY_WFX)*/; // TODO: CHECK THIS HOTFIX!
 
-	pSWI->io.read(&wfx, wfx.cbSize, 1, pSWI->hFile);
-
-
-	/* goto data chunk */
-	pSWI->dwBytesLeft = PCM_RIFF_Goto(pSWI->hFile, "data", &pSWI->io);
-
+	//pSWI->io.read(&wfx, wfx.cbSize, 1, pSWI->hFile);
+	pSWI->io.read(&wfx.wFormatTag, 2, 1, pSWI->hFile);
+	pSWI->io.read(&wfx.nChannels, 2, 1, pSWI->hFile);
+	pSWI->io.read(&wfx.nSamplesPerSec, 4, 1, pSWI->hFile);
+	pSWI->io.read(&wfx.nAvgBytesPerSec, 4, 1, pSWI->hFile);
+	pSWI->io.read(&wfx.nBlockAlign, 2, 1, pSWI->hFile);
+	pSWI->io.read(&wfx.wBitsPerSample, 2, 1, pSWI->hFile);
+	pSWI->io.read(&wfx.cbSize, 4, 1, pSWI->hFile);
 
 	/* set SSInfo.dwByteSize to the correct size */
 //	wfx.cbSize = pSWI->dwBytesLeft;
 
-
 	/* copy info to output */
 	if(pwfx) {
+/*		printf("sizeof(SDY_WFX): %d\n", sizeof(SDY_WFX));
+		printf("Format: %d\n", wfx.wFormatTag);
+		printf("Channels: %d\n", wfx.nChannels);
+		printf("SamplesPerSec: %d\n", wfx.nSamplesPerSec);
+		printf("AvgBytesPerSec: %d\n", wfx.nAvgBytesPerSec);
+		printf("BlockAlign: %d\n", wfx.nBlockAlign);
+		printf("BitsPerSample: %d\n", wfx.wBitsPerSample);
+		printf("cbSize: %d\n", wfx.cbSize);*/
 		memcpy(pwfx, &wfx, sizeof(SDY_WFX));
 		pwfx->cbSize = 0;
 	}
 
+	/* goto data chunk */
+	pSWI->dwBytesLeft = PCM_RIFF_Goto(pSWI->hFile, "data", &pSWI->io);
+	
 	return pSWI;
 }
 

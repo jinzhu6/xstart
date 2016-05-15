@@ -1,15 +1,13 @@
+// enumerate audio devices
+global ADEVICE_ENUM = AudioDeviceInfo();
+for(i=0; true; i+=1) {
+	ADEVICE_ENUM.getDevice(i);
+	if(ADEVICE_ENUM.index == -1) { break; }
+	log("Found audio-device: "+ADEVICE_ENUM.name);
+}
 
-global aout = AudioOut();
-aout.create();
+// play some sound
+global ADEVICE = AudioDevice(22050, 1, 512, -1, AudioDeviceInfo(0, "pulse").index);
+ADEVICE.play(AudioFile("misc/snap.wav").convert(22050,16));
 
-global sound1 = AudioBuffer("misc/sound.wav");
-sound1.volume = 1.0;
-
-global sound2 = AudioBuffer("misc/snap.wav");
-sound2.volume = 1.0;
-
-aout.play(sound1, false);
-//aout.play(sound2, true);
-aout.start();
-
-sleep(3.0);
+sleep(2.0);
