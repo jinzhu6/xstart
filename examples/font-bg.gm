@@ -1,4 +1,4 @@
-frame = Frame("font-bg", 200,200, 800,600, "#ff");
+frame = Frame("font-bg", 200,200, 800,600, "#ff").show(true);
 frame.onClose = exit;
 frame.onMouseMove = function(event) { text.x = event.x; text.y = event.y; };
 
@@ -32,12 +32,12 @@ frame.root["text"] = text;
 it = 0;
 while(1) {
 	it+=10000;
-	
+
 /*	text.text = "Count: "+it;
 	text.update();
 	text.center = Vector(text.width/2, text.height/2, 0.0);*/
-	
+
 	frame.render();
-	
+
 	yield();
 }

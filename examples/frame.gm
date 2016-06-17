@@ -1,14 +1,14 @@
-global f = Frame("test", 0, 0, 640, 480, "#00cccc").showCursor(true);
+global f = Frame("test", 50, 50, 640, 480, "#00cccc").showCursor(true).show(true).toggle();
 f.root["image"] = Texture("images/texture.png", 320, 240).update().center().middle();
 //f.onKeyDown = function(evt) { exit(); };
-f.root["fps"] = Text("...", Font("fonts/arial.ttf", 40), 10, 10, "#ff000080");
+f.root["fps"] = Text("...", Font("lib/data/default.ttf", 40), 10, 10, "#ff000080");
 
 f.root["image"].onMouseDown = function(e) { e.sender.rotate += 3.1415 / 4; };
 f.root["image"].onMouseUp = function(e) { e.sender.rotate -= 3.1415 / 4; };
 
 global fps_count = 0;
 
-global FramesPerSecond = function() {
+function FramesPerSecond() {
 	global f;
 	global fps_count;
 	while(true) {
@@ -16,12 +16,11 @@ global FramesPerSecond = function() {
 		fps_count = 0;
 		sleep(1.0);
 	}
-};
+}
 
 thread(FramesPerSecond);
 
 while(1) {
-	fps_count += 1;
+	++fps_count;
 	f.render();
-	yield();
 }

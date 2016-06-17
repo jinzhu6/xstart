@@ -34,6 +34,7 @@ public:
 		BindFunction("roundedRectangle", (SCRIPT_FUNCTION)&Canvas::gm_roundedRectangle, "[this] roundedRectangle({float} x, {float} y, {float} width, {float} height, {float} cornerRadius)");
 		BindFunction("arc", (SCRIPT_FUNCTION)&Canvas::gm_arc, "[this] arc({float} centerX, {float} centerY, {float} radius, {float} angle1, {float} angle2)", "Draws an arc or a circle.");
 		BindFunction("clear", (SCRIPT_FUNCTION)&Canvas::gm_clear, "[this] clear()", "Clears the canvas with the set clear color.");
+//		BindFunction("flush", (SCRIPT_FUNCTION)&Canvas::gm_flush, "[this] flush()");
 //		BindFunction("drawLine", (SCRIPT_FUNCTION)&Canvas::gm_drawLine);
 		BindFunction("drawText", (SCRIPT_FUNCTION)&Canvas::gm_drawText, "[this] drawText([Font] font, {string} text, {int} x, {int} y, {string} solidColor, (optional) {int} outlineWidth, (optional) {string} outlineColor)", "Draws text on the canvas.");
 	}
@@ -57,8 +58,12 @@ public:
 		}
 		if(!surface) {
 			// create cairo surface and context
+			if (context) { cairo_destroy(context); }
 			surface = cairo_image_surface_create_for_data((coByte*)image->data, CAIRO_FORMAT_ARGB32, image->width, image->height, image->width * 4);
 			context = cairo_create(surface);
+			cairo_set_line_cap(context, CAIRO_LINE_CAP_ROUND);
+			cairo_set_line_join(context, CAIRO_LINE_JOIN_ROUND);
+			cairo_set_antialias(context, CAIRO_ANTIALIAS_GOOD);
 		}
 	}
 
@@ -86,11 +91,14 @@ public:
 	}
 
 	void clear() {
-		if(context) { cairo_destroy(context); context = 0; }
-		if(surface) { cairo_surface_destroy(surface); surface = 0; }
-		if(image) { ImageDestroy(image); image = 0; }
-		if(texture) { TextureDestroy(texture); texture = 0; }
-//		_check();
+		if (surface) {
+			cairo_surface_destroy(surface); surface = 0;
+			cairo_destroy(context); context = 0;
+			_check();
+		}
+		/*if (context) {
+			cairo_paint(context);
+		}*/
 	}
 	int gm_clear(gmThread* a_thread) {
 		if(a_thread->GetNumParams() > 0) {
@@ -98,6 +106,18 @@ public:
 			clearColor = _color;
 		}
 		clear();
+		return ReturnThis(a_thread);
+	}
+
+	void renew() {
+		if (context) { cairo_destroy(context); context = 0; }
+		if (surface) { cairo_surface_destroy(surface); surface = 0; }
+		if (image) { ImageDestroy(image); image = 0; }
+		if (texture) { TextureDestroy(texture); texture = 0; }
+		//		_check();
+	}
+	int gm_renew(gmThread* a_thread) {
+		renew();
 		return ReturnThis(a_thread);
 	}
 
@@ -173,8 +193,6 @@ public:
 
 	void stroke(float lineWidth) {
 		_check();
-		//cairo_set_line_cap(context, CAIRO_LINE_CAP_ROUND);
-		//cairo_set_line_join(context, CAIRO_LINE_JOIN_ROUND);
 		cairo_set_line_width(context, lineWidth);
 		cairo_stroke_preserve(context);
 		_upload();

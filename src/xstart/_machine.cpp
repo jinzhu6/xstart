@@ -230,7 +230,7 @@ bool MachineRun(FILE* in) {
 
 	while(true) {
 		if(in == stdin) {
-			printf(">");
+			printf("\n>");
 		}
 		if(!fgets(line, 1024*10-1, stdin)) {
 			break;

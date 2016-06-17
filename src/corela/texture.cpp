@@ -396,9 +396,7 @@ void TextureUpload(TEXTURE* tex, coByte* data, int format) {
 	glEnable(tex->target);
 	glBindTexture(tex->target, tex->handle);
 	glTexImage2D(tex->target, 0, tex->internalFormat, tex->width, tex->height, 0, format, GL_UNSIGNED_BYTE, data);
-	if(!(tex->flags & TEX_NOMIPMAP)) {
-		glUtilsGenerateMipmap(GL_TEXTURE_2D);
-	}
+	if(!(tex->flags & TEX_NOMIPMAP)) { glUtilsGenerateMipmap(GL_TEXTURE_2D); }
 
 	END_CHECK_GL_ERROR("TextureUpload");
 }

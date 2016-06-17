@@ -110,6 +110,8 @@ gmCodeTreeNode * CreateAsignExpression(int a_subTypeType, gmCodeTreeNode * a_lef
 %token SYMBOL_ASGN_BXOR
 %token SYMBOL_RIGHT_SHIFT
 %token SYMBOL_LEFT_SHIFT
+%token SYMBOL_INC
+%token SYMBOL_DEC
 %token SYMBOL_LTE
 %token SYMBOL_GTE
 %token SYMBOL_EQ
@@ -158,6 +160,10 @@ statement
     {
       $$ = $1;
     }
+  | function_statement
+    {
+	  $$ = $1;
+	}
   ;
 
 compound_statement
@@ -172,6 +178,61 @@ compound_statement
     }
   ;
 
+  
+function_statement
+  :
+    KEYWORD_FUNCTION identifier '(' ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(1, $5);
+      
+
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
+      $$->SetChild(0, $2);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
+  |
+    KEYWORD_FUNCTION identifier '(' parameter_list ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(0, $4);
+      func->SetChild(1, $6);
+      
+
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
+      $$->SetChild(0, $2);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
+  |
+    KEYWORD_FUNCTION tablemember_expression '(' ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(1, $5);
+      
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
+  |
+    KEYWORD_FUNCTION tablemember_expression '(' parameter_list ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(0, $4);
+      func->SetChild(1, $6);
+      
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
+  ;
+ 
+tablemember_expression
+  : identifier '.' identifier
+    {
+      $$ = CreateOperation(CTNOT_DOT, $1, $3);
+    }
+  | tablemember_expression '.' identifier
+    {
+      $$ = CreateOperation(CTNOT_DOT, $1, $3);
+    }
+  ;
+  
 var_statement
   : var_type identifier ';'
     {
@@ -183,6 +244,25 @@ var_statement
       $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
       $$->SetChild(0, $2);
       ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, $4));
+    }
+  | var_type KEYWORD_FUNCTION identifier '(' ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(1, $6);
+
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$->SetChild(0, $3);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $3, func));
+    }
+  | var_type KEYWORD_FUNCTION identifier '(' parameter_list ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(0, $5);
+      func->SetChild(1, $7);
+
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$->SetChild(0, $3);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $3, func));
     }
   ;
 
@@ -541,6 +621,14 @@ unary_expression
     {
       $$ = $1;
     }
+  | SYMBOL_INC unary_expression
+    {
+      $$ = CreateOperation(CTNOT_PRE_INC, $2);
+    }
+  | SYMBOL_DEC unary_expression
+    {
+      $$ = CreateOperation(CTNOT_PRE_DEC, $2);
+    }
   | unary_operator unary_expression
     {
       $$ = $1;
@@ -741,7 +829,7 @@ identifier
   : IDENTIFIER
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_IDENTIFIER, gmlineno);
-      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc(strlen(gmtext) + 1);
+      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc((int)strlen(gmtext) + 1);
       strcpy($$->m_data.m_string, gmtext);
     }
   ;
@@ -776,7 +864,7 @@ constant
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_INT);
 
-      char * c = (char *) gmCodeTree::Get().Alloc(strlen(gmtext) + 1);
+      char * c = (char *) gmCodeTree::Get().Alloc((int)strlen(gmtext) + 1);
       strcpy(c, gmtext);
       int result = 0;
       int shr = 0;
@@ -838,7 +926,7 @@ constant_string_list
   : CONSTANT_STRING
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_STRING);
-      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc(strlen(gmtext) + 1);
+      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc((int)strlen(gmtext) + 1);
       strcpy($$->m_data.m_string, gmtext);
       if(gmtext[0] == '"')
       {
@@ -852,8 +940,8 @@ constant_string_list
   | constant_string_list CONSTANT_STRING
     {
       $$ = $1;
-      int alen = strlen($$->m_data.m_string);
-      int blen = strlen(gmtext);
+      int alen = (int)strlen($$->m_data.m_string);
+      int blen = (int)strlen(gmtext);
       char * str = (char *) gmCodeTree::Get().Alloc(alen + blen + 1);
       if(str)
       {

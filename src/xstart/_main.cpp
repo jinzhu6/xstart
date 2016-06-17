@@ -24,7 +24,6 @@
 #include "Rect.h"
 #include "Canvas.h"
 #include "Detector.h"
-//#include "BaslerCam.h"
 #include "Video.h"
 #include "Sound.h"
 #include "Model.h"
@@ -38,6 +37,7 @@
 #include "GStreamer.h"
 #include "Dmx.h"
 #include "Webserver.h"
+//#include "BaslerCam.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -105,7 +105,7 @@ int ParseArgs(int argc, char* argv[]) {
 		}
 
 		if(CheckForParam(argv[n], "version") || CheckForParam(argv[n], "v")) {
-			Log(LOG_INFO, "%s %s  -  Compiled at %s - %s. Debug: %s. OpenMP: %s.", NAME, VERSION, __DATE__, __TIME__,
+			Log(LOG_INFO, "%s %s  -  Compiled at %s %s. Debug: %s. OpenMP: %s.", NAME, VERSION, __DATE__, __TIME__,
 #ifdef _DEBUG
 			    "yes",
 #else
@@ -222,12 +222,10 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<Color>("Color");
 	MachineRegisterClass<Rect>("Rect");
 	MachineRegisterClass<Date>("Date");
-
 	MachineRegisterClass<File>("File");
 	MachineRegisterClass<Midi>("Midi");
 	MachineRegisterClass<XMLDocument>("XMLDocument");
 	MachineRegisterClass<XMLNode>("XMLNode");
-
 	MachineRegisterClass<Bitmap>("Bitmap");
 	MachineRegisterClass<Font>("Font");
 	MachineRegisterClass<Frame>("Frame");
@@ -243,37 +241,30 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<Framebuffer>("Framebuffer");
 	MachineRegisterClass<Recorder>("Recorder");
 	MachineRegisterClass<Detector>("Detector");
-
 	MachineRegisterClass<Socket>("Socket");
 	MachineRegisterClass<SocketListener>("Listener");
 	MachineRegisterClass<HttpServer>("HttpServer");
-
 	MachineRegisterClass<SerialPort>("Serial");
 	MachineRegisterClass<Logo>("Logo");
-#ifdef _MSC_BUILD
-	MachineRegisterClass<Astro>("Astro");
-	MachineRegisterClass<ADDevice>("ADDevice");
-	MachineRegisterClass<Dmx>("Dmx");
-#endif
-
 	MachineRegisterClass<AudioDevice>("AudioDevice");
 	MachineRegisterClass<AudioDeviceInfo>("AudioDeviceInfo");
 	MachineRegisterClass<AudioFile>("AudioFile");
 	MachineRegisterClass<AudioFilter>("AudioFilter");
 	MachineRegisterClass<AudioPitch>("AudioPitch");
 	MachineRegisterClass<AudioDelay>("AudioDelay");
+
 #ifdef _MSC_BUILD
+	MachineRegisterClass<Astro>("Astro");
+	MachineRegisterClass<ADDevice>("ADDevice");
+	MachineRegisterClass<Dmx>("Dmx");
 	MachineRegisterClass<Sound>("Sound");
+	MachineRegisterClass<Video>("Video");
+	MachineRegisterClass<Camera>("Camera");
+//	MachineRegisterClass<BaslerCam>("BaslerCam");
 #endif
 
 #ifdef __linux__
 	MachineRegisterClass<GStreamer>("GStreamer");
-#endif
-
-#ifdef _MSC_BUILD
-	MachineRegisterClass<Video>("Video");
-	MachineRegisterClass<Camera>("Camera");
-//	MachineRegisterClass<BaslerCam>("BaslerCam");
 #endif
 
 	// run script or script terminal

@@ -1,5 +1,5 @@
 ﻿
-global frame = Frame("Text right-to-left", 0, 0, 800, 600, "#003366").toggle().showCursor(true);
+global frame = Frame("Text right-to-left", 50, 50, 800, 600, "#003366").toggle().showCursor(true);
 frame.root["text"] = Text("قبل السفر، علينا أن نأخذ صورة لك.\nنعم؟", Font("fonts/ARIALUNI.TTF", 40, true), 0, 100, "#ffffff");
 frame.root["text"].outline = 4;
 frame.root["text"].outlineColor = "#000000";
@@ -11,7 +11,7 @@ frame.root["text2"].outline = 0;
 frame.root["text2"].outlineColor = "#000000";
 
 while(true) {
-	frame.render();
-	sleep(1/30);
+    frame.render();
+    sleep(1/30);
 }
 

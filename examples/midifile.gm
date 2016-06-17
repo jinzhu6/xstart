@@ -1,5 +1,5 @@
 local midi = Midi();
-if(!midi.load("C:\\Projekte\\_CURRENT\\07727-MusicalCorridor\\piano\\MusicalCorridor_Song1.mid")) { fatal("Error while loading midi file!"); }
+if(!midi.load("misc/midi.mid")) { fatal("Error while loading midi file!"); }
 
 log("Loaded midi file with " + midi.getTrackCount() + " tracks.\n");
 log("time  \tcmd       \tpar1  \tpar2  \t|\tkey  \tchan. \tdur");

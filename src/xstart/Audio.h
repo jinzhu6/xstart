@@ -597,6 +597,7 @@ public:
 		stream = 0;
 		dataIn->resize(0);
 		dataOut->resize(0);
+		Log(LOG_INFO, "Audio device closed.");
 	}
 	int gm_close(gmThread* a_thread) {
 		close();

@@ -16,7 +16,7 @@ echo ***************************************************************************
 echo PLEASE WAIT WHILE THE SOFTWARE IS BUILD, THIS MAY TAKE A FEW MINUTES ...
 echo *****************************************************************************
 echo Building release version software ....
-"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.com" .\build\xstart.sln /BUILD Release
+"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com" .\build\xstart.sln /BUILD Release
 if %ERRORLEVEL% GEQ 1 goto ONERROR
 timeout 3
 
@@ -46,10 +46,6 @@ echo ***************************************************************************
 echo Building installer ....
 "C:\Program Files (x86)\Inno Setup 5\ISCC.exe" "SETUP.ISS" /F"xstart-setup-latest" /Q
 if %ERRORLEVEL% GEQ 1 goto ONERROR
-mkdir H:\Transfer\pub\software
-mkdir H:\Transfer\pub\software\xstart
-copy _SETUP\xstart-setup-latest.exe H:\Transfer\pub\software\xstart
-copy _SETUP\xstart-setup-latest.exe H:\Software\Software Tools\Udoo
 
 
 echo.

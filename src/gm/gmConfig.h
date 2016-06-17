@@ -4,7 +4,7 @@
   / (_ / _ `/  ' \/ -_) /|_/ / _ \/ _ \/  '_/ -_) // /\ \/ __/ __/ / _ \/ __/
   \___/\_,_/_/_/_/\__/_/  /_/\___/_//_/_/\_\\__/\_, /___/\__/_/ /_/ .__/\__/
                                                /___/             /_/
-
+                                             
   See Copyright Notice in gmMachine.h
 
 */
@@ -25,9 +25,10 @@
 
 
 /// \enum gmEndian Endian byte order
-enum gmEndian {
-	GM_ENDIAN_BIG = 0,      //!< MOTOROLA (MAC), NINTENDO GC
-	GM_ENDIAN_LITTLE = 1    //!< x86, XBOX, PS2
+enum gmEndian
+{
+  GM_ENDIAN_BIG = 0,      //!< MOTOROLA (MAC), NINTENDO GC, Xbox360, PS3
+  GM_ENDIAN_LITTLE = 1    //!< x86, XBOX, PS2
 };
 
 //
@@ -53,13 +54,14 @@ enum gmEndian {
 // RUNTIME THREAD
 
 #define GMTHREAD_INITIALBYTESIZE    512       // initial stack byte size for a single thread
-#define GMTHREAD_MAXBYTESIZE        128000    //1024  // max stack byte size for a single thread (Sample scripts like it big)
+#define GMTHREAD_MAXBYTESIZE        (150*1024) //1024  // max stack byte size for a single thread (Sample scripts like it big)
 
 // MACHINE
 
+#define GMMACHINE_DEFAULT_FUNCTION  CTVT_LOCAL // CTVT_LOCAL, CTVT_GLOBAL or CTVT_MEMBER for default scope of function using sugar syntax
 #define GMMACHINE_REMOVECOMPILER    0         // Remove compiler code, will only be able to run precompiled libs
 #define GMMACHINE_GMCHECKDIVBYZERO  0         // Let GM operator check for divide by zero and possibly cause GM run time exception (rather than OS exception)
-#define GMMACHINE_NULL_VAR_CTOR     1         // Nullify gmVariable in constructor.  Not recommended for real-time / time critical applications.
+#define GMMACHINE_NULL_VAR_CTOR     0         // Nullify gmVariable in constructor.  Not recommended for real-time / time critical applications.
 #define GMMACHINE_USERTYPEGROWBY    16        // allocate user types in chunks of this size
 #define GMMACHINE_OBJECTCHUNKSIZE   32        // default object chunk allocation size
 #define GMMACHINE_TBLCHUNKSIZE      32        // table object chunk allocation size
@@ -72,11 +74,11 @@ enum gmEndian {
 #define GMMACHINE_INITIALGCSOFTLIMIT (GMMACHINE_INITIALGCHARDLIMIT * 9 / 10) // default gc soft memory limit
 #define GMMACHINE_STRINGHASHSIZE    8192      // this will be dynamic... todo
 #define GMMACHINE_MAXKILLEDTHREADS  16        // max size of the free thread list (don't make too large, ie, < 32)
-#define GMMACHINE_GCEVERYALLOC      1         // define this to check garbage collection every allocate.
+#define GMMACHINE_GCEVERYALLOC      0         // define this to check garbage collection every allocate.
 #define GMMACHINE_SUPERPARANOIDGC   0         // validate references (only for debugging purposes)
-#define GMMACHINE_THREEPASSGC       1         // 1 for safe gc of persisting objects that reference other objects, 
-// ie, persisting tables.  if you only have persisting simple objects, ie
-// strings, set to 0 for faster garbage collection.
+#define GMMACHINE_THREEPASSGC       0         // 1 for safe gc of persisting objects that reference other objects, 
+                                              // ie, persisting tables.  if you only have persisting simple objects, ie
+                                              // strings, set to 0 for faster garbage collection.
 
 // Auto GC Calibration values
 #define GMMACHINE_GC_HARD_MEM_INC_FRAC_OF_USED      1.5f   // what to set hard limit to above used mem when growing hard limit
@@ -104,5 +106,6 @@ enum gmEndian {
 #define GM_USE_FORK                 1         // Support fork instruction 
 #define GM_USER_FOREACH             1         // Support foreach for user types
 #define GM_USE_ENDON                1         // Support endon() to kill thread when signalled
+#define GM_USE_INCDECOPERATORS      1         // Support operator ++ and --
 
 #endif // _GMCONFIG_H_

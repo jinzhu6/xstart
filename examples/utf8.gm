@@ -1,0 +1,4 @@
+global FRAME = Frame("utf8", 50,50, 640,120, "#ffffff").toggle().showCursor(true);
+FRAME.root["text"] = Text("ازمان برای آزادی", Font("fonts/FreePersianFont/FreeFarsi.ttf", 80, true), 640-10,10, "#000000").update().right();
+
+while(true) { FRAME.render(); }

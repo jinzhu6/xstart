@@ -150,7 +150,7 @@ void GM_CDECL Script_Object_Destruct(gmMachine* a_machine, gmUserObject* a_objec
 			Log(LOG_ERROR, "GC failed, object not or no longer known: [%s] at [%x]", object->id.c_str(), object);
 			return;
 		}
-		//Log(LOG_INFO, "Garbage collection of [%s] at [%x]", object->id.c_str(), object);
+		Log(LOG_DEBUG, "Garbage collection of [%s] at [%x]", object->id.c_str(), object);
 		delete object;
 	}
 }
@@ -229,9 +229,7 @@ void Script_Objects_Add(ScriptObject* o) {
 }
 
 void Script_Objects_Remove(ScriptObject* o) {
-	if(!SCRIPT_OBJECTS) {
-		return;
-	}
+	if(!SCRIPT_OBJECTS) { return; }
 	crndpop(SCRIPT_OBJECTS, o);
 }
 

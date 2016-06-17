@@ -7,9 +7,9 @@ file(GLOB FILE_LIST_C *.c)
 file(GLOB FILE_LIST_H *.h)
 file(GLOB FILE_LIST_RC *.rc)
 
-#if(${CMAKE_GENERATOR} MATCHES "Visual Studio")
-#    file(GLOB FILE_LIST_RC *.rc)
-#endif()
+if(${CMAKE_GENERATOR} MATCHES "Visual Studio")
+    file(GLOB FILE_LIST_RC *.rc)
+endif()
 
 add_executable(xstart icon.ico ${FILE_LIST_CPP} ${FILE_LIST_C} ${FILE_LIST_H} ${FILE_LIST_RC})
 

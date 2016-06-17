@@ -232,7 +232,7 @@ void gmGCColorSet::GrayThisObject(gmGCObjBase* a_obj)
 #endif //GM_GC_DEBUG
 }
 
-  
+
 void gmGCColorSet::Revive(gmGCObjBase* a_obj)
 {
   // NOTE: Once objects are in the free list, we can't trust the color mark, 
@@ -290,6 +290,12 @@ void gmGCColorSet::Revive(gmGCObjBase* a_obj)
 void gmGCColorSet::ReclaimGarbage()
 {
   GM_ASSERT(m_scan->GetPrev() == m_gray);
+
+#if GM_GC_DEBUG
+  // Slow, paranoid check
+  VerifyIntegrity();
+#endif //GM_GC_DEBUG
+
 
 #if GM_GC_DEBUG
   {
@@ -374,6 +380,11 @@ void gmGCColorSet::ReclaimGarbage()
   GM_ASSERT(m_gray->GetNext() == m_scan);
 
 #if GM_GC_DEBUG
+  // Slow, paranoid check
+  VerifyIntegrity();
+#endif //GM_GC_DEBUG
+
+#if GM_GC_DEBUG
   {
     int count = 0;
     for(gmGCObjBase* temp = m_free; temp != m_white; temp = temp->GetNext())
@@ -439,6 +450,12 @@ int gmGCColorSet::DestructSomeFreeObjects(int a_maxToDestruct)
       m_scan = m_free;
     }
   }
+
+#if GM_GC_DEBUG
+  // Slow, paranoid check
+  VerifyIntegrity();
+#endif //GM_GC_DEBUG
+
   return numDestructed;
 }
 
@@ -625,6 +642,12 @@ bool gmGarbageCollector::Collect()
 
   m_doneTracing = true;
 
+#if GM_GC_TURN_OFF_ABLE
+  // Turn off gc until almost out of memory.
+  // Can only do when allocating black.
+  m_gcTurnedOff = true;
+#endif //GM_GC_TURN_OFF_ABLE  
+
   // Let the collect continue until garbage memory has been reclaimed
   // This could be done as an external phase
   if(ReclaimSomeFreeObjects())
@@ -632,13 +655,9 @@ bool gmGarbageCollector::Collect()
     return false;
   }
 
-#if GM_GC_TURN_OFF_ABLE  
-  // Turn off gc until almost out of memory.
-  // Can only do when allocating black.
-  m_gcTurnedOff = true;
-#else //GM_GC_TURN_OFF_ABLE  
+#if !GM_GC_TURN_OFF_ABLE
   Flip();
-#endif //GM_GC_TURN_OFF_ABLE  
+#endif //!GM_GC_TURN_OFF_ABLE
 
   return true;
 }
@@ -653,7 +672,7 @@ void gmGarbageCollector::Flip()
     m_flipCallback();
   }
 
-#if GM_GC_TURN_OFF_ABLE  
+#if GM_GC_TURN_OFF_ABLE
   // The garbage collector can only be turned off if we are allocating black.
   m_gcTurnedOff = false; // Turn the garbage collector back on.
 #endif //GM_GC_TURN_OFF_ABLE  
@@ -663,6 +682,27 @@ void gmGarbageCollector::Flip()
   ToggleCurShadeColor();
 }
 
+
+int gmGarbageCollector::ReclaimSomeFreeObjects()
+{
+  // NOTE: Reclaiming/Destructing free objects only occurs after a collect cycle
+  //       when the GC is logically off.  This code has a GM_GC_TURN_OFF_ABLE option
+  //       and partial and full collect functions, which complicates the code somewhat.
+  //       For this reason, I will ensure the 'collection is off' flag is set
+  //       so the WriteBarrier cannot run during destruct.
+  //       The intended collection flag will be restored, in case the calling code
+  //       wants to run continuously or is ready to start the next cycle.
+
+#if GM_GC_TURN_OFF_ABLE
+  //TODO enable this and test GM_ASSERT( m_gcTurnedOff == true );
+#endif //GM_GC_TURN_OFF_ABLE
+
+  bool desiredState = m_gcTurnedOff;
+  m_gcTurnedOff = true; // Paranoid flag off
+  int count = m_colorSet.DestructSomeFreeObjects(m_maxObjsToDestructPerIncrement);
+  m_gcTurnedOff = desiredState; // Restore flag for continuous operation
+  return count;
+}
 
 // This function is called when there are no free objects in the colorset.
 // If the gc is turned off, it calls flip to reclaim any garbage objects
@@ -721,20 +761,23 @@ void gmGarbageCollector::FullCollect()
   {
     // Do the collect phase
   }
-  ReclaimObjectsAndRestartCollection(); // Do flip and turn it back on
 
-  // NOTE: The GC is now restarted and in an 'On' state, meaning it will now collect again from the machine.
-  //       This behavior may not be desirable, so this function really needs more analysis to determine the
-  //       optimum sequence for a full collect with minimal redundancy.
+  // NOTE: (Below) Moved the restart after freeing objects so GC is logically off during object destruction
 
   // Free memory of garbage objects
   while(ReclaimSomeFreeObjects())
   {
     // Reclaim all garbage
   }
+
+  ReclaimObjectsAndRestartCollection(); // Do flip and turn it back on
+
+  // NOTE: The GC is now restarted and in an 'On' state, meaning it will now collect again from the machine.
+  //       This behavior may not be desirable, so this function really needs more analysis to determine the
+  //       optimum sequence for a full collect with minimal redundancy.
+
   m_fullThrottle = false;
 }
-
 
 
 //////////////////////////////////////////////////

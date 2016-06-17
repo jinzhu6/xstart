@@ -420,13 +420,13 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("_classlist", Script_ClassList);
 	MachineRegisterFunction("_freeMemory", Script_Collect);
 	MachineRegisterFunction("_getMemoryUsage", Script_GetMemUsage);
-	MachineRegisterFunction("version", Script_GetVersion, " {string} version()", "Returns the versions string.");
+	MachineRegisterFunction("version", Script_GetVersion, " {string} version()", "Returns the version string.");
 	MachineRegisterFunction("exit", Script_Exit, "exit()", "Terminates the program immediately.");
-	MachineRegisterFunction("throw", Script_Throw, "throw()", "Throws exception.");
+	MachineRegisterFunction("throw", Script_Throw, "throw()", "Throws an exception.");
 	MachineRegisterFunction("ascii", Script_Ascii, " {string} ascii({int} ascii)", "Returns the string character for the given ascii code.");
 	MachineRegisterFunction("system", Script_System, " {string} system({string} command)", "Executes a command and redirects output via pipe so you can catch the output of the command.");
 	MachineRegisterFunction("start", Script_System_Async, " {string} start({string} command)", "Executes a command without waiting for it to finish, thus returning immediately.");
-	MachineRegisterFunction("random", Script_Random, " {float} random( (optional) {float} (or) {int} scale)", "Returns a random number between 0 and 'scale'. If 'scale' is a floating point number, the result is a floating point number too, otherwise its an integer.");
+	MachineRegisterFunction("random", Script_Random, " {float} random( (optional) {float} (or) {int} max)", "Returns a random number between 0 and 'max'. If 'max' is a floating point number, the result is a floating point number too, otherwise its an integer.");
 	MachineRegisterFunction("time", Script_GetTime, " {float} time()", "Gets the elapsed time since the program start in seconds.");
 	MachineRegisterFunction("print", Script_Print, "print({string})", "Outputs the string on the console, no newline is added.");
 	MachineRegisterFunction("log", Script_Log, "log({string} message)", "Writes a log message to the console.");
@@ -438,13 +438,13 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("redirect", Script_Redirect, "redirect({string} file)", "Redirects the console output to a file of the given name.");
 	MachineRegisterFunction("load", Script_LoadConfig, " {string} get({string} key)", "Loads a config string.");
 	MachineRegisterFunction("save", Script_SaveConfig, "save({string} key, {string} value)", "Saves a config string.");
-	MachineRegisterFunction("instance", Script_CreateInstance, "instance({string} class)", "Creates an instance from a class type name. Used for introspection.");
+	MachineRegisterFunction("instance", Script_CreateInstance, "{object} instance({string} class)", "Creates an instance from a class type name. Used for introspection.");
 	MachineRegisterFunction("pause", Script_Pause, "pause( {float} s)", "Pauses the execution for the given time in seconds.");
 	MachineRegisterFunction("eval", Script_Eval, "eval({string} code)", "Execute given code.");
-	MachineRegisterFunction("callstack", Script_Callstack);
+	MachineRegisterFunction("callstack", Script_Callstack, "{string} callstack()", "Returns the current callback as string.");
 	MachineRegisterFunction("debug", Script_EnableConsoleDebug, "debug({int} level)", "Enable/Disable console debug messages.");
 	MachineRegisterFunction("colors", Script_EnableConsoleColors, "colors({int} enable)", "Enable/Disable console colors.");
-	MachineRegisterFunction("arg", Script_GetArguments, "arg({int} number)", "Get command-line arguments.");
+	MachineRegisterFunction("arg", Script_GetArguments, "{string} arg({int} number)", "Get command-line arguments.");
 #ifdef _WIN32
 	MachineRegisterFunction("sound", Script_PlaySound, "sound({string} file)", "Plays a sound file. (This is a simple and inefficient way to play a sound file)");
 	MachineRegisterFunction("askFile", Script_InputFile, "{string} askFile()", "Opens a dialog where the user can select a file.");

@@ -244,7 +244,7 @@ double cbrt (double x);
 
 #if _MSC_VER < 1900
 /* Not a Number function generator */
-double nan (const char* code);
+//double nan (const char* code);
 #endif
 
 #endif /* defined(__WIN32__) || defined(sun) || defined(__C89_SUB__) */

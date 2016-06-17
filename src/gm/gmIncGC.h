@@ -161,7 +161,7 @@ public:
 
   /// \brief Gray this object.
   void GrayThisObject(gmGCObjBase* a_obj);
-  
+
   /// \brief Called on a new object being allocated.
   void Allocate(gmGCObjBase* a_obj);
 
@@ -327,7 +327,7 @@ public:
   void DestructAll();
 
   /// \brief Reclaim some free objects.
-  int ReclaimSomeFreeObjects()                    {return m_colorSet.DestructSomeFreeObjects(m_maxObjsToDestructPerIncrement);}
+  int ReclaimSomeFreeObjects();
 
   /// \brief Make an object persistant by moving it into the persistant list.
   void MakeObjectPersistant(gmGCObjBase* a_obj)   {m_colorSet.MakePersistant(a_obj);}

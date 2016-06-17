@@ -6,158 +6,158 @@ global SECTION_END = 3;
 
 
 global HelpGenerator = function(classId, help) {
-	doc = "";
-	api = "";
-    
+    doc = "";
+    api = "";
+
     //log("Generating help for: "+classId);
-	
-	section = SECTION_CLASS;
-	buffer = "";
-	html = "";
-	inAt = false;
-	part = 0;
-	
-	clazz = Object();
-	clazz.id = classId;
-	clazz.functions = Array();
-	clazz.members = Array();
-	
-	entry = Object();
-	entry.id = "";
-	entry.decl = "";
-	entry.help = "";
-	
-	for(i = 0; i < help.Length(); i+=1)
-	{
-		c = help[i];
-		
-		if(c == '{') {
-			html += buffer;
-			html += "<i>";
-			buffer = "";
-			continue;
-		}
-		if(c == '}') {
-			html += buffer + "</i>";
-			buffer = "";
-			continue;
-		}
-		
-		if(c == '[') {
-			html += buffer;
-			html += "<a href='#";
-			buffer = "";
-			continue;
-		}
-		if(c == ']') {
-			if(buffer == "this") { html += clazz.id + "'>" + buffer + "</a>"; }
-			else { html += buffer + "'>" + buffer + "</a>"; }
-			buffer = "";
-			continue;
-		}
-		
-		if(c == '@' && !inAt) {
-			html += buffer;
-			html += "<a href='#" + clazz.id + ".";
-			buffer = "";
-			inAt = true;
-			continue;
-		}
-		if(c == ' ') {
-			
-			if(inAt) {
-				inAt = false;
-				html += buffer + "'>" + buffer + "</a>";
-				buffer = "";
-			}
-			
-			html += buffer;
-			buffer = "";
-		}
-		
-		if(c == '\n') {
-			part = 0;
-			
-			//print("id: "+entry.id+"\n  decl: "+entry.decl+"\n  help: "+entry.help+"\n");
-			
-			if(section == SECTION_CLASS) {
-				clazz.name = entry.id;
-				clazz.decl = entry.decl;
-				clazz.help = entry.help;
-			}
-			
-			if(section == SECTION_FUNCTIONS) {
-				clazz.functions.add(entry);
-			}
-			
-			if(section == SECTION_MEMBERS) {
-				clazz.members.add(entry);
-			}
-			
-			entry = Object();
-			entry.id = "";
-			entry.decl = "";
-			entry.help = "";
-			
-			if(help[i+1] == '\n') {
-				i += 1;
-				section += 1;
-				if(section == SECTION_END) { break; }
-			}
-			
-			continue;
-		}
-		
-		if(c == '\t') {
-			
-			html += buffer;
-			//print(html);
-			
-			if(part == 0) {
-				entry.id = html;
-			}
-			if(part == 1) {
-				entry.decl = html;
-			}
-			if(part == 2) {
-				entry.help = html;
-			}
-			
-			html += buffer;
-			html = "";
-			buffer = "";
-			part += 1;
-			
-			continue;
-		}
-		
-		buffer += ascii(c);
-	}
-	
-	return clazz;
+
+    section = SECTION_CLASS;
+    buffer = "";
+    html = "";
+    inAt = false;
+    part = 0;
+
+    clazz = Object();
+    clazz.id = classId;
+    clazz.functions = Array();
+    clazz.members = Array();
+
+    entry = Object();
+    entry.id = "";
+    entry.decl = "";
+    entry.help = "";
+
+    for(i = 0; i < help.Length(); i+=1)
+    {
+        c = help[i];
+
+        if(c == '{') {
+            html += buffer;
+            html += "<i>";
+            buffer = "";
+            continue;
+        }
+        if(c == '}') {
+            html += buffer + "</i>";
+            buffer = "";
+            continue;
+        }
+
+        if(c == '[') {
+            html += buffer;
+            html += "<a href='#";
+            buffer = "";
+            continue;
+        }
+        if(c == ']') {
+            if(buffer == "this") { html += clazz.id + "'>" + buffer + "</a>"; }
+            else { html += buffer + "'>" + buffer + "</a>"; }
+            buffer = "";
+            continue;
+        }
+
+        if(c == '@' && !inAt) {
+            html += buffer;
+            html += "<a href='#" + clazz.id + ".";
+            buffer = "";
+            inAt = true;
+            continue;
+        }
+        if(c == ' ') {
+
+            if(inAt) {
+                inAt = false;
+                html += buffer + "'>" + buffer + "</a>";
+                buffer = "";
+            }
+
+            html += buffer;
+            buffer = "";
+        }
+
+        if(c == '\n') {
+            part = 0;
+
+            //print("id: "+entry.id+"\n  decl: "+entry.decl+"\n  help: "+entry.help+"\n");
+
+            if(section == SECTION_CLASS) {
+                clazz.name = entry.id;
+                clazz.decl = entry.decl;
+                clazz.help = entry.help;
+            }
+
+            if(section == SECTION_FUNCTIONS) {
+                clazz.functions.add(entry);
+            }
+
+            if(section == SECTION_MEMBERS) {
+                clazz.members.add(entry);
+            }
+
+            entry = Object();
+            entry.id = "";
+            entry.decl = "";
+            entry.help = "";
+
+            if(help[i+1] == '\n') {
+                i += 1;
+                section += 1;
+                if(section == SECTION_END) { break; }
+            }
+
+            continue;
+        }
+
+        if(c == '\t') {
+
+            html += buffer;
+            //print(html);
+
+            if(part == 0) {
+                entry.id = html;
+            }
+            if(part == 1) {
+                entry.decl = html;
+            }
+            if(part == 2) {
+                entry.help = html;
+            }
+
+            html += buffer;
+            html = "";
+            buffer = "";
+            part += 1;
+
+            continue;
+        }
+
+        buffer += ascii(c);
+    }
+
+    return clazz;
 };
 
 
 global ObjectClassIntrospection = function(obj) {
-	return HelpGenerator(obj.id, obj._help());
+    return HelpGenerator(obj.id, obj._help());
 };
 
 global ParseClassList = function(cl) {
-	arr = Array();
-	name = "";
-	for(i = 0; i < cl.Length(); i+=1) {
-		c = cl[i];
-		if(c == '\n') {
-			if(name == "") {
-				return arr;
-			}
-			arr.add( Object(name) );
-			name = "";
-			continue;
-		}
-		name += ascii(c);
-	}
-	return arr;
+    arr = Array();
+    name = "";
+    for(i = 0; i < cl.Length(); i+=1) {
+        c = cl[i];
+        if(c == '\n') {
+            if(name == "") {
+                return arr;
+            }
+            arr.add( Object(name) );
+            name = "";
+            continue;
+        }
+        name += ascii(c);
+    }
+    return arr;
 };
 
 
@@ -172,79 +172,87 @@ api.classes.add( ObjectClassIntrospection(Object()) );
 classlist = ParseClassList(_classlist());
 
 foreach(c in classlist) {
-	//log("Adding API class: "+c.id);
-	print(" "+c.id);
-	api.classes.add( ObjectClassIntrospection(instance(c.id)) );
+    //log("Adding API class: "+c.id);
+    print(" "+c.id);
+    api.classes.add( ObjectClassIntrospection(instance(c.id)) );
 }
 
-doc = "";
-index = "<h1>xstart Script API " + version() + "</h1><div class='index'>";
+doc = "<div class='content'>";
+//index = "<h1>xstart Script API " + version() + "</h1><div class='index'>";
+index = "<div class='index'><h1>xstart Script API " + version() + "</h1>";
 
 header = "<html><head><style>";
-header += "body { font-family: Verdana; font-size: 12px; }\n";
-header += "h1 { margin:6px; }\n";
-header += "h3 { margin:6px; }\n";
-header += "pre { margin:6px; margin-left:30px; font-weight:bold; }\n";
-header += "i { color: #3333a0; }\n";
+header += "body { position:relative; font-family: Verdana; font-size: 12px; background-color: #333333; color:#f0f0f0; }\n";
+header += "h1 { margin:6px; font-size:12px; text-decoration: underline; }\n";
+header += "h2 { font-size:20px; padding:4px; color: #f0f0f0; text-shadow: 2px 2px 2px black; background-color:rgba(40,90,255,0.4); }\n";
+header += "h3 { margin:6px; color:#ffffff }\n";
+header += "pre { margin:6px; margin-left:30px; font-weight:bold;  }\n";
+header += "i { color: #9999f0; }\n";
+header += "a { color: #d0e0ff; text-decoration: none; }\n";
+header += "hr { margin-right:5px; width:0px }\n";
 header += "p.caption { font-weight:bold; margin:15px; margin-left:30px; margin-bottom:3px; padding-top:5px; }\n";
 header += "p.help { margin:15px; margin-left:30px; }\n";
-header += "div.example { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #f0fff0; }\n";
-header += "div.function { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #eeeeff; }\n";
-header += "div.member { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #ffeeee; }\n";
-header += "div.index { margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:30px; padding:0px; }\n";
+header += "p.code { font-family:monospace; margin:6px; margin-left:30px; font-weight:bold }\n";
+header += "div.example { margin-top:4px; margin-bottom:1px; margin-right:0px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #222222; }\n";
+header += "div.function { margin-top:4px; margin-bottom:1px; margin-right:0px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #222244; }\n";
+header += "div.member { margin-top:4px; margin-bottom:1px; margin-right:0px; margin-left:30px; padding:0px; border: 1px; border-style: dashed; border-color:#999999; background-color: #223344; }\n";
+header += "div.index { position:fixed; height: 100%; min-height: 100%; overflow-y:auto; top:0px; left:0px; width:190px; margin-top:4px; margin-bottom:1px; margin-right:30px; margin-left:10px; padding:0px; font-size:9px; color:#ffffff; }\n";
+header += "div.content { position: relative; left:215px; margin-right:255px; }\n";
 header += "</style></head><body>";
 
 foreach(clazz in api.classes) {
-	index += "<h3><a href='#"+clazz.name+"'>"+clazz.name+"</a></h3>";
-	
-	doc += "<div class='class'>";
-	doc += "<h2 id='"+clazz.name+"'>"+clazz.name+"</h2>";
-	doc += "<pre>"+clazz.name + clazz.decl+"</pre>";
-	doc += "<p class='help'>"+clazz.help+"</p>";
-	
-	local exFile = File();
-	if(exFile.exists("../examples/" + clazz.name + ".gm")) {
-		local example = exFile.open("../examples/" + clazz.name + ".gm", "rb").read();
-		doc += "<p class='caption'>Example:</p>";
-		doc += "<div class='example'>";
-		doc += "<pre>" + example + "</pre>";
-		doc += "</div>";
-		exFile.close();
-	}
-	
-	if(clazz.functions.length() > 0) { doc += "<p class='caption'>Functions:</p>"; }
-	foreach(func in clazz.functions) {
-		if(func.id[0] == '_') { continue; }
-		doc += "<div class='function'>";
-		doc += "<h3 id='"+clazz.name+"."+func.id+"'>"+func.id+"</h3>";
-		//if(func.decl == "") { func.decl = "<i>unknown</i>"; }
-		if(func.help == "") { func.help = "<i>no help found</i>"; }
-		if(func.decl != "") { doc += "<pre>"+func.decl+"</pre>"; }
-		if(func.help != "") { doc += "<p class='help'>"+func.help+"</p>"; }
-		doc += "</div>";
-	}
-	
-	if(clazz.members.length() > 0) { doc += "<p class='caption'>Members:</p>"; }
-	foreach(memb in clazz.members) {
-		if(memb.id[0] == '_') { continue; }
-		doc += "<div class='member'>";
-//		doc += "<h3 id='"+clazz.name+"."+memb.id+"'>"+memb.id+"</h3>";
-//		doc += "<pre>"+memb.decl+"</pre>";
-		doc += "<h3 id='"+clazz.name+"."+memb.id+"'>"+memb.decl+"</h3>";
-		doc += "<p class='help'>"+memb.help+"</p>";
-		doc += "</div>";
-	}
-	
-	doc += "</div>";
-	doc += "<hr/>";
+    index += "<h3>&gt; <a href='#"+clazz.name+"'> "+clazz.name+"</a></h3>";
+
+    doc += "<div class='class'>";
+    doc += "<h2 id='"+clazz.name+"'>"+clazz.name+"</h2>";
+    doc += "<p class='code'>"+clazz.name + clazz.decl+"</p>";
+    doc += "<p class='help'>"+clazz.help+"</p>";
+
+    local exFile = File();
+    if(exFile.exists("../examples/" + clazz.name + ".gm")) {
+        local example = exFile.open("../examples/" + clazz.name + ".gm", "rb").read();
+        doc += "<p class='caption'>Example:</p>";
+        doc += "<div class='example'>";
+        doc += "<p class='code'>" + example + "</p>";
+        doc += "</div>";
+        exFile.close();
+    }
+
+    if(clazz.functions.length() > 0) { doc += "<p class='caption'>Functions:</p>"; }
+    foreach(func in clazz.functions) {
+        if(func.id[0] == '_') { continue; }
+        doc += "<div class='function'>";
+        doc += "<h3 id='"+clazz.name+"."+func.id+"'>"+func.id+"</h3>";
+        //if(func.decl == "") { func.decl = "<i>unknown</i>"; }
+        if(func.help == "") { func.help = "<i>no help found</i>"; }
+        if(func.decl != "") { doc += "<p class='code'>"+func.decl+"</p>"; }
+        if(func.help != "") { doc += "<p class='help'>"+func.help+"</p>"; }
+        doc += "</div>";
+    }
+
+    if(clazz.members.length() > 0) { doc += "<p class='caption'>Members:</p>"; }
+    foreach(memb in clazz.members) {
+        if(memb.id[0] == '_') { continue; }
+        doc += "<div class='member'>";
+//      doc += "<h3 id='"+clazz.name+"."+memb.id+"'>"+memb.id+"</h3>";
+//      doc += "<pre>"+memb.decl+"</pre>";
+        doc += "<h3 id='"+clazz.name+"."+memb.id+"'>"+memb.decl+"</h3>";
+        doc += "<p class='help'>"+memb.help+"</p>";
+        doc += "</div>";
+    }
+
+    doc += "</div>";
+    doc += "<hr/>";
 }
 
 index += "</div><hr/>";
 
+doc += "</div>";
 doc = header + index + doc;
 doc += "</body></html>";
 
-redirect("..\\editor\\help.htm");
+//redirect("..\\editor\\help.htm");
+redirect("help.htm");
 print(doc);
 
 //system("explorer ..\\editor\\help.htm");

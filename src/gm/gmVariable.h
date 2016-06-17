@@ -20,8 +20,6 @@
 #define GM_MARK_PERSIST 0
 #define GM_MARK_START 1
 
-#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
-
 // fwd decls
 class gmMachine;
 class gmStringObject;
@@ -62,8 +60,8 @@ struct gmVariable
   gmType m_type;
   union
   {
-    int m_int;
-    float m_float;
+    gmint m_int;
+    gmfloat m_float;
     gmptr m_ref;
   } m_value;
 
