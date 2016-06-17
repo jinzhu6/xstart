@@ -24,7 +24,7 @@ public:
 		BindFunction("send", (SCRIPT_FUNCTION)&Socket::gm_send);
 		BindFunction("receive", (SCRIPT_FUNCTION)&Socket::gm_receive);
 		BindFunction("setTimeout", (SCRIPT_FUNCTION)&Socket::gm_setTimeout, "[this] setTimeout({int} seconds)", "Sets the timeout (in seconds) to wait for data while receiving. A value of 0 sets the socket to non-blocking.");
-		BindMember("data", &data, TYPE_OBJECT, 0, "Received data buffer. You may use <i>toString()</i> on this to get a string representation.");
+		BindMember("data", &data, TYPE_OBJECT, 0, "[Data] data", "Received data buffer. You may use <i>toString()</i> on this to get a string representation.");
 	}
 	~Socket() {
 		if(socket) delete socket;
@@ -248,7 +248,9 @@ public:
 	int send(const unsigned char* bytes, int len) {
 		if(!socket) { Log(LOG_ERROR, "Attempt to send to non-opened socket!"); return 0; }
 		if(!data) { Log(LOG_ERROR, "Attempt to send null data to socket!"); return 0; }
-		return socket->Send((const uint8*)bytes, (size_t)len);
+		int result = socket->Send((const uint8*)bytes, (size_t)len);
+		if (result <= 0) { Log(LOG_ERROR, "Error while sending data '%s' of length %d (Code:%d)!", bytes, len, socket->GetSocketError()); }
+		return result;
 	}
 	int gm_send(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(1);

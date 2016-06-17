@@ -70,6 +70,10 @@ public:
 		if(a_thread->GetNumParams() >= 6) {
 			a_thread->ParamString(5, color, "#ffffff");
 			clearColor = color;
+			if (!texture) {
+				texture = TextureCreate(dimension->x, dimension->y, textureFlags, color);
+				clear();
+			}
 		}
 		/*if(!texture) {
 			texture = TextureCreate(dimension->x, dimension->y, textureFlags, color);

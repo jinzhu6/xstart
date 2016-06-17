@@ -775,14 +775,25 @@ public:
 				bufferActive = true;
 
 				// compute number of samples per channel to mix
-				unsigned long numSamplesPerChannelRead = numSamplesPerChannel;
+				long numSamplesPerChannelRead = numSamplesPerChannel;
 				if(!buffer->loop) {
+
+					// HOTFIX: detect sound-end
+					/*if(buffer->readCursor+numSamplesPerChannel >= buffer->size) {
+						bufferActive = false; buffer->stop = true;
+						//break;
+					}*/
+
 					numSamplesPerChannelRead = buffer->size - buffer->readCursor;
-					if(numSamplesPerChannelRead > numSamplesPerChannel) {
+					if(numSamplesPerChannelRead > (long)numSamplesPerChannel) {
 						numSamplesPerChannelRead = numSamplesPerChannel;
-					} else { bufferActive = false; buffer->stop = true; }
+					} else {
+						bufferActive = false; buffer->stop = true;
 				}
-				if(numSamplesPerChannelRead < numSamplesPerChannel) {
+				}
+
+				// ???
+				if(numSamplesPerChannelRead < 1/* (long)numSamplesPerChannel*/) {
 					break;
 				}
 				

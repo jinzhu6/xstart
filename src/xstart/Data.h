@@ -15,11 +15,11 @@ public:
 		BindFunction("saveRaw", (SCRIPT_FUNCTION)&Data::gm_saveRaw, "[this] saveRaw({string} file)", "Saves the data into a file as is.");
 		BindFunction("appendRaw", (SCRIPT_FUNCTION)&Data::gm_appendRaw, "[this] appendRaw({string} file)", "Saves the data into a file as is.");
 		BindFunction("peek", (SCRIPT_FUNCTION)&Data::gm_peek, "{int} peek({int} addr)", "Reads a single byte from the given address.");
-		BindFunction("poke", (SCRIPT_FUNCTION)&Data::gm_poke, "poke({int} addr, {int} value)", "Writes a single byte to the given address.");
+		BindFunction("poke", (SCRIPT_FUNCTION)&Data::gm_poke, "[this] poke({int} addr, {int} value)", "Writes a single byte to the given address.");
 		BindFunction("resize", (SCRIPT_FUNCTION)&Data::gm_resize, "{int} resize({int} newsize)", "Resizes the data array length.");
 		BindFunction("copyFrom", (SCRIPT_FUNCTION)&Data::gm_copyFrom, "[this] copyFrom({Data} source)", "Makes a copy of the source data. Any old data in this object will be lost.");
 		BindFunction("insert", (SCRIPT_FUNCTION)&Data::gm_insert, "[this] insert({Data} source, {int} position)", "Copies the source data to the given position. The data may be resized to fit the added content.");
-		BindMember("size", &size, TYPE_INT, 0, "{int} size", "Length of data array.");
+		BindMember("size", &size, TYPE_INT, 0, "{int} size", "(readonly) Size of data array.");
 		BindMember("loop", &loop, TYPE_INT);
 		BindMember("readCursor", &readCursor, TYPE_INT);
 		BindMember("writeCursor", &readCursor, TYPE_INT);
@@ -73,20 +73,29 @@ public:
 		return std::string((char*)data, size);
 	}
 
+	int peek(int addr) {
+		if (addr >= (int)size) { Log(LOG_ERROR, "Access to address %d denied! Size of data is %d!", addr, size); return 0; /*return GM_EXCEPTION;*/ }
+		return data[addr];
+	}
 	int gm_peek(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(1);
 		GM_CHECK_INT_PARAM(addr, 0);
-		if(addr >= (int)size) { Log(LOG_ERROR, "Access to address %d denied! Size of data is %d!", addr, size); return GM_EXCEPTION; }
-		a_thread->PushInt(data[addr]);
+		a_thread->PushInt(peek(addr));
 		return GM_OK;
+	}
+
+	void poke(int addr, int value) {
+		if (addr >= (int)size) {
+			Log(LOG_ERROR, "Write to address %d denied! Size of data is %d!", addr, size); return; /*return GM_EXCEPTION;*/
+		}
+		data[addr] = value;
 	}
 	int gm_poke(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(2);
 		GM_CHECK_INT_PARAM(addr, 0);
 		GM_CHECK_INT_PARAM(value, 1);
-		if(addr >= (int)size) { Log(LOG_ERROR, "Write to address %d denied! Size of data is %d!", addr, size); return GM_EXCEPTION; }
-		data[addr] = value;
-		return GM_OK;
+		poke(addr, value);
+		return ReturnThis(a_thread);
 	}
 
 	bool resize(unsigned long newsize) {

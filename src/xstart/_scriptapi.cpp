@@ -184,6 +184,7 @@ int GM_CDECL Script_Print(gmThread* a_thread) {
 	GM_CHECK_NUM_PARAMS(1);
 	GM_CHECK_STRING_PARAM(out, 0);
 	printf("%s",out);
+	fflush(stdout);
 	return GM_OK;
 }
 
@@ -284,7 +285,8 @@ int GM_CDECL Script_Random(gmThread* a_thread) {
 	if(a_thread->ParamType(0) == GM_INT) {
 		int scalei;
 		a_thread->ParamInt(0, scalei, 1);
-		a_thread->PushInt( ((gmfloat)rand() / (gmfloat)RAND_MAX) * scalei);
+		//a_thread->PushInt( ((gmfloat)rand() / (gmfloat)RAND_MAX) * scalei);
+		a_thread->PushInt(roundf((float)rand() / (float)RAND_MAX * scalei));
 		return GM_OK;
 	}
 

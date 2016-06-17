@@ -29,8 +29,9 @@ public:
 	Dmx() : ScriptObject() {
 		id = "Dmx";
 		help = "USB-DMX (DMX-512) device connection through DasHard DLL. Allows optional mapping of channel to X,Y coordinates (setMapping, setPixel), or direct access (setChannel). Initialization happens on object creation, no parameters are needed.";
-		DMX_Init();
 
+		BindFunction("open", (SCRIPT_FUNCTION)&Dmx::gm_open);
+		BindFunction("close", (SCRIPT_FUNCTION)&Dmx::gm_close);
 		BindFunction("clearTo", (SCRIPT_FUNCTION)&Dmx::gm_clearTo);
 		BindFunction("setOffset", (SCRIPT_FUNCTION)&Dmx::gm_setOffset);
 		BindFunction("setChannel", (SCRIPT_FUNCTION)&Dmx::gm_setChannel);
@@ -41,6 +42,8 @@ public:
 
 	~Dmx() { DMX_Exit(); }
 
+	void open() { DMX_Init(); }
+	void close() { DMX_Exit(); }
 	void clearTo(unsigned int u, unsigned char v) { DMX_ClearTo(u,v); }
 	void update() { DMX_Update(); }
 	void setOffset(unsigned int u, int ch) { DMX_SetUniverseOffset(u,ch); }
@@ -48,6 +51,8 @@ public:
 	void setMapping(unsigned int x, unsigned int y, unsigned int ch) { DMX_SetPixelMapping(x,y,ch); }
 	void setPixel(unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b) { DMX_SetPixelXY(x,y,r,g,b); }
 
+	int gm_open(gmThread* a_thread) { open(); return GM_OK; }
+	int gm_close(gmThread* a_thread) { close(); return GM_OK; }
 	int gm_clearTo(gmThread* a_thread) { GM_CHECK_INT_PARAM(u,0); GM_CHECK_INT_PARAM(v,1); clearTo(u,v); return GM_OK; }
 	int gm_setOffset(gmThread* a_thread) { GM_CHECK_INT_PARAM(u,0); GM_CHECK_INT_PARAM(ch,1); setOffset(u,ch); return GM_OK; }
 	int gm_setChannel(gmThread* a_thread) { GM_CHECK_INT_PARAM(u,0); GM_CHECK_INT_PARAM(ch,1); GM_CHECK_INT_PARAM(v,2); setChannel(u,ch,v); return GM_OK; }

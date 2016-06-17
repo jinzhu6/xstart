@@ -5,7 +5,7 @@
 #include <corela/strtrim.h>
 
 // Include for windows
-#if defined (_WIN32) || defined( _WIN64)
+#ifdef _WIN32
 // Accessing to the serial port under Windows
 #include <windows.h>
 #endif
@@ -25,45 +25,10 @@
 #include <sys/ioctl.h>
 #endif
 
-
-/*class TimeOut {
-public:
-
-	// Constructor
-	TimeOut() {}
-
-	// Init the timer
-	void InitTimer() {
-		gettimeofday(&PreviousTime, NULL);
-	}
-
-	// Return the elapsed time since initialization
-	unsigned long int ElapsedTime_ms() {
-		struct timeval CurrentTime;
-		int sec,usec;
-		gettimeofday(&CurrentTime, NULL);                                   // Get current time
-		sec=CurrentTime.tv_sec-PreviousTime.tv_sec;                         // Compute the number of second elapsed since last call
-		usec=CurrentTime.tv_usec-PreviousTime.tv_usec;                      // Compute
-		if (usec<0) {                                                       // If the previous usec is higher than the current one
-			usec=1000000-PreviousTime.tv_usec+CurrentTime.tv_usec;          // Recompute the microseonds
-			sec--;                                                          // Substract one second
-		}
-		return sec*1000+usec/1000;
-	}
-
-private:
-	struct timeval PreviousTime;
-};*/
-
 class TimeOut {
 public:
-	void InitTimer() {
-		prevTime = TimeGet();
-	}
-
-	unsigned long int ElapsedTime_ms() {
-		return (unsigned long int)((TimeGet() - prevTime) * 1000.0);
-	}
+	void InitTimer() { prevTime = TimeGet(); }
+	unsigned long int ElapsedTime_ms() { return (unsigned long int)((TimeGet() - prevTime) * 1000.0); }
 private:
 	double prevTime;
 };
@@ -76,17 +41,17 @@ public:
 
 		BindFunction("open", (SCRIPT_FUNCTION)&SerialPort::gm_open, "[this] open((optional) {string} port, (optional) {int} baudrate)");
 		BindFunction("close", (SCRIPT_FUNCTION)&SerialPort::gm_close, "[this] close()");
-		BindFunction("flush", (SCRIPT_FUNCTION)&SerialPort::gm_flush, "[this] flush()", "NOT SUPPORTED ON WINDOWS");
-		BindFunction("peek", (SCRIPT_FUNCTION)&SerialPort::gm_peek, "{int} peek()", "NOT SUPPORTED ON WINDOWS");
+		BindFunction("flush", (SCRIPT_FUNCTION)&SerialPort::gm_flush, "[this] flush()", "NOT SUPPORTED ON WINDOWS!");
+		BindFunction("peek", (SCRIPT_FUNCTION)&SerialPort::gm_peek, "{int} peek()", "NOT SUPPORTED ON WINDOWS!");
 		BindFunction("write", (SCRIPT_FUNCTION)&SerialPort::gm_write, "[this] write({string} data)");
 		BindFunction("writeData", (SCRIPT_FUNCTION)&SerialPort::gm_writeData, "[this] writeData([Data] data)");
 		BindFunction("read", (SCRIPT_FUNCTION)&SerialPort::gm_read, "{string} read()");
 		BindFunction("readEx", (SCRIPT_FUNCTION)&SerialPort::gm_readEx, "{string} read({int} maxChar, {int} endChar, {int} timeout)");
+		BindFunction("readData", (SCRIPT_FUNCTION)&SerialPort::gm_readData, "[Data] readData({int} maxChar, {int} timeout)");
 	}
 
 	~SerialPort() {
-		// TODO: Close handles.
-
+		_close();
 	}
 
 
@@ -162,9 +127,30 @@ public:
 		return GM_OK;
 	}
 
+	int gm_readData(gmThread* a_thread) {
+		char buffer[4096];
+		GM_CHECK_INT_PARAM(maxChar, 0);
+//		GM_CHECK_INT_PARAM(endChar, 1);
+		GM_CHECK_INT_PARAM(timeout, 1);
+		memset(buffer, 0, 4096);
+		
+		if (timeout == 0) { timeout = 1; }
+		Data* data = new Data();
+		data->resize(maxChar);
+		int i=0; char d;
+		while (i < maxChar) {
+			if (_readChar(&d, timeout) <= 0) { // timeout
+				break;
+			}
+			data->poke(i++, d);
+		}
+		data->resize(i);
+		return data->ReturnThis(a_thread, false);
+	}
+
 
 	int _open(const char *device, const unsigned int bauds) {
-#if defined (_WIN32) || defined( _WIN64)
+#ifdef _WIN32
 
 		// open serial port
 		hSerial = CreateFileA(device, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -316,17 +302,17 @@ public:
 
 
 	void _close() {
-#if defined (_WIN32) || defined( _WIN64)
-		CloseHandle(hSerial);
+#ifdef _WIN32
+		if (hSerial) { CloseHandle(hSerial); hSerial = 0; }
 #endif
 #ifdef __GNUC__
-		close (fd);
+		if (fd) { close(fd); fd = 0; }
 #endif
 	}
 
 
 	char writeChar(const char Byte) {
-#if defined (_WIN32) || defined( _WIN64)
+#ifdef _WIN32
 		DWORD dwBytesWritten;                                               // Number of bytes written
 		if(!WriteFile(hSerial,&Byte,1,&dwBytesWritten,NULL)) {              // Write the char
 			return -1;    // Error while writing
@@ -343,7 +329,7 @@ public:
 
 
 	char writeString(const char *String) {
-#if defined (_WIN32) || defined( _WIN64)
+#ifdef _WIN32
 		DWORD dwBytesWritten;                                               // Number of bytes written
 		if(!WriteFile(hSerial,String,strlen(String),&dwBytesWritten,NULL)) { // Write the string
 			return -1;    // Error while writing
@@ -361,7 +347,7 @@ public:
 
 
 	char _write(const void *Buffer, const unsigned int NbBytes) {
-#if defined (_WIN32) || defined( _WIN64)
+#ifdef _WIN32
 		DWORD dwBytesWritten;                                               // Number of byte written
 		if(!WriteFile(hSerial, Buffer, NbBytes, &dwBytesWritten, NULL)) {   // Write data
 			return -1;    // Error while writing
@@ -510,7 +496,7 @@ public:
 
 
 public:
-#if defined (_WIN32) || defined( _WIN64)
+#ifdef _WIN32
 	HANDLE          hSerial;
 	COMMTIMEOUTS    timeouts;
 #endif

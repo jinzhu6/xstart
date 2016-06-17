@@ -109,6 +109,7 @@ void DMX_Init() {
 
 void DMX_Exit() {
 	if(!dmx_connected) { return; }
+	dmx_connected = 0;
 
 	DasUsbCommand(DHC_CLOSE, 0, 0);
 	DasUsbCommand(DHC_EXIT, 0, 0);

@@ -10,7 +10,7 @@ public:
 
 	ArrayObject() : ScriptObject() {
 		id = "Array";
-		help = "Dynamic array class for storing a linear array of objects. <b>Please note, that currently only objects derived from [Object] can be stored, no primitive types like string or int. This may change in the future.</b>";
+		help = "Dynamic array class for storing a linear array of objects.";
 
 		length = 0;
 
