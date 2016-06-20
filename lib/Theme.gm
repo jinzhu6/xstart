@@ -160,6 +160,7 @@ global Theme = function(id) {
 	/ Button
 	/********************************************************************************************************************/
 	theme.Button = function(text, x, y, w, h, color2, callback) {
+        if(!color2) { color2 = this.buttonColor2; }
 		local button = this.MakeButton(text, w, h, color2);
 		button.callback = callback;
 		button.x = x;
@@ -280,7 +281,7 @@ global Theme = function(id) {
 	theme.setFont("default",  "lib/data/default.ttf", 30);
 	theme.setFont("big", "lib/data/defaultb.ttf", 36);
 	theme.setFont("caption", "lib/data/defaultb.ttf", 32);
-	theme.setFont("button", "lib/data/defaultb.ttf", 50);
+	theme.setFont("button", "lib/data/defaultb.ttf", 42);
 	theme.setFont("button_small", "lib/data/defaultb.ttf", 22);
 	theme.setFont("message", "lib/data/defaultb.ttf", 96);
 

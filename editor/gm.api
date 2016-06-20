@@ -7,6 +7,7 @@ string start(string command)
 float random( (optional) float (or) int max)
 float time()
 print(string)
+println(string)
 log(string message)
 warning(string error)
 error(string error)
@@ -75,7 +76,7 @@ loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
 peek(int addr) : int
-poke(int addr, int value)
+poke(int addr, int value) : this
 resize(int newsize) : int
 copyFrom(Data source) : this
 insert(Data source, int position) : this
@@ -628,7 +629,7 @@ setTimeout(int seconds) : this
 id : string
 _key : string
 _table : table
-data buffer. You may use <i>toString()</i> on this to get a string representation. : Received
+data : Data
 Listener((optional) string id)
 toString() : string
 setTimeout(int seconds) : this
@@ -652,6 +653,7 @@ write(string data) : this
 writeData(Data data) : this
 read() : string
 read(int maxChar, int endChar, int timeout) : string
+readData(int maxChar, int timeout) : Data
 id : string
 _key : string
 _table : table
@@ -703,7 +705,7 @@ loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
 peek(int addr) : int
-poke(int addr, int value)
+poke(int addr, int value) : this
 resize(int newsize) : int
 copyFrom(Data source) : this
 insert(Data source, int position) : this
@@ -726,7 +728,7 @@ loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
 peek(int addr) : int
-poke(int addr, int value)
+poke(int addr, int value) : this
 resize(int newsize) : int
 copyFrom(Data source) : this
 insert(Data source, int position) : this
@@ -752,7 +754,7 @@ loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
 peek(int addr) : int
-poke(int addr, int value)
+poke(int addr, int value) : this
 resize(int newsize) : int
 copyFrom(Data source) : this
 insert(Data source, int position) : this
@@ -779,7 +781,7 @@ loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
 peek(int addr) : int
-poke(int addr, int value)
+poke(int addr, int value) : this
 resize(int newsize) : int
 copyFrom(Data source) : this
 insert(Data source, int position) : this

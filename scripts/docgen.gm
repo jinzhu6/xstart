@@ -213,7 +213,8 @@ foreach(clazz in api.classes) {
         local example = exFile.open("../examples/" + clazz.name + ".gm", "rb").read();
         doc += "<p class='caption'>Example:</p>";
         doc += "<div class='example'>";
-        doc += "<p class='code'>" + example + "</p>";
+        //doc += "<p class='code'>" + example + "</p>";
+        doc += "<pre>" + example + "</pre>";
         doc += "</div>";
         exFile.close();
     }

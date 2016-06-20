@@ -25,11 +25,11 @@ global BlinkSwitch = function(element, state, mode) {
 	if(mode == BLINK_MODE_SCALE) {
 		if(state) { element.scale = 0.95; }
 		else { element.scale = 1.0; }
-	} 
+	}
 	if(mode == BLINK_MODE_GREY || mode == BLINK_MODE_INVERT ||mode == BLINK_MODE_BLUR || mode == BLINK_MODE_GLOW || mode == BLINK_MODE_SLIGHT)
 	{
 		if(state) { element.useShader = 1; }
-		else { element.useShader = 0; }	
+		else { element.useShader = 0; }
 	}
 	return !state;
 };
@@ -39,19 +39,19 @@ global Blink = function(element, count, delay, mode) {
 	global BLINK_SHADER_INVERT;
 	global BLINK_SHADER_GLOW;
 	global BLINK_SHADER_SLIGHT;
-	
-/*	if(BLINK_SHADER_GREY == null)   { BLINK_SHADER_GREY = Shader("lib/data/normal.vs", "lib/data/grey.fs"); }
+
+	if(BLINK_SHADER_GREY == null)   { BLINK_SHADER_GREY = Shader("lib/data/normal.vs", "lib/data/grey.fs"); }
 	if(BLINK_SHADER_BLUR == null)   { BLINK_SHADER_BLUR = Shader("lib/data/normal.vs", "lib/data/blur.fs"); }
 	if(BLINK_SHADER_INVERT == null) { BLINK_SHADER_INVERT = Shader("lib/data/normal.vs", "lib/data/slight.fs"); }
 	if(BLINK_SHADER_GLOW == null)   { BLINK_SHADER_GLOW = Shader("lib/data/normal.vs", "lib/data/glow.fs"); }
 	if(BLINK_SHADER_SLIGHT == null) { BLINK_SHADER_SLIGHT = Shader("lib/data/normal.vs", "lib/data/slight.fs"); }
-	
+
 	if(mode == BLINK_MODE_GREY) { element.shader = BLINK_SHADER_GREY; }
 	if(mode == BLINK_MODE_BLUR) { element.shader = BLINK_SHADER_BLUR; }
 	if(mode == BLINK_MODE_INVERT) { element.shader = BLINK_SHADER_INVERT; }
 	if(mode == BLINK_MODE_GLOW) { element.shader = BLINK_SHADER_GLOW; }
 	if(mode == BLINK_MODE_SLIGHT) { element.shader = BLINK_SHADER_SLIGHT; }
-	*/
+
 	thread(ButtonBlinkThread, element, count, delay, mode);
 };
 global ButtonBlinkThread = function(element, count, delay, mode) {

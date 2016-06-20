@@ -2,9 +2,10 @@
 
 global KEYBOARD_EMAIL = "1 2 3 4 5 6 7 8 9 0 <delete> \\ q w e r t z u i o p - \\ a s d f g h j k l @ \\ _ y x c v b n m . , ? \\ <shift> <space> <shift>";
 //global KEYBOARD_EMAIL = "1 2 3 4 5 6 7 8 9 0 \\ q w e r t z u i o p \\ a s d f g h j k l \\ <shift> y x c v b n m <delete>";
-global KEYBOARD_NAME = "q w e r t z u i o p <delete> \\ a s d f g h j k l . \\ y x c v b n m , \\ <shift> <space> <shift>";
+//global KEYBOARD_NAME = "q w e r t z u i o p <delete> \\ a s d f g h j k l . \\ y x c v b n m , \\ <shift> <space> <shift>";
+global KEYBOARD_NAME = "q w e r t z u i o p <delete> \\ a s d f g h j k l . <submit> \\ y x c v b n m , \\ <shift> <space> <shift>";
 
-global KEYBOARD_MAX = 4;
+global KEYBOARD_MAX = 128;
 
 
 /*================================================================================================
@@ -111,9 +112,9 @@ global _VirtualKeyboardCallback = function(event) {
 	local key = event.sender.key;
 	local keyboard = event.sender.proxy.keyboard;
 	local input = keyboard.proxy.textbox;
-	
-	Blink(event.sender["text1"], 1, 0.25, BLINK_MODE_SCALE);
-	
+
+	Blink(event.sender["text1"], 1, 0.25, BLINK_MODE_INVERT);
+
 	if(input.text.Length() >= KEYBOARD_MAX && key.Lower() != "<delete>") {
 		input.color = "#990000";
 		return;
@@ -121,7 +122,7 @@ global _VirtualKeyboardCallback = function(event) {
 	else {
 		input.color = "#000000";
 	}
-	
+
 	if(key.Lower() == "<delete>") {
 		// delete key was pressed
 		if(input.text.Length() > 0) {
@@ -156,11 +157,12 @@ global _VirtualKeyboardCallback = function(event) {
 		}
 	} else if(key.Lower() == "<submit>") {
 		// the submit button was pressed
-		App.changeState("send");
+		//App.changeState("send");
+        keyboard.onSubmit(input.text);
 	} else {
 		// normal text input (no special key)
 		input.text += event.sender.key;
-		
+
 		// unshift keyboard
 		if(keyboard.isShifted) {
 			i = 0;
@@ -204,17 +206,11 @@ global _VirtualKeyboardCallback = function(event) {
 *   A 'key' will have the attributes: key (keycode), width and image
 * ================================================================================================*/
 global _ParseKeysToArray = function(keys, theme) {
-	local imageNormal = Texture("images/key-normal.png");
-	local imageShift = Texture("images/key-shift.png");
-	local imageSubmit = Texture("images/key-submit.png");
-	local imageDelete = Texture("images/key-delete.png");
-	local imageSpace = Texture("images/key-space.png");
-
-	/*local imageNormal = theme.Button("", 0, 0, 64, 64, null);
-	local imageShift  = theme.Button("", 0, 0, 96, 64, null);
-	local imageSpace  = theme.Button("", 0, 0, 256, 64, null);
-	local imageSubmit = theme.Button("", 0, 0, 96, 64, null);
-	local imageDelete = theme.Button("", 0, 0, 64, 64, null);*/
+	if(File().exists("images/key-normal.png")) { imageNormal = Texture("images/key-normal.png"); } else { imageNormal = theme.Button("", 0, 0, 64, 64, null); }
+	if(File().exists("images/key-shift.png")) {  imageShift = Texture("images/key-shift.png"); } else { imageShift  = theme.Button("", 0, 0, 96, 64, null); }
+    if(File().exists("images/key-space.png")) {  imageSpace = Texture("images/key-space.png"); } else { imageSpace  = theme.Button("", 0, 0, 256, 64, null); }
+	if(File().exists("images/key-submit.png")) {  imageSubmit = Texture("images/key-submit.png"); } else { imageSubmit = theme.Button("", 0, 0, 96, 64, null); }
+	if(File().exists("images/key-delete.png")) {  imageDelete = Texture("images/key-delete.png"); } else { imageDelete = theme.Button("", 0, 0, 64, 64, null); }
 
 	// the lines array is the result of this function
 	local lines = Array();
@@ -314,14 +310,14 @@ global CreateKeyboard = function(inKeys, theme, screenWidth, screenHeight) {
 	local font = theme.getFont("button");
 	local root = Node();
 	root.isShifted = false;
-	
+
 	// parse the keyboard-defintion string to a lines-array
 	local lines = _ParseKeysToArray(inKeys, theme);
-	
+
 	// keyboard screen position offset
 	local off_x = (screenWidth / 2)/* - (lines.totalWidth * image.width) / 2*/;
 	local off_y = (screenHeight / 2) - (lines.count * 72) / 2;
-	
+
 	// create buttons for each keyboard key
 	local cur_x = 0;
 	local cur_y = off_y;
@@ -364,7 +360,7 @@ global CreateKeyboard = function(inKeys, theme, screenWidth, screenHeight) {
 			keyNode.key = k.key;
 			//root["_"+k.key] = keyNode;
 			root["_"+counter] = keyNode;
-			
+
 			//keyNode["image"].update().center().middle();
 			//keyNode["text1"].update().center().middle();
 

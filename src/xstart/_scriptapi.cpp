@@ -188,6 +188,14 @@ int GM_CDECL Script_Print(gmThread* a_thread) {
 	return GM_OK;
 }
 
+int GM_CDECL Script_PrintLine(gmThread* a_thread) {
+	GM_CHECK_NUM_PARAMS(1);
+	GM_CHECK_STRING_PARAM(out, 0);
+	printf("%s\n", out);
+	fflush(stdout);
+	return GM_OK;
+}
+
 int GM_CDECL Script_Log(gmThread* a_thread) {
 	GM_CHECK_NUM_PARAMS(1);
 	GM_CHECK_STRING_PARAM(out, 0);
@@ -227,7 +235,8 @@ int GM_CDECL Script_Popup(gmThread* a_thread) {
 int GM_CDECL Script_Ask(gmThread* a_thread) {
 	GM_CHECK_NUM_PARAMS(1);
 	GM_CHECK_STRING_PARAM(ask, 0);
-	Log(LOG_SCRIPT, "%s", ask);
+	printf("%s", ask);
+	fflush(stdout);
 
 	char answer[1024*10];
 	memset((void*)answer, 0, 1024*10);
@@ -431,6 +440,7 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("random", Script_Random, " {float} random( (optional) {float} (or) {int} max)", "Returns a random number between 0 and 'max'. If 'max' is a floating point number, the result is a floating point number too, otherwise its an integer.");
 	MachineRegisterFunction("time", Script_GetTime, " {float} time()", "Gets the elapsed time since the program start in seconds.");
 	MachineRegisterFunction("print", Script_Print, "print({string})", "Outputs the string on the console, no newline is added.");
+	MachineRegisterFunction("println", Script_PrintLine, "println({string})", "Outputs the string on the console, a newline is added.");
 	MachineRegisterFunction("log", Script_Log, "log({string} message)", "Writes a log message to the console.");
 	MachineRegisterFunction("warning", Script_Warning, "warning({string} error)", "Reports a warning on the console.");
 	MachineRegisterFunction("error", Script_Error, "error({string} error)", "Reports a error on the console.");
