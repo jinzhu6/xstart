@@ -1,11 +1,13 @@
 #ifdef _WIN32
 
+#define _WIN32_WINNT 0x0501
+#include <Windows.h>
+#include <Commdlg.h>
+#include <MMSystem.h>
 #include "corela_t.h"
 #include "glutils.h"
 #include <stdio.h>
 #include <string>
-#include <Commdlg.h>
-#include <MMSystem.h>
 #include <vector>
 
 

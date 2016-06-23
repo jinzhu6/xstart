@@ -25,7 +25,7 @@
 #include "Canvas.h"
 #include "Detector.h"
 #include "Video.h"
-#include "Sound.h"
+//#include "Sound.h"
 #include "Model.h"
 #include "Astro.h"
 #include "Date.h"
@@ -257,7 +257,7 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<Astro>("Astro");
 	MachineRegisterClass<ADDevice>("ADDevice");
 	MachineRegisterClass<Dmx>("Dmx");
-	MachineRegisterClass<Sound>("Sound");
+//	MachineRegisterClass<Sound>("Sound");
 	MachineRegisterClass<Video>("Video");
 	MachineRegisterClass<Camera>("Camera");
 //	MachineRegisterClass<BaslerCam>("BaslerCam");

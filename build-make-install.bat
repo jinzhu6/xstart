@@ -16,7 +16,7 @@ echo ***************************************************************************
 echo PLEASE WAIT WHILE THE SOFTWARE IS BUILD, THIS MAY TAKE A FEW MINUTES ...
 echo *****************************************************************************
 echo Building release version software ....
-"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com" .\build\xstart.sln /BUILD Release
+"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.com" .\build\xstart.sln /BUILD Release
 if %ERRORLEVEL% GEQ 1 goto ONERROR
 timeout 3
 

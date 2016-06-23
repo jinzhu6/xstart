@@ -851,16 +851,6 @@ toString() : string
 id : string
 _key : string
 _table : table
-Sound(string file)
-toString() : string
-open(string file) : int
-close() : this
-play(int loop) : this
-stop() : this
-isPlaying() : int
-id : string
-_key : string
-_table : table
 Video(string file, int pos_x, int pos_y, int width, int height)
 toString() : string
 update() : this

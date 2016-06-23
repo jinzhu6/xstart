@@ -252,8 +252,8 @@ doc += "</div>";
 doc = header + index + doc;
 doc += "</body></html>";
 
-//redirect("..\\editor\\help.htm");
-redirect("help.htm");
+redirect("..\\editor\\help.htm");
+//redirect("help.htm");
 print(doc);
 
 //system("explorer ..\\editor\\help.htm");

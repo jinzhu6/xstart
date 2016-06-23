@@ -130,7 +130,7 @@ public:
 //
 void gmDefaultPrintCallback(gmMachine * a_machine, const char * a_string)
 {
-  GM_PRINTF("%s"GM_NL, a_string);
+  GM_PRINTF("%s" GM_NL, a_string);
 }
 
 //
