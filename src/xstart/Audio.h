@@ -568,8 +568,9 @@ public:
 
 	~AudioDevice() {
 		close();
-		delete(dataIn);
-		delete(dataOut);
+		// TODO: Fix garbage collection at program exit!
+//		delete(dataIn);
+//		delete(dataOut);
 		Pa_Terminate();
 	}
 
@@ -775,7 +776,7 @@ public:
 				bufferActive = true;
 
 				// compute number of samples per channel to mix
-				long numSamplesPerChannelRead = numSamplesPerChannel;
+				long samplesLeft = 0, numSamplesPerChannelRead = numSamplesPerChannel;
 				if(!buffer->loop) {
 
 					// HOTFIX: detect sound-end
@@ -784,13 +785,16 @@ public:
 						//break;
 					}*/
 
-					numSamplesPerChannelRead = buffer->size - buffer->readCursor;
+					long samplesLeft = (buffer->size - buffer->readCursor) / buffer->format.nChannels / buffer->format.nBlockAlign;
+					numSamplesPerChannelRead = samplesLeft;
 					if(numSamplesPerChannelRead > (long)numSamplesPerChannel) {
 						numSamplesPerChannelRead = numSamplesPerChannel;
 					} else {
 						bufferActive = false; buffer->stop = true;
+					}
 				}
-				}
+
+				//Log(LOG_INFO, "%d  -  %d  -  %d", numSamplesPerChannelRead, numSamplesPerChannel, samplesLeft);
 
 				// ???
 				if(numSamplesPerChannelRead < 1/* (long)numSamplesPerChannel*/) {

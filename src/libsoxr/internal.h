@@ -24,7 +24,7 @@
   #define UNUSED
 #endif
 
-#if defined NDEBUG
+#if 1 //ydefined NDEBUG
   #ifdef __GNUC__
     void lsx_dummy(char const *, ...);
   #else
