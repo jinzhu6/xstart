@@ -177,24 +177,6 @@ void ImageDestroy(IMAGE* image) {
 	free(image);
 }
 
-IMAGE* ImageLoad(const char* filename) {
-	int comp;
-	IMAGE* image = (IMAGE*)malloc(sizeof(IMAGE));
-	Log(LOG_INFO, "Loading image '%s'.", filename);
-	image->data = (PIXEL*)stbi_load(filename, &image->width, &image->height, &comp, 4);
-	if(!image->data) {
-		Log(LOG_ERROR, "FAILED TO LOAD IMAGE '%s'!", filename);
-		free(image);
-		return 0;
-	}
-	//Log(LOG_INFO, "ok.");
-	return image;
-}
-
-void ImageSave(IMAGE* image, const char* filename) {
-	stbi_write_png(filename, image->width, image->height, 4, image->data, 0);
-}
-
 IMAGE* ImageGetCut(IMAGE* src, int px, int py, int width, int height) {
 	IMAGE* dst = ImageCreate(width, height);
 
@@ -940,6 +922,93 @@ void ImageSavePNG(IMAGE* image, const char* filename) {
 
 	return;
 }
+bool ImageLoadPNG(IMAGE* image, const char* filename) {
+	// open file for reading
+	FILE* hf = fopen(filename, "rb");
+	if (!hf) { return false; }
+	
+	// check header
+	char header[8];
+	fread(header, 1, 8, hf);
+	if (png_sig_cmp((png_const_bytep)header, 0, 8)) { return false; }
 
+	// create png structs
+	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+	png_infop info_ptr = png_create_info_struct(png_ptr);
+
+	// set error handling
+	if (setjmp(png_jmpbuf(png_ptr))) {
+		png_destroy_read_struct(&png_ptr, &info_ptr, 0);
+		fclose(hf);
+		return false;
+	}
+
+	// init
+	png_init_io(png_ptr, hf);
+	png_set_sig_bytes(png_ptr, 8);
+	png_read_info(png_ptr, info_ptr);
+
+	// read info
+	int width = png_get_image_width(png_ptr, info_ptr);
+	int height = png_get_image_height(png_ptr, info_ptr);
+	png_byte color_type = png_get_color_type(png_ptr, info_ptr);
+	png_byte bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+	int number_of_passes = png_set_interlace_handling(png_ptr);
+
+	// expand palettes
+	if (color_type == PNG_COLOR_TYPE_PALETTE) {
+		png_set_expand(png_ptr);
+		png_read_update_info(png_ptr, info_ptr);
+	}
+
+	// ensure color type RGBA
+	if (color_type == PNG_COLOR_TYPE_RGB) {
+		png_set_filler(png_ptr, 0xFF, PNG_FILLER_AFTER);
+		png_read_update_info(png_ptr, info_ptr);
+	}
+
+	// ensure bit-depth 8
+	if (bit_depth == 16) {
+		png_set_strip_16(png_ptr);
+		png_read_update_info(png_ptr, info_ptr);
+	}
+
+	// create image memory
+	image->width = width;
+	image->height = height;
+	image->data = (PIXEL*)malloc(sizeof(PIXEL) * width * height);
+
+	// read image
+	png_bytep* row_pointers;
+	row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
+	for(int y = 0; y<height; y++)
+		row_pointers[y] = (png_byte*)&image->data[y*image->width];
+	png_read_image(png_ptr, row_pointers);
+	
+	// cleanup
+	fclose(hf);
+	png_destroy_read_struct(&png_ptr, &info_ptr, 0);
+}
+
+IMAGE* ImageLoad(const char* filename) {
+	int comp;
+	IMAGE* image = (IMAGE*)malloc(sizeof(IMAGE));
+	Log(LOG_INFO, "Loading image '%s'.", filename);
+	if (!ImageLoadPNG(image, filename)) {
+		Log(LOG_INFO, "  Using STBI '%s'.", filename);
+		image->data = (PIXEL*)stbi_load(filename, &image->width, &image->height, &comp, 4);
+		if (!image->data) {
+			Log(LOG_ERROR, "FAILED TO LOAD IMAGE '%s'!", filename);
+			free(image);
+			return 0;
+		}
+	}
+	//Log(LOG_INFO, "ok.");
+	return image;
+}
+
+void ImageSave(IMAGE* image, const char* filename) {
+	stbi_write_png(filename, image->width, image->height, 4, image->data, 0);
+}
 
 #endif

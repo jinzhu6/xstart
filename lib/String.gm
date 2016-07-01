@@ -1,4 +1,6 @@
 
+global strlen = function(s) { return s.Length(); };
+
 global substr = function(s, start, end) {
     local len = s.Length().Int();
     if(end < 0) { end = len + end + 1; }
@@ -54,4 +56,13 @@ global split = function(s, d, dotrim) {
 	if(dotrim) { buffer = trim(buffer); }
 	if(buffer.Length() > 0) { o.add(buffer); }
 	return o;
+};
+
+global findstr = function(s, d) {
+	for(i=0; i<s.Length(); i+=1) {
+		if(substr(s,i,i+d.Length()) == d) {
+            return i;
+        }
+    }
+    return -1;
 };

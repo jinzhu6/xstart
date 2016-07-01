@@ -158,6 +158,7 @@ TEXTURE* TextureCreate(coDword width, coDword height, coDword flags, const char*
 
 	// use texture compression, if requested and supported
 	if(flags & TEX_COMPRESS && glUtilsHasExtension("ARB_texture_compression")) {
+		glHint(GL_TEXTURE_COMPRESSION_HINT, GL_FASTEST);
 		if(flags & TEX_NOALPHA) {
 			tx->internalFormat = GL_COMPRESSED_RGB;
 		} else {
@@ -170,7 +171,6 @@ TEXTURE* TextureCreate(coDword width, coDword height, coDword flags, const char*
 			tx->internalFormat = GL_RGBA;
 		}
 	}
-//	tx->internalFormat = GL_RED;
 
 	// generate texture and set parameters
 	glEnable(GL_TEXTURE_2D);
@@ -230,12 +230,12 @@ TEXTURE* TextureCreate(coDword width, coDword height, coDword flags, const char*
 	END_CHECK_GL_ERROR("TextureCreate");
 
 	// set inital texture content
-	IMAGE* image = ImageCreate(width, height);
+/*	IMAGE* image = ImageCreate(width, height);
 	if(clearColor) {
 		ImageFill(image, ColorParse(clearColor));
 	}
 //	TextureSetImage(tx, image);
-	ImageDestroy(image);
+	ImageDestroy(image);*/
 
 	return tx;
 }
@@ -285,6 +285,7 @@ TEXTURE* TextureLoad(const char* file, coDword flags) {
 	}
 
 	glTexImage2D(GL_TEXTURE_2D, 0, tx->internalFormat, image->width, image->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image->data);
+	//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image->width, image->height, GL_RGBA, GL_UNSIGNED_BYTE, image->data);
 
 	if( !(flags & TEX_NOMIPMAP)) {
 		glUtilsGenerateMipmap(GL_TEXTURE_2D);

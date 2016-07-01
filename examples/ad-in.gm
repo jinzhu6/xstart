@@ -11,7 +11,7 @@ global UpdateAD = function(ad) {
 };
 
 // create AD device
-ad = ADDevice("usb-pio");
+ad = ADDevice("usb-ad");
 if(!ad.connect()) { exit(); }
 ad.setDigitalBits(AD_CHANNEL, 0);
 

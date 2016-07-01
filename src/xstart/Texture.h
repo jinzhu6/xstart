@@ -44,6 +44,11 @@ public:
 	virtual int Initialize(gmThread* a_thread) {
 		gmVariable varNull;
 		varNull.Nullify();
+		if (a_thread->GetNumParams() >= 7) {
+			GM_CHECK_INT_PARAM(compress, 6);
+			if (compress)
+				textureFlags |= TEX_COMPRESS;
+		}
 		if(a_thread->GetNumParams() >= 1) {
 			gmVariable var = a_thread->Param(0, varNull);
 			if(!var.IsNull()) {
