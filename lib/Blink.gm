@@ -42,7 +42,7 @@ global Blink = function(element, count, delay, mode) {
 
 	if(BLINK_SHADER_GREY == null)   { BLINK_SHADER_GREY = Shader("lib/data/normal.vs", "lib/data/grey.fs"); }
 	if(BLINK_SHADER_BLUR == null)   { BLINK_SHADER_BLUR = Shader("lib/data/normal.vs", "lib/data/blur.fs"); }
-	if(BLINK_SHADER_INVERT == null) { BLINK_SHADER_INVERT = Shader("lib/data/normal.vs", "lib/data/slight.fs"); }
+	if(BLINK_SHADER_INVERT == null) { BLINK_SHADER_INVERT = Shader("lib/data/normal.vs", "lib/data/invert.fs"); }
 	if(BLINK_SHADER_GLOW == null)   { BLINK_SHADER_GLOW = Shader("lib/data/normal.vs", "lib/data/glow.fs"); }
 	if(BLINK_SHADER_SLIGHT == null) { BLINK_SHADER_SLIGHT = Shader("lib/data/normal.vs", "lib/data/slight.fs"); }
 

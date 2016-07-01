@@ -44,6 +44,8 @@ global App = function(title, x, y, width, height, fullscreen, theme) {
 	// State
 	//---------------------------------------------------------------------------------------------------
 	app.State = function(name) {
+        if(this.states[name]) { return this.states[name]; }
+
 		log("Creating state '"+name+"'.");
 		local state;
 		if(this.useFramebuffers) {
@@ -243,6 +245,7 @@ global App = function(title, x, y, width, height, fullscreen, theme) {
 	app.init = function() {
 		this.isInitialized = true;
 		foreach(s in this.states) {
+            s = this.states.get(s);
 			if(s.init) {
 				log("[App] Initializing '"+s.name+"'.");
 				s.init(this,s);

@@ -112,7 +112,7 @@ global Theme = function(id) {
 		button.newPath();
 		button.roundedRectangle(this.strokeWidth, this.strokeWidth, w- this.strokeWidth * 2, h - this.strokeWidth *2, this.roundness);
 		button.closePath();
-		button.setLinear2(this.buttonColor1, color2, 0.0, 1.0);
+		button.setLinear2(color2, color2, 0.0, 1.0);
 		button.fill();
 		if(this.strokeWidth) {
 			button.setSolid(this.strokeColor);
@@ -176,7 +176,7 @@ global Theme = function(id) {
 		};
 		button.onMouseUp = function(evt) {
 			//Blink(evt.sender, 1, 0.3, BLINK_MODE_INVERT);
-			Blink(evt.sender, 1, 0.7, BLINK_MODE_SCALE);
+			//Blink(evt.sender, 1, 0.7, BLINK_MODE_SCALE);
 			if(evt.sender.callback) { return evt.sender.callback(evt); }
 			return false;
 		};
