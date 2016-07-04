@@ -235,8 +235,8 @@ public:
 		int doClear = 1;
 		a_thread->ParamInt(0, doClear, 1);
 		render((bool)doClear);
-		//return ReturnThis(a_thread);
-		return GM_SYS_YIELD;
+		return ReturnThis(a_thread);
+		//return GM_SYS_YIELD;
 	}
 
 	void show(bool _show) {
