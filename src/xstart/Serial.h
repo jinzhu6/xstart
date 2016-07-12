@@ -36,8 +36,8 @@ private:
 class SerialPort: public ScriptObject {
 public:
 	SerialPort() : ScriptObject() {
-		id = "SerialPort";
-		help = "SerialPort class";
+		id = "Serial";
+		help = "Serial class";
 
 		BindFunction("open", (SCRIPT_FUNCTION)&SerialPort::gm_open, "[this] open((optional) {string} port, (optional) {int} baudrate)");
 		BindFunction("close", (SCRIPT_FUNCTION)&SerialPort::gm_close, "[this] close()");

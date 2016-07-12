@@ -900,7 +900,7 @@ void ImageSavePNG(IMAGE* image, const char* filename) {
 	// Setup PNG for writing
 	png_init_io(pPNG, hf);
 	png_set_IHDR(pPNG, pInfo, image->width, image->height, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-	png_set_compression_level(pPNG, 1);
+	png_set_compression_level(pPNG, 0);
 	png_set_filter(pPNG, 0, PNG_FILTER_NONE);
 //	png_set_invert_alpha(pPNG);
 //	png_set_bgr(pPNG);

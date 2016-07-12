@@ -228,6 +228,7 @@ public:
 		// apply transformations
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
+//		glTranslatef(position->x - pivot->x, position->y - pivot->y, position->z - pivot->z);
 		glTranslatef(position->x, position->y, position->z);
 		glRotatef(rotation->x*(180.0f/3.14159265f), 1.0, 0.0, 0.0);
 		glRotatef(rotation->y*(180.0f/3.14159265f), 0.0, 1.0, 0.0);

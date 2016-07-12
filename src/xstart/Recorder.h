@@ -82,7 +82,7 @@ public:
 			}
 
 			// (re-)create frame texture
-			frames[n] = TextureCreate(texWidth, texHeight, TEX_CLAMP | TEX_NOMIPMAP | TEX_TARGET, "#00000000");
+			frames[n] = TextureCreate(texWidth, texHeight, TEX_CLAMP | TEX_NOMIPMAP | TEX_TARGET | TEX_CLEAR, "#00000000");
 		}
 
 	}
@@ -110,10 +110,13 @@ public:
 			if(frames[n]) {
 				char fileName[512];
 				sprintf(fileName, "%s%d.png", folder, i);
-				IMAGE* img = ImageCreate(frames[n]->width, frames[n]->height);
+				
+				TextureSave(frames[n], fileName, frames[n]->width, frames[n]->height);
+				
+				/*IMAGE* img = ImageCreate(frames[n]->width, frames[n]->height);
 				TextureGetImage(frames[n], img);
 				ImageSavePNG(img, fileName);
-				ImageDestroy(img);
+				ImageDestroy(img);*/
 			}
 		}
 		return true;

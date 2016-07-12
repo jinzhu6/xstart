@@ -215,7 +215,7 @@ TEXTURE* TextureCreate(coDword width, coDword height, coDword flags, const char*
 
 	// clear texture when requested
 	if(flags & TEX_CLEAR) {
-		TextureClear(tx);
+		TextureClear(tx, ColorParse(clearColor));
 	}
 
 	// create PBO on request
@@ -300,6 +300,16 @@ void TextureSave(TEXTURE* tex, const char* file, int width, int height) {
 	if(width <= 0) { width = tex->width; }
 	if(height <= 0) { height = tex->height; }
 
+	if (width == tex->width && height == tex->height) {
+		IMAGE img;
+		img.width = width;
+		img.height = height;
+		img.data = (PIXEL*)TextureLock(tex, true);
+		ImageSavePNG(&img, file);
+		TextureUnlock(tex, false);
+		return;
+	}
+
 	float ya = tex->drawRect.bottom - tex->drawRect.top / (float)height;
 	float xa = tex->drawRect.right - tex->drawRect.left / (float)width;
 	float y = tex->drawRect.top;
@@ -360,7 +370,7 @@ coByte* TextureLock(TEXTURE* tex, coBool read, int format) {
 			free(tex->pLockMem);
 		}
 		tex->pLockMem = (coByte*)malloc(tex->width * tex->height * 4);
-		memset(tex->pLockMem, 0x00, tex->width * tex->height * 4);
+//		memset(tex->pLockMem, 0x00, tex->width * tex->height * 4);
 
 		if(read) {
 			glBindTexture(tex->target, tex->handle);
