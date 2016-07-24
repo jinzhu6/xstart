@@ -1,6 +1,12 @@
 #include <corela.h>
+#include "Model.h"
 
-void Load3D_OBJ(const char* file) {
+bool IsEmptyCharacter(char c) {
+	if(c=='\n' || c=='\f' || c=='\r' || c=='\t' || c=='\v' || c=='\a') return true;
+	return false;
+}
+
+void Load3D_OBJ(Mesh* mesh, const char* file) {
 	// read file
 	char* buffer;
 	coDword fsize;
@@ -17,7 +23,7 @@ void Load3D_OBJ(const char* file) {
 		switch(c) {
 		case ' ':
 		case '\t':
-			// eat any additional space
+			// eat any preceeding space
 			while(c == ' ' || c == '\t') { c = buffer[++i]; }
 
 			// parse parameters here
@@ -29,14 +35,16 @@ void Load3D_OBJ(const char* file) {
 				case '\t':
 					// eat space
 					while(c == ' ' || c == '\t') { c = buffer[++i]; }
-					n_params++;
+					n_params++; // next param
 					break;
 				case '\n':
 					if(i_sym) {
-						// TODO: flush line
-						n_params = 0;
-						i_sym = 0;
+						// execute symbol
+
 					}
+					n_params = 0;
+					for(int k=0; k<5; k++) { i_param[k]=0; }
+					i_sym = 0;
 				default:
 					// add character to current parameter
 					param[i_param[n_params]++][n_params] = c;
@@ -44,17 +52,17 @@ void Load3D_OBJ(const char* file) {
 				}
 				if(c == '\n') { break; }
 			}
-			// TODO: parameter mode
 			break;
 		case '\n':
 			// eat space
-			while(c == ' ' || c == '\t') { c = buffer[++i]; }
+			while(IsEmptyCharacter(c) && i<fsize) { c = buffer[++i]; }
 			break;
 		case '#':
 			// eat till newline
-			while(c != '\n') { c = buffer[++i]; }
+			while(c != '\n' && c != '\0' && i < fsize) { c = buffer[++i]; }
 			break;
 		default:
+			// read symbol
 			if(i_sym < 64) { sym[i_sym++] = c; }
 			break;
 		}

@@ -307,7 +307,7 @@ public:
 					if(value) {
 						if(!value->userObject) {
 							value->userObject = machine->AllocUserObject(value, GM_TYPE_OBJECT);
-							machine->AddCPPOwnedGMObject(value->userObject);  // was just "userObject" ?!?
+							//machine->AddCPPOwnedGMObject(value->userObject);  // was just "userObject" ?!?
 						}
 						var.SetUser(value->userObject);
 					} else {
