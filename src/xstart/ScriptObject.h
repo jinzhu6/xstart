@@ -268,7 +268,6 @@ public:
 	// BindMember() - Bind class members to script interface
 	// ************************************************************************
 	virtual void BindMember(const char* key, void* pointer, SCRIPT_MEMBER_TYPE type, gmVariable* var = 0, std::string declaration = "", std::string help = "") {
-
 		// add member to "members" list
 		SCRIPT_MEMBER_DATA data;
 		data.member = (void**)pointer;
@@ -307,7 +306,8 @@ public:
 					if(value) {
 						if(!value->userObject) {
 							value->userObject = machine->AllocUserObject(value, GM_TYPE_OBJECT);
-							machine->AddCPPOwnedGMObject(value->userObject);  // was just "userObject" ?!?
+							// TODO: Why was that line here?!?
+							//machine->AddCPPOwnedGMObject(value->userObject);  // was just "userObject" ?!?
 						}
 						var.SetUser(value->userObject);
 					} else {

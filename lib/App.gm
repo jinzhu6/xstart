@@ -58,8 +58,12 @@ global App = function(title, x, y, width, height, fullscreen, theme) {
 			state = NodeEx();
 		}
 		state.name = name;
+        state.x = 0;
+        state.y = 0;
+        state.width = this.width;
+        state.height = this.height;
 		state.init = function(app) {
-			this["title"] = app.theme.Text(0, 0, ""+app.frame.id + " - " + this.name);
+			//this["title"] = app.theme.Text(0, 0, ""+app.frame.id + " - " + this.name);
 		};
 		state.enter = function(app) {};
 		state.run = function(app) {};

@@ -243,7 +243,7 @@ void Script_Objects_Print() {
 	}
 
 	if(ccount(SCRIPT_OBJECTS) == 0) {
-		//Log(LOG_INFO, "Good, no ScriptObjects remaining.");
+		Log(LOG_DEBUG, "Final garbage-collection successfull, no ScriptObjects remaining.");
 		return;
 	}
 

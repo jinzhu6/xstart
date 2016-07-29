@@ -20,7 +20,6 @@ using namespace soundtouch;
 static char* paHostApis[] = {"DirectSound","ASIO","SoundManager","CoreAudio","N/A","OSS","ALSA","AL","BeOS","WDMKS","JACK","WASAPI","AudioScienceHPI"}; // may not be accurate on all OS
 #define WAIT_FOR_SOUNDCALLBACK() { while(this->locked){TimeSleep(0.002);} }  // experimental thread lock
 int PortAudioCallback(const void* input, void* output, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void* user);
-FILE* _fopen_nolock(const char* filename, const char* mode);
 
 
 class AudioData : public Data {
@@ -48,7 +47,7 @@ public:
 	}
 
 	bool saveBegin(const char* fileName) {
-		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveBegin() - Filehandle to '%s' already open!", outputFile.c_str()); }
+//		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveBegin() - Filehandle to '%s' already open!", outputFile.c_str()); }
 		// write header to file
 		FILE* _hf = fopen(fileName, "wb");
 		if(!_hf) { Log(LOG_ERROR, "Error in saveWav() while opening '%s' for writing!", fileName); return false; }
@@ -65,7 +64,7 @@ public:
 		fclose(_hf);
 	}
 	bool saveEnd(const char* fileName) {
-		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveEnd() - Filehandle to '%s' still open!", outputFile.c_str()); }
+//		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveEnd() - Filehandle to '%s' still open!", outputFile.c_str()); }
 		// write final buffer-size in header
 		FILE* _hf = fopen(fileName, "r+b");
 		if(!_hf) { Log(LOG_ERROR, "Error in saveWav() while patching '%s'!", fileName); return false; }
@@ -77,7 +76,6 @@ public:
 		length += 8; length -= 44; fwrite(&length, 4, 1, _hf);
 		fclose(_hf);
 	}
-
 	virtual void stopRecording() {
 		if(hf) {
 			fclose(hf);
@@ -105,7 +103,7 @@ public:
 	unsigned long getBytesFromSamples(unsigned long samples) {  return samples * format.nBlockAlign * format.nChannels;  }
 	unsigned long getSamplesFromBytes(unsigned long bytes) {  return bytes / (format.nBlockAlign * format.nChannels);  }
 
-	// TODO: Do converting also in real-time playback!
+	// TODO: Do converting also in real-time playback.
 	bool convert(int sampleRate, int bitsPerSample) {
 		if(this->format.nSamplesPerSec == sampleRate && this->format.wBitsPerSample == bitsPerSample) { return true; }
 		Log(LOG_DEBUG, "Converting audio from %dx%d to %dx%d ...", this->format.nSamplesPerSec, this->format.wBitsPerSample, sampleRate, bitsPerSample);
@@ -146,9 +144,10 @@ public:
 		return ReturnThis(a_thread);
 	}
 
-	// mixes "sourceData" in "this" and advances "readCursor" and "dataAvailable" too.
+	// mixes "sourceData" in "this" and advances "readCursor" and "bytesAvailable" (both from "sourceData") too.
 	virtual bool mix(AudioData* sourceData, unsigned long numSamplesPerChannel, float volume = 1.0) {
 		if(format.wBitsPerSample != 32) { Log(LOG_ERROR, "Error while mixing audio buffers. Target must be float (32-bit) to mix, please convert beforehand."); return false; }
+		if (!sourceData->data) { Log(LOG_WARNING, "AUDIO-ERROR: Source data is zero in mix()."); return false; }
 //		if(sourceData->format.wBitsPerSample != 32) { Log(LOG_WARNING, "Audio data has been converted to float (32-bit) to be able to mix."); sourceData->convert(format.nSamplesPerSec, format.wBitsPerSample); }
 
 		unsigned long requiredDstSize = numSamplesPerChannel * format.nChannels * format.nBlockAlign;
@@ -174,12 +173,12 @@ public:
 				} else { // 16-bit integer
 					v += (float)(srci[si % srci_size]) / div;
 				}
-				// hotfix: volume clamping
+				// volume clamping
 				if (v > 0.96) v = 0.96;
 				if (v < -0.96) v = -0.96;
 				dst[di % dst_size] = v;
 				di++;
-				if(c >= sourceData->format.nChannels) { si++; }  // duplicate source channels if neccessary (eg. mono to stereo)
+				if(c >= sourceData->format.nChannels) { si++; }  // duplicate source channels if neccessary (mono to stereo)
 			}
 		}
 		sourceData->readCursor += numSamplesPerChannel * sourceData->format.nBlockAlign * sourceData->format.nChannels;
@@ -196,9 +195,10 @@ public:
 	}
 
 	virtual unsigned long stream(unsigned long samples) {
+		// TODO
 		return samples;
 	}
-
+	
 public:
 	SDY_WFX format;
 	int isPlaying;
@@ -254,7 +254,7 @@ public:
 		return GM_OK;
 	}
 
-	// filter from history to this
+	// filter from history to this; in this case a simple copy from the history buffer into "this" buffer
 	virtual unsigned long filter(unsigned long samples) {
 		unsigned long sampleSize = source->format.nBlockAlign * source->format.nChannels;
 		unsigned long samplesBytes = samples * sampleSize;
@@ -262,6 +262,7 @@ public:
 		return samples;
 	}
 
+	// stream/prepare audio data
 	virtual unsigned long stream(unsigned long samples) {
 		unsigned long sampleSize = source->format.nBlockAlign * source->format.nChannels;
 		unsigned long samplesBytes = samples * sampleSize;
@@ -283,7 +284,7 @@ public:
 		source->stream(samples);
 		history->transferData(source, samplesBytes);
 
-		// apply pitch filter
+		// apply filter (eg. pitch)
 		if(enabled) { filter(samples); }
 		else { AudioFilter::filter(samples); }
 
@@ -415,7 +416,7 @@ public:
 	}
 
 	virtual unsigned long filter(unsigned long samples) {
-		if(delay > seconds) { delay = seconds; }
+		if(delay > seconds) { delay = seconds; } // the delay can not be bigger than the history buffer
 		if(delay < 0.0) { delay = 0.0; }
 		unsigned long samplesDelay = getSamplesFromMilliseconds(delay * 1000);
 		unsigned long sampleSize = source->format.nBlockAlign * source->format.nChannels;
@@ -752,11 +753,12 @@ public:
 		
 		// copy input-data to devices input-buffer
 		this->dataIn->writeBytes((unsigned char*)input, bufferBytesSizeIn);
+		Log(LOG_INFO, "Reading %d bytes...", bufferBytesSizeIn);
 		this->dataIn->bytesAvailable += bufferBytesSizeIn;
 
 		// TODO: Do we need that???
 		// set read cursor to previous write position
-		this->dataIn->readCursor = prevWriteCursor;
+//		this->dataIn->readCursor = prevWriteCursor;
 	}
 
 	void processOutput(float* output, unsigned long numSamplesPerChannel) {
@@ -800,14 +802,22 @@ public:
 				if(numSamplesPerChannelRead < 1/* (long)numSamplesPerChannel*/) {
 					break;
 				}
-				
+
 				// request data
 				buffer->stream(numSamplesPerChannelRead);
-
-				// mix!
-				if(buffer->volume > 0.0) {
-					this->dataOut->mix(buffer, numSamplesPerChannelRead);
+				
+				// check how much data is in the buffer
+				/*int underflow = numSamplesPerChannelRead * this->dataOut->format.nBlockAlign * this->dataOut->format.nChannels - buffer->bytesAvailable;
+				if (underflow > 0) {
+					Log(LOG_WARNING, "Audio buffer underflow by %d bytes.");
 				}
+				else {
+					Log(LOG_WARNING, "Avail: %d   Samp-Need:%d", buffer->bytesAvailable, numSamplesPerChannelRead);*/
+					// mix!
+					if (buffer->volume > 0.0) {
+						this->dataOut->mix(buffer, numSamplesPerChannelRead);
+					}
+				//}
 			}
 
 			// remove finished audio-buffers from list (non-looping)

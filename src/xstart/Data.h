@@ -13,16 +13,17 @@ public:
 
 		BindFunction("loadRaw", (SCRIPT_FUNCTION)&Data::gm_loadRaw, "[this] loadRaw({string} file)", "Loads the given file into data memory as is.");
 		BindFunction("saveRaw", (SCRIPT_FUNCTION)&Data::gm_saveRaw, "[this] saveRaw({string} file)", "Saves the data into a file as is.");
-		BindFunction("appendRaw", (SCRIPT_FUNCTION)&Data::gm_appendRaw, "[this] appendRaw({string} file)", "Saves the data into a file as is.");
+		BindFunction("appendRaw", (SCRIPT_FUNCTION)&Data::gm_appendRaw, "[this] appendRaw({string} file)", "Appends the data to an existing file as is.");
 		BindFunction("peek", (SCRIPT_FUNCTION)&Data::gm_peek, "{int} peek({int} addr)", "Reads a single byte from the given address.");
 		BindFunction("poke", (SCRIPT_FUNCTION)&Data::gm_poke, "[this] poke({int} addr, {int} value)", "Writes a single byte to the given address.");
 		BindFunction("resize", (SCRIPT_FUNCTION)&Data::gm_resize, "{int} resize({int} newsize)", "Resizes the data array length.");
 		BindFunction("copyFrom", (SCRIPT_FUNCTION)&Data::gm_copyFrom, "[this] copyFrom({Data} source)", "Makes a copy of the source data. Any old data in this object will be lost.");
 		BindFunction("insert", (SCRIPT_FUNCTION)&Data::gm_insert, "[this] insert({Data} source, {int} position)", "Copies the source data to the given position. The data may be resized to fit the added content.");
 		BindMember("size", &size, TYPE_INT, 0, "{int} size", "(readonly) Size of data array.");
-		BindMember("loop", &loop, TYPE_INT);
-		BindMember("readCursor", &readCursor, TYPE_INT);
-		BindMember("writeCursor", &readCursor, TYPE_INT);
+		
+		BindMember("loop", &loop, TYPE_INT, 0, "{bool} loop", "Set to true to wrap the read and write cursor when they reach the end of the stream.");
+		BindMember("readCursor", &readCursor, TYPE_INT, 0, "{int} readCursor", "Read cursor.");
+		BindMember("writeCursor", &readCursor, TYPE_INT, 0, "{int} writeCursor", "Write cursor.");
 	}
 
 	~Data() {
@@ -74,7 +75,7 @@ public:
 	}
 
 	int peek(int addr) {
-		if (addr >= (int)size) { Log(LOG_ERROR, "Access to address %d denied! Size of data is %d!", addr, size); return 0; /*return GM_EXCEPTION;*/ }
+		if (addr >= (int)size || addr < 0) { Log(LOG_ERROR, "Access to address %d denied! Size of data is %d!", addr, size); return 0; /*return GM_EXCEPTION;*/ }
 		return data[addr];
 	}
 	int gm_peek(gmThread* a_thread) {
@@ -85,7 +86,7 @@ public:
 	}
 
 	void poke(int addr, int value) {
-		if (addr >= (int)size) {
+		if (addr >= (int)size || addr < 0) {
 			Log(LOG_ERROR, "Write to address %d denied! Size of data is %d!", addr, size); return; /*return GM_EXCEPTION;*/
 		}
 		data[addr] = value;
@@ -216,6 +217,7 @@ public:
 
 	// transferData - Writes data from "in" into "this". The "writeCursor" of "this" and the "readCursor" of "in" are changed accordingly.
 	virtual unsigned long transferData(Data* in, unsigned long length) {
+		if (in->size < length) { Log(LOG_WARNING, "Underflow: Not enough data in audio source!"); return 0; }
 		while(length) {
 			unsigned long l = (in->size - in->readCursor) > (this->size - this->readCursor) ? this->size - this->readCursor : in->size - in->readCursor;
 			if(l > length) { l = length; }

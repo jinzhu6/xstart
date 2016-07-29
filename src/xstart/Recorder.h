@@ -17,7 +17,7 @@ public:
 
 		numFrames = 10;
 		currentFrame = 0;
-		frames = 0;
+		textures = 0;
 		enabled = 0;
 		recordWidth = 0;
 		recordHeight = 0;
@@ -25,6 +25,7 @@ public:
 		BindFunction("save", (SCRIPT_FUNCTION)&Recorder::gm_save, "[this] save({string} folder", "Saves the stored sequence into the given folder.");
 		BindFunction("getFrame", (SCRIPT_FUNCTION)&Recorder::gm_getframe, "[Texture] getFrame({int} index)", "Gets the Nth frame texture of the stored sequence.");
 		BindMember("numFrames", &numFrames, TYPE_INT, 0, "{int} numFrames", "Number to frames in sequence to store.");
+		BindMember("currentFrame", &currentFrame, TYPE_INT, 0, "{int} currentFrame", "The current frame that gets rendered into.");
 		BindMember("enabled", &enabled, TYPE_INT);
 		BindMember("record", &enabled, TYPE_INT, 0, "{int} record", "Set to non-zero to record frames.");
 		BindMember("recordWidth", &recordWidth, TYPE_INT, 0, "{int} recordWidth", "Width of the record resolution.");
@@ -45,16 +46,11 @@ public:
 	}
 
 	virtual void invalidate() {
-		if(frames) {
-			for(int n=0; n < numFrames; n++) {
-				if(frames[n]) {
-					TextureDestroy(frames[n]);
-				}
-			}
-
-			free(frames);
-			frames = 0;
+		if(textures) {
+			delete[] textures;
+			textures = 0;
 		}
+		currentFrame = 0;
 		valid = false;
 	}
 
@@ -67,56 +63,48 @@ public:
 		if(recordWidth != 0) { texWidth = recordWidth; }
 		if(recordHeight != 0) { texHeight = recordHeight; }
 
-		if(!frames) {
-			frames = (TEXTURE**)malloc(sizeof(void*) * numFrames);
-			memset(frames, 0, sizeof(void*) * numFrames);
-		}
+		if (!textures && texWidth > 0 && texHeight > 0) {
+			textures = new Texture[numFrames];
 
-		for(int n=0; n < numFrames; n++) {
-			if(frames[n]) {
-				if(frames[n]->width == texWidth && frames[n]->height == texHeight) {
-					// frame texture is ok
-					continue;
-				}
-				TextureDestroy(frames[n]);
+			for (int n = 0; n < numFrames; n++) {
+				textures[n].textureFlags = TEX_CLAMP | TEX_NOMIPMAP | TEX_TARGET | TEX_CLEAR;
+				textures[n].create(texWidth, texHeight);
 			}
-
-			// (re-)create frame texture
-			frames[n] = TextureCreate(texWidth, texHeight, TEX_CLAMP | TEX_NOMIPMAP | TEX_TARGET | TEX_CLEAR, "#00000000");
 		}
-
 	}
 
 	void render() {
 		if(numFrames <= 0 || enabled == 0) {
 			RenderChilds();
 		} else {
+			if (currentFrame >= numFrames) { currentFrame = 0; }
+
 			TEXTURE* prevRT = glUtilsGetRenderTarget();
-			glUtilsSetRenderTarget(frames[currentFrame]);
+			glUtilsSetRenderTarget(textures[currentFrame].texture);
 			glClearColor(0.0, 0.0, 0.0, 0.0);
 			glClear(GL_COLOR_BUFFER_BIT);
 			RenderChilds();
 			glUtilsSetRenderTarget(prevRT);
 
-			RenderTextureQuad(frames[currentFrame], position->x, position->y, pivot->x, pivot->y, dimension->x, dimension->y, 0, rotation->z, 1.0, 1.0);
+			RenderTextureQuad(textures[currentFrame].texture, position->x, position->y, pivot->x, pivot->y, dimension->x, dimension->y, 0, rotation->z, 1.0, 1.0);
 
-			if(++currentFrame >= numFrames) { currentFrame = 0; }
+			currentFrame++;
 		}
 	}
 
 	bool save(const char* folder, int width, int height) {
 		for(int i=0; i<numFrames; i++) {
 			int n = (i + currentFrame) % numFrames;
-			if(frames[n]) {
+			if(true) {
 				char fileName[512];
 				sprintf(fileName, "%s%d.png", folder, i);
 				
-				TextureSave(frames[n], fileName, frames[n]->width, frames[n]->height);
+				//TextureSave(frames[n], fileName, frames[n]->width, frames[n]->height);
 				
-				/*IMAGE* img = ImageCreate(frames[n]->width, frames[n]->height);
-				TextureGetImage(frames[n], img);
+				IMAGE* img = ImageCreate(textures[n].texture->width, textures[n].texture->height);
+				TextureGetImage(textures[n].texture, img);
 				ImageSavePNG(img, fileName);
-				ImageDestroy(img);*/
+				ImageDestroy(img);
 			}
 		}
 		return true;
@@ -137,15 +125,17 @@ public:
 	int gm_getframe(gmThread* a_thread) {
 		GM_CHECK_INT_PARAM(index, 0);
 		index = (index + currentFrame) % numFrames;
-		Texture* texture = new Texture();
+		if (!textures) { return ReturnNull(a_thread); }
+		return textures[index].ReturnThis(a_thread, true);
+/*		Texture* texture = new Texture();
 		texture->texture = frames[index];
 		texture->dimension->x = frames[index]->width;
 		texture->dimension->y = frames[index]->height;
-		return texture->ReturnThis(a_thread);
+		return texture->ReturnThis(a_thread);*/
 	}
 
 public:
-	TEXTURE** frames;
+	Texture* textures;
 	int numFrames;
 	int currentFrame;
 	int enabled;

@@ -263,7 +263,7 @@ int GM_CDECL Script_GetMemUsage(gmThread* a_thread) {
 
 int GM_CDECL Script_Collect(gmThread* a_thread) {
 	if(a_thread->GetNumParams() == 0) {
-		machine->CollectGarbage(false);
+		machine->CollectGarbage(true);
 	} else {
 		GM_CHECK_INT_PARAM(full,0);
 		machine->CollectGarbage(full==1);
@@ -421,6 +421,15 @@ int GM_CDECL Script_GetArguments(gmThread* a_thread) {
 	return GM_OK;
 }
 
+int GM_CDECL Script_FcloseAll(gmThread* a_thread) {
+	// TODO: Properly fix file handles
+	int closed = _fcloseall();
+	if (closed) {
+		Log(LOG_WARNING, "Closed %d open file streams.", closed);
+	}
+	return GM_OK;
+}
+
 /*int GM_CDECL Script_Format(gmThread* a_thread) {
 
 }*/
@@ -431,6 +440,7 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("_classlist", Script_ClassList);
 	MachineRegisterFunction("_freeMemory", Script_Collect);
 	MachineRegisterFunction("_getMemoryUsage", Script_GetMemUsage);
+	MachineRegisterFunction("_fcloseAll", Script_FcloseAll);
 	MachineRegisterFunction("version", Script_GetVersion, " {string} version()", "Returns the version string.");
 	MachineRegisterFunction("exit", Script_Exit, "exit()", "Terminates the program immediately.");
 	MachineRegisterFunction("throw", Script_Throw, "throw()", "Throws an exception.");

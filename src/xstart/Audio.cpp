@@ -1,9 +1,5 @@
 #include "Audio.h"
 
-FILE* _fopen_nolock(const char* filename, const char* mode) {
-	return fopen(filename, mode);
-}
-
 //-----------------------------------------------------------------------------
 // PortAudioCallback
 //-----------------------------------------------------------------------------

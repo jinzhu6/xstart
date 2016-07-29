@@ -25,6 +25,9 @@ public:
 		BindMember("color", &color, TYPE_OBJECT, 0, "[Color] color", "<b>Experimental.</b> The color used while rendering.");
 	}
 
+	~NodeEx() {
+	}
+
 	virtual bool RenderChilds() {
 		GLSLSHADER* prevShader;
 		int n=0;

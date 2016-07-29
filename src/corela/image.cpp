@@ -898,10 +898,10 @@ void ImageSavePNG(IMAGE* image, const char* filename) {
 	}
 
 	// Setup PNG for writing
-	png_init_io(pPNG, hf);
-	png_set_IHDR(pPNG, pInfo, image->width, image->height, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 	png_set_compression_level(pPNG, 0);
 	png_set_filter(pPNG, 0, PNG_FILTER_NONE);
+	png_init_io(pPNG, hf);
+	png_set_IHDR(pPNG, pInfo, image->width, image->height, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 //	png_set_invert_alpha(pPNG);
 //	png_set_bgr(pPNG);
 	png_write_info(pPNG, pInfo);
@@ -924,13 +924,17 @@ void ImageSavePNG(IMAGE* image, const char* filename) {
 }
 bool ImageLoadPNG(IMAGE* image, const char* filename) {
 	// open file for reading
-	FILE* hf = fopen(filename, "rb");
-	if (!hf) { return false; }
+	//FILE* hf = fopen(filename, "rb");
+	FILE* hf;
+	int err = fopen_s(&hf, filename, "rb");
+	if (!hf) { 
+		Log(LOG_ERROR, "Error while opening the file'%s': %s", filename, strerror(err));
+		return false; }
 	
 	// check header
 	char header[8];
 	fread(header, 1, 8, hf);
-	if (png_sig_cmp((png_const_bytep)header, 0, 8)) { return false; }
+	if (png_sig_cmp((png_const_bytep)header, 0, 8)) { fclose(hf); return false; }
 
 	// create png structs
 	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
@@ -986,7 +990,9 @@ bool ImageLoadPNG(IMAGE* image, const char* filename) {
 	png_read_image(png_ptr, row_pointers);
 	
 	// cleanup
-	fclose(hf);
+	if (fclose(hf) != 0) {
+		Log(LOG_ERROR, "Error while closing file '%s'!", filename);
+	}
 	png_destroy_read_struct(&png_ptr, &info_ptr, 0);
 }
 

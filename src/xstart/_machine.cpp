@@ -207,6 +207,7 @@ bool MachineRunFile(const char* file) {
 		}
 		machine->GetLog().Reset();
 		FrameUpdate();
+
 //		TimeSleep(double(10-deltaTime)/1000.0);
 		if(num_threads <= 0) {
 			/*if(errorLog.length() > 0) {
@@ -275,7 +276,7 @@ bool MachineRun(FILE* in) {
 			deltaTime = curTime - lastTime;
 			lastTime = curTime;
 
-			// Dump run time errors to output
+			// Dump run-time errors to output
 			bool first = true;
 			const char* message;
 			while((message = machine->GetLog().GetEntry(first))) {

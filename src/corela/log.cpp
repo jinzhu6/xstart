@@ -70,7 +70,7 @@ void ErrorBox(const char* _error) {
 #ifdef _WIN32
 	MessageBox(GetForegroundWindow(), _error, "ERROR", MB_OK | MB_ICONERROR);
 #ifdef _DEBUG
-//	if(g_LogDebug) { __debugbreak(); }
+	if(g_LogLevel >= 1) { __debugbreak(); }
 #endif
 #else
 	std::string error;

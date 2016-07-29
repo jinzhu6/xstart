@@ -84,7 +84,7 @@ id : string
 _key : string
 _table : table
 size : int
-loop : int
+loop : bool
 readCursor : int
 writeCursor : int
 Vector((optional) float x, (optional) float y, (optional) float z)  or  (Vector copy)
@@ -611,6 +611,7 @@ height : float
 depth : float
 rotate : float
 numFrames : int
+currentFrame : int
 enabled : int
 record : int
 recordWidth : int
@@ -716,7 +717,7 @@ id : string
 _key : string
 _table : table
 size : int
-loop : int
+loop : bool
 readCursor : int
 writeCursor : int
 multiplay : int
@@ -737,7 +738,7 @@ id : string
 _key : string
 _table : table
 size : int
-loop : int
+loop : bool
 readCursor : int
 writeCursor : int
 multiplay : int
@@ -763,7 +764,7 @@ id : string
 _key : string
 _table : table
 size : int
-loop : int
+loop : bool
 readCursor : int
 writeCursor : int
 multiplay : int
@@ -790,7 +791,7 @@ id : string
 _key : string
 _table : table
 size : int
-loop : int
+loop : bool
 readCursor : int
 writeCursor : int
 multiplay : int

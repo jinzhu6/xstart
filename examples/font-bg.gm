@@ -17,7 +17,7 @@ bg2.clear("#ff0000");
 bg2.x = 60;
 
 global text = Text();
-text.font = Font("fonts/arial.ttf", 22);
+text.font = Font("fonts/default.ttf", 22);
 text.text = "Hello World! 1234567890";
 text.color = "#ff0000ff";
 text.clearColor = "#00000000";
