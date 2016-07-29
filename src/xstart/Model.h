@@ -5,11 +5,13 @@
 #include "NodeEx.h"
 #include <vector>
 
-class Model : public NodeEx {
+void Load3D_OBJ(Mesh* mesh, const char* file);
+
+class Mesh : public NodeEx {
 public:
-	Model() : NodeEx() {
-		id = "Model";
-		help = "3D Model node.";
+	Mesh() : NodeEx() {
+		id = "Mesh";
+		help = "3D mesh.";
 
 		texture0 = 0;
 		texture1 = 0;
@@ -26,11 +28,12 @@ public:
 		BindMember("texture1", &texture0, TYPE_OBJECT);
 		BindMember("texture2", &texture0, TYPE_OBJECT);
 		BindMember("texture3", &texture0, TYPE_OBJECT);
-		BindFunction("setPosition", (SCRIPT_FUNCTION)&Model::gm_setPosition, "[this] setPosition({int} index, {float} x, {float} y, {float} z)");
-		BindFunction("setTexCoord", (SCRIPT_FUNCTION)&Model::gm_setTexCoord, "[this] setTexCoord({int} index, {float} u, {float} v, {float} w)");
-		BindFunction("setNormal", (SCRIPT_FUNCTION)&Model::gm_setNormal, "[this] setNormal({int} index)");
+		BindFunction("LoadObj", (SCRIPT_FUNCTION)&Mesh::gm_loadObj, "[this] loadObj({string} file)");
+		BindFunction("setPosition", (SCRIPT_FUNCTION)&Mesh::gm_setPosition, "[this] setPosition({int} index, {float} x, {float} y, {float} z)");
+		BindFunction("setTexCoord", (SCRIPT_FUNCTION)&Mesh::gm_setTexCoord, "[this] setTexCoord({int} index, {float} u, {float} v, {float} w)");
+		BindFunction("setNormal", (SCRIPT_FUNCTION)&Mesh::gm_setNormal, "[this] setNormal({int} index)");
 	}
-	~Model() {
+	~Mesh() {
 		free(positions);
 		free(texCoords);
 		free(normals);
@@ -63,6 +66,15 @@ public:
 		if(texture1) { texture1->isRenderable = true; }
 		if(texture2) { texture2->isRenderable = true; }
 		if(texture3) { texture3->isRenderable = true; }
+	}
+
+	bool loadObj(const char* file) {
+		return Load3D_OBJ(this, file);
+	}
+	int gm_loadObj(gmThread* a_thread) {
+		GM_CHECK_STRING_PARAM(file, 0);
+		loadObj(file);
+		return ReturnThis(a_thread);
 	}
 
 	void setPosition(int index, float x, float y, float z) {
