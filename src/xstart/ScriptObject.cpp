@@ -142,9 +142,10 @@ void GM_CDECL Script_Object_SetIndex(gmThread* a_thread, gmVariable* a_operands)
 void GM_CDECL Script_Object_Destruct(gmMachine* a_machine, gmUserObject* a_object) {
 	ScriptObject* object = (ScriptObject*)a_object->m_user;
 	if(object) {
-		/*if(machine->IsCPPOwnedGMObject(a_object)) {
-			Log(LOG_DEBUG, "Attempted to destruct user-owned object by GC."); return;
-		}*/
+		if(machine->IsCPPOwnedGMObject(a_object)) {
+			Log(LOG_DEBUG, "Attempted to destruct user-owned object by GC: [%s] at [%x]", object->id.c_str(), object);
+			return;
+		}
 		a_object->m_user = 0;
 		if(!Script_Object_Find(object)) {
 			Log(LOG_ERROR, "GC failed, object not or no longer known: [%s] at [%x]", object->id.c_str(), object);

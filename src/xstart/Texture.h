@@ -2,6 +2,7 @@
 #define _TEXTURE_H_
 
 #include "NodeEx.h"
+#include "Bitmap.h"
 
 
 class Texture : public NodeEx {

@@ -176,6 +176,7 @@ int GM_CDECL Script_System_Async(gmThread* a_thread) {
 }
 
 int GM_CDECL Script_Exit(gmThread* th) {
+	MachineDestroy();
 	exit(0);
 	return GM_OK;
 }

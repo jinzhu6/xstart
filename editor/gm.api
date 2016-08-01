@@ -454,47 +454,6 @@ outline : int
 password : int
 passwordLength : int
 outlineColor : string
-Model((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
-toString() : string
-update() : this
-render() : this
-hit(float x, float y) : int
-setClipRegion(float left, float top, float right, float bottom) : this
-getChild(int index) : Node
-left() : this
-center() : this
-right() : this
-top() : this
-middle() : this
-bottom() : this
-setPosition(int index, float x, float y, float z) : this
-setTexCoord(int index, float u, float v, float w) : this
-setNormal(int index) : this
-id : string
-_key : string
-_table : table
-visible : int
-position : Vector
-pivot : Vector
-dimension : Vector
-rotation : Vector
-scaling : Vector
-scale : float
-x : float
-y : float
-z : float
-width : float
-height : float
-depth : float
-rotate : float
-shader : Shader
-useShader : int
-color : Color
-texture : object
-texture0 : object
-texture1 : object
-texture2 : object
-texture3 : object
 Shader(string vertexShaderFile, string fragmentShaderFile)
 toString() : string
 update() : this

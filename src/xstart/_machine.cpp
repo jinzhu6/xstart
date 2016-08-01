@@ -306,7 +306,8 @@ bool MachineRun(FILE* in) {
 * MachineDestroy
 *******************************************************************************/
 int MachineDestroy() {
-	delete machine;
+	machine->ResetAndFreeMemory();
 	Script_Objects_Print();
+	delete machine;
 	return 0;
 }

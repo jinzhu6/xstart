@@ -30,6 +30,7 @@ public:
 		help = "";
 		
 		dataIn = new Data();
+		locked = false;
 
 		BindFunction("convert", (SCRIPT_FUNCTION)&AudioData::gm_convert, "[this] convert({int} sampleRate, {int} bitsPerSample");
 		BindMember("multiplay", &multiplay, TYPE_INT, 0, "{int} multiplay", "Allow to duplicate this audiobuffer for playing multiple instances simultaneously.");
@@ -204,6 +205,7 @@ public:
 	int isPlaying;
 	bool isDuplicate;
 	bool stop;
+	bool locked;
 	int multiplay;
 
 	float volume;
@@ -565,13 +567,14 @@ public:
 		BindFunction("process", (SCRIPT_FUNCTION)&AudioDevice::gm_process);
 		BindMember("input", &dataIn, TYPE_OBJECT, 0);
 		BindMember("output", &dataOut, TYPE_OBJECT, 0);
+		dataIn->SetCppOwned(true);
+		dataOut->SetCppOwned(true);
 	}
 
 	~AudioDevice() {
 		close();
-		// TODO: Fix garbage collection at program exit!
-//		delete(dataIn);
-//		delete(dataOut);
+		delete(dataIn);
+		delete(dataOut);
 		Pa_Terminate();
 	}
 
@@ -742,6 +745,10 @@ public:
 	}
 
 	void processInput(float* input, unsigned long numSamplesPerChannel) {
+		// lock buffer
+		this->dataIn->locked = true;
+		
+		// check
 		if(!input) { return; }
 		int bufferBytesSizeIn  = numSamplesPerChannel * sizeof(float) * this->dataIn->format.nChannels;
 
@@ -759,10 +766,14 @@ public:
 		// TODO: Do we need that???
 		// set read cursor to previous write position
 //		this->dataIn->readCursor = prevWriteCursor;
+		
+		// unlock buffer
+		this->dataIn->locked = false;
 	}
 
 	void processOutput(float* output, unsigned long numSamplesPerChannel) {
 		int bufferBytesSizeOut = numSamplesPerChannel * sizeof(float) * this->dataOut->format.nChannels;
+		Log(LOG_INFO, "Writing %d bytes...", bufferBytesSizeOut);
 
 		// ensure output data buffer is large enough
 		if(this->dataOut->size < bufferBytesSizeOut) { this->dataOut->resize(bufferBytesSizeOut); }
@@ -772,6 +783,9 @@ public:
 
 		for(std::list<AudioData*>::iterator i = this->buffers.begin(); i != this->buffers.end();) {
 			AudioData* buffer = *i;
+
+			if (buffer->bytesAvailable < bufferBytesSizeOut) continue;
+			//while (buffer->locked || buffer->bytesAvailable < bufferBytesSizeOut) { Log(LOG_DEBUG, "Waiting for data..."); }
 
 			bool bufferActive = false;
 			if( !buffer->stop ) {

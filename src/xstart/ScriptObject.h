@@ -110,6 +110,7 @@ public:
 		userObject = 0;
 		isRenderable = false;
 		isEventHandler = false;
+		cppOwned = false;
 
 		table = machine->AllocTableObject();
 		machine->AddCPPOwnedGMObject(table);
@@ -346,6 +347,7 @@ public:
 			userObject = machine->AllocUserObject(this, GM_TYPE_OBJECT);
 			if(cppOwned) {
 				machine->AddCPPOwnedGMObject(userObject);
+				this->cppOwned = true;
 			}
 		}
 		return gmVariable(userObject);
@@ -359,6 +361,7 @@ public:
 			userObject = machine->AllocUserObject(this, GM_TYPE_OBJECT);
 			if(cppOwned) {
 				machine->AddCPPOwnedGMObject(userObject);
+				this->cppOwned = true;
 			}
 		}
 		a_thread->Push(gmVariable(userObject));
@@ -373,6 +376,22 @@ public:
 		nullvar.Nullify();
 		a_thread->Push(nullvar);
 		return GM_OK;
+	}
+	
+	// ************************************************************************
+	// IsCppOwned()
+	// ************************************************************************
+	bool IsCppOwned() {	
+		return machine->IsCPPOwnedGMObject(userObject);
+	}
+
+	// ************************************************************************
+	// SetCppOwned()
+	// ************************************************************************
+	void SetCppOwned(bool owned) {
+		if (!userObject) { Log(LOG_WARNING, "Error in SetCppOwned() - userObject does not exist!"); }
+		if (owned && !IsCppOwned()) { machine->AddCPPOwnedGMObject(userObject); cppOwned = true; }
+		else if (IsCppOwned()) { machine->RemoveCPPOwnedGMObject(userObject); cppOwned = false;  }
 	}
 
 	// ************************************************************************
@@ -484,6 +503,7 @@ public:
 public:
 	bool isRenderable;    // to detect scene nodes
 	bool isEventHandler;  // to detect event handler nodes
+	bool cppOwned;
 	std::string id;   // id is set to class name initially but can be changed in script
 	std::string _key;
 	std::string help;
