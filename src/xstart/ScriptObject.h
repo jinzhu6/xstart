@@ -105,7 +105,7 @@ public:
 	// ************************************************************************
 	ScriptObject() {
 		id = "Object";
-		help = "Object base class. Similar to the object in JavaScript, as it has a user table for its members.";
+		help = "Object base class. Like an object in JavaScript it has a user table for its members.";
 		ctor = "((optional) {string} id)";
 		userObject = 0;
 		isRenderable = false;

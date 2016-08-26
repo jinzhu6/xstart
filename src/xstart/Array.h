@@ -10,7 +10,7 @@ public:
 
 	ArrayObject() : ScriptObject() {
 		id = "Array";
-		help = "Dynamic array class for storing a linear array of objects.";
+		help = "Dynamic array class for storing a linear array of objects, native types or a mix of that.";
 
 		length = 0;
 
