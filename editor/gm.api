@@ -682,6 +682,7 @@ writeCursor : int
 multiplay : int
 playing : int
 volume : float
+bytesAvailable : int
 AudioFilter(AudioData source)
 toString() : string
 loadRaw(string file) : this
@@ -703,6 +704,7 @@ writeCursor : int
 multiplay : int
 playing : int
 volume : float
+bytesAvailable : int
 enabled : int
 seconds : int
 source : AudioData
@@ -729,6 +731,7 @@ writeCursor : int
 multiplay : int
 playing : int
 volume : float
+bytesAvailable : int
 enabled : int
 seconds : int
 source : AudioData
@@ -756,6 +759,7 @@ writeCursor : int
 multiplay : int
 playing : int
 volume : float
+bytesAvailable : int
 enabled : int
 seconds : int
 source : AudioData

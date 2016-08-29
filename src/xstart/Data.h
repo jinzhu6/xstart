@@ -23,7 +23,7 @@ public:
 		
 		BindMember("loop", &loop, TYPE_INT, 0, "{bool} loop", "Set to true to wrap the read and write cursor when they reach the end of the stream.");
 		BindMember("readCursor", &readCursor, TYPE_INT, 0, "{int} readCursor", "Read cursor.");
-		BindMember("writeCursor", &readCursor, TYPE_INT, 0, "{int} writeCursor", "Write cursor.");
+		BindMember("writeCursor", &writeCursor, TYPE_INT, 0, "{int} writeCursor", "Write cursor.");
 	}
 
 	~Data() {
