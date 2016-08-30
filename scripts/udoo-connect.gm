@@ -133,7 +133,7 @@ global UpdateUI = function() {
 	global SELECTED_IP;
 	local i = 0;
 	foreach(ip in UDOOS) {
-        if(time() - UDOOS[ip].timestamp > 16.0) {
+        if(time() - UDOOS[ip].timestamp > 28.0) {
             thread(OpenNotification, "Connection to "+UDOOS[ip].name+" was lost.");
             sleep(0.5);
             UDOOS.set(ip, null); continue;

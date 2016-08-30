@@ -1,0 +1,8 @@
+global A = Array();
+A.add(1);
+A.add(2);
+A.add(4);
+log("index of 4 is "+A.find(4));
+log("at index 2 there is "+A[2]);
+A[2] = 5;
+log("at index 2 there is "+A[2]);
