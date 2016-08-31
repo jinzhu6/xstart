@@ -30,11 +30,13 @@ public:
 		help = "";
 		
 		dataIn = new Data();
+		locked = false;
 
 		BindFunction("convert", (SCRIPT_FUNCTION)&AudioData::gm_convert, "[this] convert({int} sampleRate, {int} bitsPerSample");
 		BindMember("multiplay", &multiplay, TYPE_INT, 0, "{int} multiplay", "Allow to duplicate this audiobuffer for playing multiple instances simultaneously.");
 		BindMember("playing", &isPlaying, TYPE_INT, 0, "{int} playing", "Audiobuffer is currently playing.");
 		BindMember("volume", &volume, TYPE_FLOAT, 0, "{float} volume", "Volume of audio playback for this buffer. Ranges from 0.0 to 1.0.");
+		BindMember("bytesAvailable", &bytesAvailable, TYPE_INT, 0);
 	}
 
 	~AudioData() {
@@ -204,6 +206,7 @@ public:
 	int isPlaying;
 	bool isDuplicate;
 	bool stop;
+	volatile bool locked;
 	int multiplay;
 
 	float volume;
@@ -237,11 +240,13 @@ public:
 		BindMember("source", &source, TYPE_OBJECT, 0, "[AudioData] source", "Source for streaming audio data to a device.");
 		BindMember("history", &history, TYPE_OBJECT, 0, "[AudioData] history", "Audio buffer for story the history of the sound.");
 		BindMember("outputFile", &outputFile, TYPE_STRING, 0);
+
+		history->SetCppOwned(true);
 	}
 
 	~AudioFilter() {
 		if(hf) { fclose(hf); hf =0; }
-		delete source;
+//		delete source;
 		delete history;
 	}
 
@@ -565,13 +570,14 @@ public:
 		BindFunction("process", (SCRIPT_FUNCTION)&AudioDevice::gm_process);
 		BindMember("input", &dataIn, TYPE_OBJECT, 0);
 		BindMember("output", &dataOut, TYPE_OBJECT, 0);
+		dataIn->SetCppOwned(true);
+		dataOut->SetCppOwned(true);
 	}
 
 	~AudioDevice() {
 		close();
-		// TODO: Fix garbage collection at program exit!
-//		delete(dataIn);
-//		delete(dataOut);
+		delete(dataIn);
+		delete(dataOut);
 		Pa_Terminate();
 	}
 
@@ -742,6 +748,10 @@ public:
 	}
 
 	void processInput(float* input, unsigned long numSamplesPerChannel) {
+		// lock buffer
+		this->dataIn->locked = true;
+		
+		// check
 		if(!input) { return; }
 		int bufferBytesSizeIn  = numSamplesPerChannel * sizeof(float) * this->dataIn->format.nChannels;
 
@@ -749,20 +759,24 @@ public:
 		if(this->dataIn->size < bufferBytesSizeIn) { this->dataIn->resize(bufferBytesSizeIn); }
 
 		// remember write position
-		unsigned long prevWriteCursor = this->dataIn->writeCursor;
+		//unsigned long prevWriteCursor = this->dataIn->writeCursor;
 		
 		// copy input-data to devices input-buffer
 		this->dataIn->writeBytes((unsigned char*)input, bufferBytesSizeIn);
-		Log(LOG_INFO, "Reading %d bytes...", bufferBytesSizeIn);
+		//Log(LOG_DEBUG, "Reading %d bytes...", bufferBytesSizeIn);
 		this->dataIn->bytesAvailable += bufferBytesSizeIn;
 
 		// TODO: Do we need that???
 		// set read cursor to previous write position
 //		this->dataIn->readCursor = prevWriteCursor;
+		
+		// unlock buffer
+		this->dataIn->locked = false;
 	}
 
 	void processOutput(float* output, unsigned long numSamplesPerChannel) {
 		int bufferBytesSizeOut = numSamplesPerChannel * sizeof(float) * this->dataOut->format.nChannels;
+		//Log(LOG_DEBUG, "Writing %d bytes...", bufferBytesSizeOut);
 
 		// ensure output data buffer is large enough
 		if(this->dataOut->size < bufferBytesSizeOut) { this->dataOut->resize(bufferBytesSizeOut); }
@@ -772,6 +786,9 @@ public:
 
 		for(std::list<AudioData*>::iterator i = this->buffers.begin(); i != this->buffers.end();) {
 			AudioData* buffer = *i;
+
+			if (buffer->bytesAvailable < bufferBytesSizeOut) { Log(LOG_DEBUG, "Audio buffer underflow, available is %d, requested are %d!", buffer->bytesAvailable, bufferBytesSizeOut); }
+			//while (buffer->locked) { Log(LOG_DEBUG, "Audio buffer is locked, waiting for audio data..."); }
 
 			bool bufferActive = false;
 			if( !buffer->stop ) {

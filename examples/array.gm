@@ -1,15 +1,15 @@
 ar = Array();
-ar.add(Object("Das"));
-ar.add(Object("ist"));
-ar.add(Object("ein"));
-obj = ar.add(Object("Test"));
+ar.add("Das");
+ar.add("ist");
+ar.add(1);
+
+obj = ar.add("Test");
+print(obj+" is at index "+ar.find(obj)+"\n");
 
 ar.remove(0);
 ar.remove(1);
-ar.set(0, Object("Ein"));
-
-print(obj.toString()+" is at index "+ar.find(obj)+"\n");
+ar.set(0, 1);
 
 foreach(e in ar) {
-	print(e.id + "+");
+	print(e + " ");
 }

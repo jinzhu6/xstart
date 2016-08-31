@@ -45,15 +45,21 @@ public:
 		BindFunction("peek", (SCRIPT_FUNCTION)&SerialPort::gm_peek, "{int} peek()", "NOT SUPPORTED ON WINDOWS!");
 		BindFunction("write", (SCRIPT_FUNCTION)&SerialPort::gm_write, "[this] write({string} data)");
 		BindFunction("writeData", (SCRIPT_FUNCTION)&SerialPort::gm_writeData, "[this] writeData([Data] data)");
-		BindFunction("read", (SCRIPT_FUNCTION)&SerialPort::gm_read, "{string} read()");
-		BindFunction("readEx", (SCRIPT_FUNCTION)&SerialPort::gm_readEx, "{string} read({int} maxChar, {int} endChar, {int} timeout)");
-		BindFunction("readData", (SCRIPT_FUNCTION)&SerialPort::gm_readData, "[Data] readData({int} maxChar, {int} timeout)");
+		BindFunction("read", (SCRIPT_FUNCTION)&SerialPort::gm_read, "{string} read({float} timeoutSeconds)");
+		BindFunction("readEx", (SCRIPT_FUNCTION)&SerialPort::gm_readEx, "{string} read({int} maxChar, {int} endChar, {float} timeoutSeconds)");
+		BindFunction("readData", (SCRIPT_FUNCTION)&SerialPort::gm_readData, "[Data] readData({int} maxChar, {float} timeoutSeconds)");
 	}
 
 	~SerialPort() {
 		_close();
 	}
 
+	int Initialize(gmThread* a_thread) {
+		if (a_thread->GetNumParams() >= 1) {
+			gm_open(a_thread);
+		}
+		return GM_OK;
+	}
 
 	int gm_open(gmThread* a_thread) {
 		int np = a_thread->GetNumParams();
@@ -104,11 +110,11 @@ public:
 
 	int gm_read(gmThread* a_thread) {
 		char buffer[4096];
-		int timeout = 0;
-		a_thread->ParamInt(0, timeout, 0);
+		float timeout = 0;
+		a_thread->ParamFloat(0, timeout, 0.0);
 		memset(buffer, 0, 4096);
 //		_read(buffer, 4095, 1);
-		readString(buffer, '\n', 4095, timeout);
+		readString(buffer, '\n', 4095, (int)(timeout*1000));
 		trim(buffer);
 		a_thread->PushNewString(buffer);
 		return GM_OK;
@@ -118,10 +124,11 @@ public:
 		char buffer[4096];
 		GM_CHECK_INT_PARAM(maxChar,0);
 		GM_CHECK_INT_PARAM(endChar,1);
-		GM_CHECK_INT_PARAM(timeout,2);
+		GM_CHECK_FLOAT_PARAM(timeout,2);
+		if (maxChar >= 4096) maxChar = 4096;
 		memset(buffer, 0, 4096);
 //		_read(buffer, 4095, 1);
-		readString(buffer, endChar, maxChar, timeout);
+		readString(buffer, endChar, maxChar, (int)(timeout * 1000));
 		trim(buffer);
 		a_thread->PushNewString(buffer);
 		return GM_OK;
@@ -130,8 +137,7 @@ public:
 	int gm_readData(gmThread* a_thread) {
 		char buffer[4096];
 		GM_CHECK_INT_PARAM(maxChar, 0);
-//		GM_CHECK_INT_PARAM(endChar, 1);
-		GM_CHECK_INT_PARAM(timeout, 1);
+		GM_CHECK_FLOAT_PARAM(timeout, 1);
 		memset(buffer, 0, 4096);
 		
 		if (timeout == 0) { timeout = 1; }
@@ -139,7 +145,7 @@ public:
 		data->resize(maxChar);
 		int i=0; char d;
 		while (i < maxChar) {
-			if (_readChar(&d, timeout) <= 0) { // timeout
+			if (_readChar(&d, (int)(timeout * 1000)) <= 0) { // timeout
 				break;
 			}
 			data->poke(i++, d);

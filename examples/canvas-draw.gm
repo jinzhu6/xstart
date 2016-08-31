@@ -29,4 +29,14 @@ frame.root["canvas"].onMouseUp = function(event) {
 };
 
 
+<<<<<<< .mine
 while(true) { frame.render(); }
+=======
+while(true) {
+>>>>>>> .theirs
+	frame.render(); yield();
+<<<<<<< .mine
+
+=======
+}
+>>>>>>> .theirs

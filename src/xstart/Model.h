@@ -3,7 +3,10 @@
 
 #include "ScriptObject.h"
 #include "NodeEx.h"
+#include "Texture.h"
 #include <vector>
+
+class Mesh;
 
 void Load3D_OBJ(Mesh* mesh, const char* file);
 
@@ -69,7 +72,7 @@ public:
 	}
 
 	bool loadObj(const char* file) {
-		return Load3D_OBJ(this, file);
+		Load3D_OBJ(this, file);
 	}
 	int gm_loadObj(gmThread* a_thread) {
 		GM_CHECK_STRING_PARAM(file, 0);

@@ -1,0 +1,42 @@
+debug(2);
+
+// enumerate audio devices
+global ADEVICE_ENUM = AudioDeviceInfo();
+for(i=0; true; i+=1) {
+	ADEVICE_ENUM.getDevice(i);
+	if(ADEVICE_ENUM.index == -1) { break; }
+	log("Found audio-device: "+ADEVICE_ENUM.name);
+}
+
+// init internal
+global INTERNAL = AudioDevice(44100, 2, 256,
+    AudioDeviceInfo(0, "Soundaufnahmetreiber").index,
+        AudioDeviceInfo(0, "Soundtreiber").index);
+
+// init soundblaster
+global SOUNDBLASTER = AudioDevice(44100, 2, 256,
+        AudioDeviceInfo(0, "Mikrofon (Sound Blaster Play! 2)").index,
+        AudioDeviceInfo(0, "Lautsprecher (Sound Blaster Play! 2").index);
+SOUNDBLASTER.output.volume = 1.0;  // no effect?!
+SOUNDBLASTER.input.volume = 10.0;
+
+INTERNAL.play(SOUNDBLASTER.input);
+sleep(10.0);
+
+/*global AUDIO = AudioDevice(44100, 2, 256, AudioDeviceInfo(0, "asio").index, AudioDeviceInfo(0, "asio").index);
+global AUDIO2 = AudioDevice(44100, 2, 256, AudioDeviceInfo(0, "usb", 0, 2).index,-1);
+
+AUDIO2.play(AUDIO2.input);
+sleep(25.0);*/
+//exit();
+
+/*FILTER_RECORD = AudioFilter(AUDIO2.input);
+FILTER_RECORD.outputFile = "test-smartphone.wav";
+AUDIO.play(FILTER_RECORD);
+
+sleep(4.5);
+log("done");
+AUDIO.stop(FILTER_RECORD);
+sleep(0.5);
+exit();
+*/

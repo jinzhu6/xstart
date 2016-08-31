@@ -10,17 +10,17 @@ public:
 
 	ArrayObject() : ScriptObject() {
 		id = "Array";
-		help = "Dynamic array class for storing a linear array of objects.";
+		help = "Dynamic array class for storing a linear array of objects, native types or a mix of that.";
 
 		length = 0;
 
-		BindFunction("get", (SCRIPT_FUNCTION)&ArrayObject::gm_get, "[Object] get({int} index)", "Get the object at the given index.");
-		BindFunction("add", (SCRIPT_FUNCTION)&ArrayObject::gm_add, "[Object] add([Object] object)", "Adds an object to the end of the array. The added object is returned.");
-		BindFunction("set", (SCRIPT_FUNCTION)&ArrayObject::gm_set, "[this] set({int} index, [Object] object)", "Sets the given object to the given index.");
+//		BindFunction("get", (SCRIPT_FUNCTION)&ArrayObject::gm_get, "[Object] get({int} index)", "Get the object at the given index. Same as brackets, eg. A[0].");
+		BindFunction("append", (SCRIPT_FUNCTION)&ArrayObject::gm_add, "[Object] add([Object] object)", "Adds an object to the end of the array. The added object is returned.");
+//		BindFunction("set", (SCRIPT_FUNCTION)&ArrayObject::gm_set, "[this] set({int} index, [Object] object)", "Sets the given object to the given index.");
 		BindFunction("remove", (SCRIPT_FUNCTION)&ArrayObject::gm_remove, "[this] remove({int} index)", "Removes the element at the given index from the array.");
 		BindFunction("find", (SCRIPT_FUNCTION)&ArrayObject::gm_find, "{int} find([Object] object)", "Finds the index of the given object, returns -1 if the object is not in the array.");
 		BindFunction("length", (SCRIPT_FUNCTION)&ArrayObject::gm_length, "{int} length()", "Returns the length of the array.");
-		BindFunction("parse", (SCRIPT_FUNCTION)&ArrayObject::gm_parse, "[this] parse({string} json)", "Parses a JSON representation to an object.");
+		BindFunction("parse", (SCRIPT_FUNCTION)&ArrayObject::gm_parse, "[this] parse({string} json)", "EXPERIMENTAL, UNFINISHED. Parses a JSON representation to an object.");
 		// TODO: Resize/Size array function
 	}
 
