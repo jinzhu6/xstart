@@ -2,6 +2,7 @@
 #define _WEBSERVER_H_
 
 #include "ScriptObject.h"
+#include "Data.h"
 #include <mongoose.h>
 
 class HttpServer;
@@ -15,12 +16,13 @@ public:
 		help = "Spawns a HTTP server.";
 		ctor = "({string} port)";
 
-		BindFunction("poll", (SCRIPT_FUNCTION)&HttpServer::gm_poll);
-		BindFunction("onRequest", (SCRIPT_FUNCTION)&HttpServer::gm_onRequest);
-		BindFunction("serveReqFile", (SCRIPT_FUNCTION)&HttpServer::gm_serveReqFile);
-		BindFunction("send", (SCRIPT_FUNCTION)&HttpServer::gm_send);
-		BindFunction("send404", (SCRIPT_FUNCTION)&HttpServer::gm_send404);
-		BindFunction("sendAuthRequest", (SCRIPT_FUNCTION)&HttpServer::gm_sendAuthRequest);
+		BindFunction("poll", (SCRIPT_FUNCTION)&HttpServer::gm_poll, "[this] poll({float} timeoutSeconds)", "Polls for incoming http requests.");
+		BindFunction("onRequest", (SCRIPT_FUNCTION)&HttpServer::gm_onRequest, "onRequest({string} url, {string} get, {string} post, {string} auth)", "Request handler/callback, the default request handler sends a 404 http error code to all request. Override this handler to your own logic.");
+		BindFunction("serveReqFile", (SCRIPT_FUNCTION)&HttpServer::gm_serveReqFile, "serveReqFile()", "When called inside the request-handler, it send the requested file to the client.");
+		BindFunction("send", (SCRIPT_FUNCTION)&HttpServer::gm_send, "[this] send({string} data)", "When called inside the request-handler, it sends a string back to the client.");
+		//BindFunction("sendData", (SCRIPT_FUNCTION)&HttpServer::gm_sendData, "[this] sendData([Data] data)", "When called inside the request-handler, it sends the content of a Data object back to the client.");
+		BindFunction("send404", (SCRIPT_FUNCTION)&HttpServer::gm_send404, "[this] send404()", "When called inside the request-handler, it sends a a 404 error back to the client.");
+		BindFunction("sendAuthRequest", (SCRIPT_FUNCTION)&HttpServer::gm_sendAuthRequest, "[this] sendAuthRequest({string} message)", "When called inside the request-handler, it sends a authorizsation request ('401 Access Denied') back to the client.");
 	}
 
 	~HttpServer() {

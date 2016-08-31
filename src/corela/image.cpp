@@ -924,12 +924,13 @@ void ImageSavePNG(IMAGE* image, const char* filename) {
 }
 bool ImageLoadPNG(IMAGE* image, const char* filename) {
 	// open file for reading
-	//FILE* hf = fopen(filename, "rb");
-	FILE* hf;
+	FILE* hf = fopen(filename, "rb");
+
+/*	FILE* hf;
 	int err = fopen_s(&hf, filename, "rb");
 	if (!hf) { 
 		Log(LOG_ERROR, "Error while opening the file'%s': %s", filename, strerror(err));
-		return false; }
+		return false; }*/
 	
 	// check header
 	char header[8];

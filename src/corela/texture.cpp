@@ -364,8 +364,6 @@ coByte* TextureLock(TEXTURE* tex, coBool read, int format) {
 
 		return (coByte*)ptr;
 	} else {
-		BEGIN_CHECK_GL_ERROR();
-
 		if(tex->pLockMem) {
 			free(tex->pLockMem);
 		}
@@ -373,12 +371,17 @@ coByte* TextureLock(TEXTURE* tex, coBool read, int format) {
 //		memset(tex->pLockMem, 0x00, tex->width * tex->height * 4);
 
 		if(read) {
+            BEGIN_CHECK_GL_ERROR();
 			glBindTexture(tex->target, tex->handle);
+			END_CHECK_GL_ERROR("TextureLock::glBindTexture");
+
 			// TODO: glGetTexImage does not work on Udoo!?!
+			BEGIN_CHECK_GL_ERROR();
 			glGetTexImage(tex->target, 0, format, GL_UNSIGNED_BYTE, tex->pLockMem);
+			END_CHECK_GL_ERROR("TextureLock::glGetTexImage");
 		}
 
-		END_CHECK_GL_ERROR("TextureLock");
+
 
 		return tex->pLockMem;
 	}

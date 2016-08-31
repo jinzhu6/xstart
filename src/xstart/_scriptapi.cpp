@@ -424,7 +424,7 @@ int GM_CDECL Script_GetArguments(gmThread* a_thread) {
 
 int GM_CDECL Script_FcloseAll(gmThread* a_thread) {
 	// TODO: Properly fix file handles
-	int closed = _fcloseall();
+	int closed = fcloseall();
 	if (closed) {
 		Log(LOG_WARNING, "Closed %d open file streams.", closed);
 	}
