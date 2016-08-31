@@ -1,4 +1,4 @@
-global SERVER = HttpServer("8080");
+global SERVER = HttpServer("8080", "/home/pi/");
 SERVER.onRequest = function(url, get, post, auth) {
     if(auth != "bastian:asdf") { this.sendAuthRequest("Login"); return; }
     //this.send("Welcome "+auth);
