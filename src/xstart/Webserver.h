@@ -14,7 +14,7 @@ public:
 	HttpServer() {
 		id = "HttpServer";
 		help = "Spawns a HTTP server.";
-		ctor = "({string} port)";
+		ctor = "({string} port, {string} docroot)";
 
 		BindFunction("poll", (SCRIPT_FUNCTION)&HttpServer::gm_poll, "[this] poll({float} timeoutSeconds)", "Polls for incoming http requests.");
 		BindFunction("onRequest", (SCRIPT_FUNCTION)&HttpServer::gm_onRequest, "onRequest({string} url, {string} get, {string} post, {string} auth)", "Request handler/callback, the default request handler sends a 404 http error code to all request. Override this handler to your own logic.");
@@ -31,17 +31,18 @@ public:
 
 	int Initialize(gmThread* a_thread) {
 		const char* port = a_thread->ParamString(0, "80");
-		init(port);
+		const char* docroot = a_thread->ParamString(1, ".");
+		init(port, docroot);
 		return GM_OK;
 	}
 
-	void init(const char* port) {
+	void init(const char* port, const char* docroot) {
 		mg_mgr_init(&mgr, this);
 		nc = mg_bind(&mgr, port, HttpEventHandler);
 		mg_set_protocol_http_websocket(nc);
 
 		memset(&s_http_server_opts, 0, sizeof(mg_serve_http_opts));
-		s_http_server_opts.document_root = ".";
+		s_http_server_opts.document_root = docroot;
 		s_http_server_opts.enable_directory_listing = "yes";
 	}
 
