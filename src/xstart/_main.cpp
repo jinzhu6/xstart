@@ -104,6 +104,10 @@ int ParseArgs(int argc, char* argv[]) {
 			SetLogLevel(2);
 		}
 
+		if(CheckForParam(argv[n], "nocolors")) {
+			SetLogColors(0);
+		}
+
 		if(CheckForParam(argv[n], "version") || CheckForParam(argv[n], "v")) {
 			Log(LOG_INFO, "%s %s  -  Compiled at %s %s. Debug: %s. OpenMP: %s.", NAME, VERSION, __DATE__, __TIME__,
 #ifdef _DEBUG
@@ -117,33 +121,6 @@ int ParseArgs(int argc, char* argv[]) {
 			    "no");
 #endif
 			exit(0);
-		}
-		if(CheckForParam(argv[n], "r") || CheckForParam(argv[n], "realtime")) {
-			Log(LOG_INFO, "Realtime.");
-		}
-		if(CheckForParam(argv[n], "msaa")) {
-			if(argc-1 > n) {
-				Log(LOG_INFO, "MSAA set to %s.", argv[++n]);
-			} else {
-				Log(LOG_ERROR, "MSAA NOT SET!");
-			}
-		}
-		if(CheckForParam(argv[n], "log") || CheckForParam(argv[n], "l")) {
-			if(argc-1 > n) {
-				Log(LOG_INFO, "Log set to '%s'.", argv[++n]);
-			} else {
-				Log(LOG_ERROR, "LOG TYPE NOT SET!");
-			}
-		}
-		if(CheckForParam(argv[n], "o") || CheckForParam(argv[n], "output")) {
-			if(argc-1 > n) {
-				Log(LOG_INFO, "Output set to '%s'.", argv[++n]);
-			} else {
-				Log(LOG_ERROR, "OUT NOT SET!");
-			}
-		}
-		if(CheckForParam(argv[n], "nocolors")) {
-			SetLogColors(0);
 		}
 	}
 

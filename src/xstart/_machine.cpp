@@ -133,8 +133,13 @@ bool LogThreadStatus(gmThread* thread, void* context) {
 bool MachineRunFile(const char* file) {
 	// temporary file
 	char fileTemp[4096];
+#ifdef _WIN32
 	char* appdata = getenv("APPDATA");
 	sprintf(fileTemp, "%s\\%s", appdata, "xstart.gm");
+#else
+	char* home = getenv("HOME");
+	sprintf(fileTemp, "%s/%s", home, ".xstart.gm");	
+#endif
 
 	// load, preprocess and save script
 	Log(LOG_DEBUG, "Preprocessing script ...");
