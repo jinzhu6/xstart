@@ -2,7 +2,7 @@
 #include "Model.h"
 
 bool IsEmptyCharacter(char c) {
-	if(c=='\n' || c=='\f' || c=='\r' || c=='\t' || c=='\v' || c=='\a') return true;
+	if(c==' ' || c=='\n' || c=='\f' || c=='\r' || c=='\t' || c=='\v' || c=='\a') return true;
 	return false;
 }
 
@@ -54,7 +54,7 @@ void Load3D_OBJ(Mesh* mesh, const char* file) {
 			}
 			break;
 		case '\n':
-			// eat space
+			// eat space at beginning
 			while(IsEmptyCharacter(c) && i<fsize) { c = buffer[++i]; }
 			break;
 		case '#':

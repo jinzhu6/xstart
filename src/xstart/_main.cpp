@@ -26,7 +26,7 @@
 #include "Detector.h"
 #include "Video.h"
 //#include "Sound.h"
-#include "Model.h"
+//#include "Model.h"
 #include "Astro.h"
 #include "Date.h"
 #include "Serial.h"
@@ -236,7 +236,7 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<Texture>("Texture");
 	MachineRegisterClass<Canvas>("Canvas");
 	MachineRegisterClass<Text>("Text");
-	MachineRegisterClass<Model>("Model");
+//	MachineRegisterClass<Model>("Model");
 	MachineRegisterClass<Shader>("Shader");
 	MachineRegisterClass<Framebuffer>("Framebuffer");
 	MachineRegisterClass<Recorder>("Recorder");

@@ -46,7 +46,7 @@ public:
 		BindFunction("maximize", (SCRIPT_FUNCTION)&Frame::gm_maximize);
 		BindFunction("minimize", (SCRIPT_FUNCTION)&Frame::gm_minimize);
 		BindFunction("show", (SCRIPT_FUNCTION)&Frame::gm_show);
-		BindFunction("mirror", (SCRIPT_FUNCTION)&Frame::gm_mirror);
+		//BindFunction("mirror", (SCRIPT_FUNCTION)&Frame::gm_mirror); // use "mirrorX" and "mirrorY"
 #ifdef _WIN32
 		BindFunction("activate", (SCRIPT_FUNCTION)&Frame::gm_activate);
 		BindFunction("getMultitouchCount", (SCRIPT_FUNCTION)&Frame::gm_getMultitouchCount);
@@ -214,22 +214,11 @@ public:
 	}
 
 	void render(bool doClear) {
-		if(!internalHandle) {
-			Log(LOG_ERROR, "Attempted to render to non-opened frame.");
-			return;
-		}
-		glUtilsSetRenderTarget(0);
-		select();
-		if(doClear) {
-			clear();
-		}
-		if(root) {
-			root->ValidateAndRender();
-		}
-		if(doClear) {
-			flip();
-			//show(true);
-		}
+		if(!internalHandle) { Log(LOG_ERROR, "Attempted to render to non-opened frame."); return; }
+		glUtilsSetRenderTarget(0); select();
+		if(doClear) { clear(); }
+		if(root) { root->ValidateAndRender(); }
+		if(doClear) { flip(); show(true); }
 	}
 	int gm_render(gmThread* a_thread) {
 		int doClear = 1;

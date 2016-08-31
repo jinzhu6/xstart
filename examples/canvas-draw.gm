@@ -29,6 +29,4 @@ frame.root["canvas"].onMouseUp = function(event) {
 };
 
 
-while(true) {
-	frame.render();
-}
+while(true) { frame.render(); }
