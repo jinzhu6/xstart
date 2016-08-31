@@ -2,8 +2,11 @@
 #define _FILE_H_
 
 #include "ScriptObject.h"
-//#include <unistd.h>
+#ifndef _WIN32
+#include <unistd.h>
+#else
 #include <io.h>
+#endif
 
 class File : public ScriptObject {
 public:

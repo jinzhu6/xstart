@@ -1,5 +1,5 @@
-global f = Frame("test", 50, 50, 640, 480, "#00cccc").showCursor(true).show(true).toggle();
-f.root["image"] = Texture("images/texture.png", 320, 240).update().center().middle();
+global f = Frame("test", 50, 50, 320, 240, "#00cccc").showCursor(true).show(true).toggle();
+f.root["image"] = Texture("images/texture.png", 160, 120).update().center().middle();
 //f.onKeyDown = function(evt) { exit(); };
 f.root["fps"] = Text("...", Font("lib/data/default.ttf", 40), 10, 10, "#ff000080");
 
@@ -22,5 +22,7 @@ thread(FramesPerSecond);
 
 while(1) {
 	++fps_count;
+	log(""+fps_count);
 	f.render();
+        yield();
 }
