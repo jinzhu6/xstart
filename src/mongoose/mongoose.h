@@ -1842,7 +1842,7 @@ struct mg_serve_http_opts {
  * ----
  */
 void mg_serve_http(struct mg_connection *, struct http_message *,
-                   struct mg_serve_http_opts);
+                   struct mg_serve_http_opts, const char* file);
 
 #ifdef __cplusplus
 }

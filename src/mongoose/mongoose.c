@@ -6181,7 +6181,7 @@ void mg_send_http_file(struct mg_connection *nc, char *path,
 }
 
 void mg_serve_http(struct mg_connection *nc, struct http_message *hm,
-                   struct mg_serve_http_opts opts) {
+                   struct mg_serve_http_opts opts, const char* file) {
   char path[MG_MAX_PATH];
   struct mg_str *hdr;
 
@@ -6209,6 +6209,11 @@ void mg_serve_http(struct mg_connection *nc, struct http_message *hm,
   }
 
   uri_to_path(hm, path, sizeof(path), &opts);
+  
+  // added this line to overwrite the file to serve
+  // TODO: use docroot to file the file
+  if (file) if(strlen(file) > 0) strcpy(path, file);
+  
   mg_send_http_file(nc, path, sizeof(path), hm, &opts);
 
   /* Close connection for non-keep-alive requests */

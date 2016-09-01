@@ -80,7 +80,7 @@ public:
 
 	Handler() : ScriptObject() {
 		id = "Handler";
-		help = "Base class for all [Node] objects that receive events of type [Event].";
+		help = "MAY NOT BE OF USE IN SCRIPTS. Base class for all [Node] objects that receive events of type [Event].";
 		isEventHandler = true;
 	}
 

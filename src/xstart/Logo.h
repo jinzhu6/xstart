@@ -10,7 +10,7 @@ public:
 
 	Logo() : ScriptObject() {
 		id = "Logo";
-		help = "Data transfer to Siemens Logo via ethernet.";
+		help = "NOT WORKING YET, NEEDS FIXING! Data transfer to Siemens Logo via ethernet.";
 
 		connected = 0;
 		di = 0;

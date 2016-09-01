@@ -13,12 +13,12 @@ class HttpServer : public ScriptObject {
 public:
 	HttpServer() {
 		id = "HttpServer";
-		help = "Spawns a HTTP server.";
-		ctor = "({string} port, {string} docroot)";
+		help = "Spawns a HTTP server. Note that bindung to port 80 may need root privileges. It is neccessary to call the poll() method since there is no background thread handling the requests.";
+		ctor = "({string} port, {string} docroot, {bool} dirListing)";
 
 		BindFunction("poll", (SCRIPT_FUNCTION)&HttpServer::gm_poll, "[this] poll({float} timeoutSeconds)", "Polls for incoming http requests.");
 		BindFunction("onRequest", (SCRIPT_FUNCTION)&HttpServer::gm_onRequest, "onRequest({string} url, {string} get, {string} post, {string} auth)", "Request handler/callback, the default request handler sends a 404 http error code to all request. Override this handler to your own logic.");
-		BindFunction("serveReqFile", (SCRIPT_FUNCTION)&HttpServer::gm_serveReqFile, "serveReqFile()", "When called inside the request-handler, it send the requested file to the client.");
+		BindFunction("sendFile", (SCRIPT_FUNCTION)&HttpServer::gm_sendFile, "sendFile((optional){string} file)", "When called inside the request-handler, it send a file to the client. If the file parameter is omitted, it sends the requested file from the URI.");
 		BindFunction("send", (SCRIPT_FUNCTION)&HttpServer::gm_send, "[this] send({string} data)", "When called inside the request-handler, it sends a string back to the client.");
 		//BindFunction("sendData", (SCRIPT_FUNCTION)&HttpServer::gm_sendData, "[this] sendData([Data] data)", "When called inside the request-handler, it sends the content of a Data object back to the client.");
 		BindFunction("send404", (SCRIPT_FUNCTION)&HttpServer::gm_send404, "[this] send404()", "When called inside the request-handler, it sends a a 404 error back to the client.");
@@ -32,18 +32,20 @@ public:
 	int Initialize(gmThread* a_thread) {
 		const char* port = a_thread->ParamString(0, "80");
 		const char* docroot = a_thread->ParamString(1, ".");
-		init(port, docroot);
+		bool dirListing = a_thread->ParamInt(2, 0);
+		init(port, docroot, dirListing);
 		return GM_OK;
 	}
 
-	void init(const char* port, const char* docroot) {
+	void init(const char* port, const char* docroot, bool dirListing) {
 		mg_mgr_init(&mgr, this);
 		nc = mg_bind(&mgr, port, HttpEventHandler);
+		if (!nc) { Log(LOG_FATAL, "Binding HttpServer to port '%s' has failed!", port); }
 		mg_set_protocol_http_websocket(nc);
 
 		memset(&s_http_server_opts, 0, sizeof(mg_serve_http_opts));
 		s_http_server_opts.document_root = docroot;
-		s_http_server_opts.enable_directory_listing = "yes";
+		s_http_server_opts.enable_directory_listing = dirListing ? "yes" : "no";
 	}
 
 	void poll(int msWait) {
@@ -56,11 +58,13 @@ public:
 		return ReturnThis(a_thread);
 	}
 
-	void serveReqFile() {
-		mg_serve_http(nc_req, (http_message*)ev_data, s_http_server_opts);
+	void sendFile(const char* file="") {
+		mg_serve_http(nc_req, (http_message*)ev_data, s_http_server_opts, file);
 	}
-	int gm_serveReqFile(gmThread* a_thread) {
-		serveReqFile();
+	int gm_sendFile(gmThread* a_thread) {
+		const char* file;
+		a_thread->ParamString(0, file, "");
+		sendFile(file);
 		return ReturnThis(a_thread);
 	}
 

@@ -1,16 +1,17 @@
-global SERVER = HttpServer("8080", "/home/pi/");
+global SERVER = HttpServer("8080", ".", true);
 SERVER.onRequest = function(url, get, post, auth) {
-    if(auth != "bastian:asdf") { this.sendAuthRequest("Login"); return; }
-    //this.send("Welcome "+auth);
-    SERVER.serveReqFile();
+    if(auth != "xstart:asdf") { this.sendAuthRequest("Login"); return; }
+    SERVER.sendFile();
 };
-SERVER._hello = function(url, get, post, auth) {
-    this.send("hello you too");
+SERVER._admin = function(url, get, post, auth) {
+    if(auth != "xstart:asdf") { this.sendAuthRequest("Login"); return; }
+    this.send("hi master");
 };
-
+SERVER._source = function(url, get, post, auth) {
+    if(auth != "xstart:asdf") { this.sendAuthRequest("Login"); return; }
+    SERVER.sendFile("httpserver.gm");
+};
 while(true) {
-    //log("Polling ...");
     SERVER.poll(1.0);
     yield();
 }
-

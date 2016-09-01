@@ -34,9 +34,7 @@ _key : string
 _table : table
 Array((optional) string id)
 toString() : string
-get(int index) : Object
 add(Object object) : Object
-set(int index, Object object) : this
 remove(int index) : this
 find(Object object) : int
 length() : int
@@ -136,14 +134,17 @@ minute : int
 second : int
 _weekday : int
 _yearday : int
-File(string file, string mode)
+File((optional)string file, (optional)string mode="rb")
 toString() : string
 open(string fileName, string mode) : this
 close()
 write(string data, (optional) int length) : this
 read( (optional) int length) : string
 exists(string fileName) : int
-delete(string fileName) : int
+delete(string fileName) : bool
+seek(int position) : this
+tell() : int
+size() : int
 id : string
 _key : string
 _table : table
@@ -160,9 +161,7 @@ _table : table
 root : object
 XMLNode((optional) string id)
 toString() : string
-get(int index) : Object
 add(Object object) : Object
-set(int index, Object object) : this
 remove(int index) : this
 find(Object object) : int
 length() : int
@@ -598,8 +597,14 @@ _key : string
 _table : table
 data : Data
 client : string
-HttpServer(string port)
+HttpServer(string port, string docroot, bool dirListing)
 toString() : string
+poll(float timeoutSeconds) : this
+onRequest(string url, string get, string post, string auth)
+sendFile((optional)string file)
+send(string data) : this
+send404() : this
+sendAuthRequest(string message) : this
 id : string
 _key : string
 _table : table
