@@ -1,5 +1,0 @@
-local music = Sound("misc/Rayman_2_music_sample.ogg").play(0);
-
-while(music.isPlaying()) {
-	sleep(1.0);
-}

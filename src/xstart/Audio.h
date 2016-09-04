@@ -64,6 +64,7 @@ public:
 		fwrite("data", 4, 1, _hf);
 		val = size; fwrite(&val, 4, 1, _hf);
 		fclose(_hf);
+		return true;
 	}
 	bool saveEnd(const char* fileName) {
 //		if (hf) { Log(LOG_ERROR, "Error in AudioData::saveEnd() - Filehandle to '%s' still open!", outputFile.c_str()); }
@@ -77,6 +78,7 @@ public:
 		fseek(_hf, 40, SEEK_SET);
 		length += 8; length -= 44; fwrite(&length, 4, 1, _hf);
 		fclose(_hf);
+		return true;
 	}
 	virtual void stopRecording() {
 		if(hf) {

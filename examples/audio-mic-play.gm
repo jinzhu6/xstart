@@ -1,6 +1,0 @@
-global MIC = AudioIn(22050, 2, 16);
-MIC.volume = 6.0;
-
-while(true) {
-    sleep(0.2);
-}

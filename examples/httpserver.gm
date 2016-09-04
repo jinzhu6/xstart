@@ -11,6 +11,7 @@ SERVER._source = function(url, get, post, auth) {
     if(auth != "xstart:asdf") { this.sendAuthRequest("Login"); return; }
     SERVER.sendFile("httpserver.gm");
 };
+start("explorer http://127.0.0.1:8080/");
 while(true) {
     SERVER.poll(1.0);
     yield();

@@ -1,9 +1,0 @@
-//***********************************************************************************************************
-// Redirect output to log file and backup last log-files
-//***********************************************************************************************************
-start("mkdir log");
-for(n=8; n>0; n-=1) { start("cp log/xstart."+n+" log/xstart."+(n+1)); }
-start("cp log/xstart log/xstart.1");
-redirect("log/xstart");
-global LogAlive = function() { while(true) { sleep(30.0); log("alive"); } };
-thread(LogAlive);

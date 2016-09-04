@@ -4,7 +4,6 @@ global SECTION_MEMBERS = 2;
 global SECTION_END = 3;
 
 
-
 global HelpGenerator = function(classId, help) {
     doc = "";
     api = "";
@@ -27,7 +26,7 @@ global HelpGenerator = function(classId, help) {
     entry.decl = "";
     entry.help = "";
 
-    for(i = 0; i < help.Length(); i+=1)
+    for(i = 0; i < help.length(); i+=1)
     {
         c = help[i];
 
@@ -145,7 +144,7 @@ global ObjectClassIntrospection = function(obj) {
 global ParseClassList = function(cl) {
     arr = Array();
     name = "";
-    for(i = 0; i < cl.Length(); i+=1) {
+    for(i = 0; i < cl.length(); i+=1) {
         c = cl[i];
         if(c == '\n') {
             if(name == "") {

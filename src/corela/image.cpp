@@ -1002,6 +1002,8 @@ bool ImageLoadPNG(IMAGE* image, const char* filename) {
 		Log(LOG_ERROR, "Error while closing file '%s'!", filename);
 	}
 	png_destroy_read_struct(&png_ptr, &info_ptr, 0);
+
+	return true;
 }
 
 IMAGE* ImageLoad(const char* filename) {

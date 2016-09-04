@@ -41,7 +41,8 @@ public:
 	void SetDot(const char* key, gmVariable &var) {
 		int i = atoi(key);
 		if(i == 0 && key[0] != '0') { return; }
-		set(i, var);
+		if(var.IsNull()) remove(i);
+		else set(i, var);
 		return;
 	}
 

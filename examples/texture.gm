@@ -1,4 +1,4 @@
 frame = Frame("main", 50, 50, 640, 480, "#ffffff").toggle().showCursor(true);
-frame.root["texture"] = Texture("images/background.jpg", 0, 0, 640, 480);
+frame.root["texture"] = Texture("images/earth-bg.jpg", 0, 0, 640, 480);
 
-while(true) { frame.render(); }
+while(true) { frame.render(); yield(); }

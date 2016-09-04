@@ -20,20 +20,20 @@
 #include "Framebuffer.h"
 #include "Recorder.h"
 #include "Color.h"
-#include "ADDevice.h"
+//#include "ADDevice.h"
 #include "Rect.h"
 #include "Canvas.h"
 #include "Detector.h"
 #include "Video.h"
 //#include "Sound.h"
 //#include "Model.h"
-#include "Astro.h"
+//#include "Astro.h"
 #include "Date.h"
 #include "Serial.h"
 #include "MidiFile.h"
 #include "Data.h"
 #include "Audio.h"
-#include "Logo.h"
+//#include "Logo.h"
 #include "GStreamer.h"
 #include "Dmx.h"
 #include "Webserver.h"
@@ -222,7 +222,7 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<SocketListener>("Listener");
 	MachineRegisterClass<HttpServer>("HttpServer");
 	MachineRegisterClass<SerialPort>("Serial");
-	MachineRegisterClass<Logo>("Logo");
+	//MachineRegisterClass<Logo>("Logo");
 	MachineRegisterClass<AudioDevice>("AudioDevice");
 	MachineRegisterClass<AudioDeviceInfo>("AudioDeviceInfo");
 	MachineRegisterClass<AudioFile>("AudioFile");
@@ -231,8 +231,8 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<AudioDelay>("AudioDelay");
 
 #ifdef _MSC_BUILD
-	MachineRegisterClass<Astro>("Astro");
-	MachineRegisterClass<ADDevice>("ADDevice");
+	//MachineRegisterClass<Astro>("Astro");
+	//MachineRegisterClass<ADDevice>("ADDevice");
 	MachineRegisterClass<Dmx>("Dmx");
 //	MachineRegisterClass<Sound>("Sound");
 	MachineRegisterClass<Video>("Video");

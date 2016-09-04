@@ -33,7 +33,7 @@ global minmax = function(v, min, max) {
 
 global toInt = function(f) {
 	local s = "" + f;
-	return s.Int();
+	return s.int();
 };
 
 global roundFloat = function(f, p) {

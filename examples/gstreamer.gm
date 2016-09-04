@@ -1,8 +1,0 @@
-global FRAME = Frame("Video Test", 0,0, 1280,720).toggle().showCursor(true);
-global GST = GStreamer(FRAME);
-GST.play("misc/video.mpg");
-sleep(1.0);
-
-while(GST.isPlaying()) {
-	FRAME.render();
-}

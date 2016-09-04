@@ -8,4 +8,4 @@ l.push(Object("d"));
 l.pop();
 
 log(l.toString());
-log("Count: "+l.count());
+log("Count: "+l.count());^

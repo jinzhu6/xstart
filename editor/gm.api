@@ -622,17 +622,6 @@ readData(int maxChar, float timeoutSeconds) : Data
 id : string
 _key : string
 _table : table
-Logo((optional) string id)
-toString() : string
-connect(string ip) : this
-close()
-id : string
-_key : string
-_table : table
-connected : int
-mpi : int
-rack : int
-slot : int
 AudioDevice(int sampleRate, int channels, int bufferSize, int deviceInIndex, int deviceOutIndex)
 toString() : string
 open(int sampleRate, int channels, int bufferSize, int deviceInIndex, int deviceOutIndex) : this
@@ -772,49 +761,6 @@ history : AudioData
 outputFile : string
 delay : float
 delayVolume : float
-Astro((optional) Date Date)
-toString() : string
-setDate(Date date) : this
-getJulianDay() : float
-getSunDistance() : float
-getMoonDistance() : float
-getMoonPhase() : float
-getMoonDisk() : float
-getAxialTilt((optional) int day) : float
-getPlanetDisk(int day, float offset : float
-getPlanetEarthDistance(int planet) : float
-getPlanetSunDistance(int planet) : float
-getPlanetRST(int planetId, float offset, float longitude, float latitude) : Vector
-getPlanetHorizontalPosition(int planetId, float offset, float longitude, float latitude) : Vector
-id : string
-_key : string
-_table : table
-ID : Moon
-ID : Sun
-ID : Mercury
-ID : Venus
-ID : Earth
-ID : Mars
-ID : Jupiter
-ID : Saturn
-ID : Uranus
-ID : Neptune
-ADDevice((optional) string deviceId)
-toString() : string
-connect((optional) string deviceId) : int
-disconnect() : this
-findAnalogRange(int channel, float volt) : int
-getAnalogValue(int channel, int range) : int
-getAnalogVolt(int channel, int range) : float
-setAnalogVolt(int channel, float volt) : this
-getDigitalBits(int channel) : int
-setDigitalBits(int channel, int bits) : this
-id : string
-_key : string
-_table : table
-handle : int
-device : string
-connected : int
 Dmx((optional) string id)
 toString() : string
 id : string

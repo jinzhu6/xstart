@@ -1,9 +1,0 @@
-local o = Object();
-
-o.test1 = "Hallo ";
-o["test2"] = "Welt";
-o[3] = "!";
-
-o.say = function() { log( this.test1 + this.test2 + this[3] ); };
-
-o.say();

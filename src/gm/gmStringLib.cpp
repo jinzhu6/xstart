@@ -976,34 +976,34 @@ static gmFunctionEntry s_stringLib[] =
     \brief IsEmpty will test to see if the string is 0 length
     \return non-zero if the string is empty
   */
-  {"IsEmpty", gmfStringIsEmpty},
+  {"isEmpty", gmfStringIsEmpty},
   /*gm
     \function Length
     \brief Length will return the length of the string not including the null terminating character
     \return int length
   */
-  {"Length", gmfStringLength},
+  {"length", gmfStringLength},
   /*gm
     \function Left
     \brief Left will return the left count charaters of the string
     \param int count
     \return string
   */
-  {"Left", gmfStringLeft},
+  {"left", gmfStringLeft},
   /*gm
     \function Right
     \brief Right will return the right count charaters of the string
     \param int count
     \return string
   */
-  {"Right", gmfStringRight},
+  {"right", gmfStringRight},
   /*gm
     \function RightAt
     \brief RightAt will return the charaters right of and including the given index
     \param int index
     \return string
   */
-  {"RightAt", gmfStringRightAt},
+  {"rightAt", gmfStringRightAt},
   /*gm
     \function Mid
     \brief Mid will return count characters from the start index
@@ -1011,71 +1011,71 @@ static gmFunctionEntry s_stringLib[] =
     \param int count
     \return string
   */
-  {"Mid", gmfStringMid},
+  {"mid", gmfStringMid},
   /*gm
     \function Compare
     \brief Compare will perform a string compare
     \param string to compare
     \return -1 if the this < compare string, 0 if the strings are equal, 1 otherwise
   */
-  {"Compare", gmfStringCompare},
+  {"compare", gmfStringCompare},
   /*gm
     \function CompareNoCase
     \brief CompareNoCase will perform a string compare (case insensitive)
     \param string to compare
     \return -1 if the this < compare string, 0 if the strings are equal, 1 otherwise
   */
-  {"CompareNoCase", gmfStringCompareNoCase},
+  {"compareNoCase", gmfStringCompareNoCase},
   /*gm
     \function Int
     \brief Int will return the int value of the string
     \return int value
   */
-  {"Int", gmfToInt},
+  {"int", gmfToInt},
   /*gm
     \function Float
     \brief Float will return the float value of the string
     \return float value
   */
-  {"Float", gmfToFloat},
+  {"float", gmfToFloat},
   /*gm
     \function String
     \return string
   */
-  {"String", gmfToString},
+  {"string", gmfToString},
   /*gm
     \function Upper
     \brief Upper will return the string as uppercase
     \return string
   */
-  {"Upper", gmfStringUpper},
+  {"upper", gmfStringUpper},
   /*gm
     \function Lower
     \brief Lower will return the string as lowercase
     \return string
   */
-  {"Lower", gmfStringLower},
+  {"lower", gmfStringLower},
   /*gm
     \function SpanIncluding
     \brief SpanIncluding will return this string while characters are within the passed string
     \param string charset
     \return string
   */
-  {"SpanIncluding", gmfStringSpanIncluding},
+  {"spanIncluding", gmfStringSpanIncluding},
   /*gm
     \function SpanExcluding
     \brief SpanExcluding will return this string while characters are not within the passed string
     \param string charset
     \return string
   */
-  {"SpanExcluding", gmfStringSpanExcluding},
+  {"spanExcluding", gmfStringSpanExcluding},
   /*gm
     \function AppendPath
     \brief AppendPath will append a path make sure one '\' is maintained
     \param string path to append
     \return string
   */
-  {"AppendPath", gmfStringAppendPath},
+  {"appendPath", gmfStringAppendPath},
   /*gm
     \function ReplaceCharsInSet
     \brief ReplaceCharsInSet will replace all chars in this that are within the charset with the given int char
@@ -1083,7 +1083,7 @@ static gmFunctionEntry s_stringLib[] =
     \param string charset of chars to replace
     \return string
   */
-  {"ReplaceCharsInSet", gmfStringReplaceCharsInSet},
+  {"replaceCharsInSet", gmfStringReplaceCharsInSet},
   /*gm
     \function Find
     \brief Find will find the first occurance of the passed string within this string
@@ -1091,27 +1091,27 @@ static gmFunctionEntry s_stringLib[] =
     \param int start index optional (0)
     \return int index of first occurance, or -1 if the string was not found
   */
-  {"Find", gmStringFind},
+  {"find", gmStringFind},
   /*gm
     \function Reverse
     \brief Reverse characters of a string
     \return string
   */
-  {"Reverse", gmStringReverse},
+  {"reverse", gmStringReverse},
   /*gm
     \function ReverseFind
     \brief ReverseFind will find the first occurance of the passed string within this string starting from the right
     \param string search string
     \return int index of first occurance, or -1 if the string was not found
   */
-  {"ReverseFind", gmStringReverseFind},
+  {"reverseFind", gmStringReverseFind},
   /*gm
     \function GetAt
     \brief GetAt will return the char at the given index
     \param int index
     \return int char, or null if index was out of range
   */
-  {"GetAt", gmStringGetAt},
+  {"getAt", gmStringGetAt},
   /*gm
     \function SetAt
     \brief SetAt will return the string with the character set at the given position
@@ -1119,55 +1119,55 @@ static gmFunctionEntry s_stringLib[] =
     \param int char
     \return string
   */
-  {"SetAt", gmStringSetAt},
+  {"setAt", gmStringSetAt},
   /*gm
     \function TrimLeft
     \brief TrimLeft will return the string with the chars from the passed char set trimmed from the left
     \param string charset optional (" \r\n\v\t")
     \return string
   */
-  {"TrimLeft", gmStringTrimLeft},
+  {"trimLeft", gmStringTrimLeft},
   /*gm
     \function TrimRight
     \brief TrimRight will return the string with the chars from the passed char set trimmed from the right
     \param string charset optional (" \r\n\v\t")
     \return string
   */
-  {"TrimRight", gmStringTrimRight},
+  {"trimRight", gmStringTrimRight},
 
   /*gm
     \function GetFilenameNoExt
     \brief GetFilenameNoExt will return the filename part of a path string
     \return string
   */
-  {"GetFilenameNoExt", gmStringGetFilenameNoExt},
+  {"getFilenameNoExt", gmStringGetFilenameNoExt},
   /*gm
     \function GetFilename
     \brief GetFilename will return the filename part of a path string incl. extension
     \return string
   */
-  {"GetFilename", gmStringGetFilename},
+  {"getFilename", gmStringGetFilename},
   /*gm
     \function GetExtension
     \brief GetExtension will return the file extension
     \param int inclDot optional (0) 1 will include '.', 0 won't
     \return string
   */
-  {"GetExtension", gmStringGetExtension},
+  {"getExtension", gmStringGetExtension},
   /*gm
     \function SetExtension
     \brief SetExtension returns a string with the extension change to the given one.
     \param string ext optional (null) the new extension, with or without the dot. null to remove extension.
     \return string
   */
-  {"SetExtension", gmStringSetExtension},
+  {"setExtension", gmStringSetExtension},
   /*gm
     \function GetPath
     \brief GetPath will return the file path from a path string
     \param int inclSlash optional (0) will include a '\' on the end of the path
     \return string
   */
-  {"GetPath", gmStringGetPath},
+  {"getPath", gmStringGetPath},
 /*
   {"Insert", }, //int Insert(int index, char/string)
   {"Delete", }, //int Delete(int index, int count=1)

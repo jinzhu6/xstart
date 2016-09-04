@@ -1,6 +1,7 @@
 #include <corela.h>
 #include <strtrim.h>
 #include <time.h>
+#include <math.h>
 #include "_machine.h"
 #include "Rect.h"
 
@@ -296,7 +297,7 @@ int GM_CDECL Script_Random(gmThread* a_thread) {
 		int scalei;
 		a_thread->ParamInt(0, scalei, 1);
 		//a_thread->PushInt( ((gmfloat)rand() / (gmfloat)RAND_MAX) * scalei);
-		a_thread->PushInt(roundf((float)rand() / (float)RAND_MAX * scalei));
+		a_thread->PushInt((float)rand() / (float)RAND_MAX * scalei + 0.5f);
 		return GM_OK;
 	}
 

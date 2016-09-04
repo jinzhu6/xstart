@@ -1,18 +1,10 @@
-global FRAME = Frame("main", 50, 50, 1920, 1080, "#ff00ff").toggle().showCursor(true);
+global WIDTH = 640; global HEIGHT = 480;
+global FRAME = Frame("Camera Test", 50, 50, WIDTH, HEIGHT, "#ff00ff").toggle().showCursor(true);
 FRAME.onKeyDown = function(e) {   if(e.key == 'C') { e.sender.root["camera"].config(); }   };
-FRAME.root["camera"] = Camera(0, 0, 0, 1920, 1080, 0);
-FRAME.root["camera"].scaling.x = -1.0;
-/*FRAME.root["camera"].setFocus(1);					// ok
-FRAME.root["camera"].setZoom(5);					// ok
-FRAME.root["camera"].setExposure(-13);  			// ok
-FRAME.root["camera"].setWhiteBalance(4400);			// ok
-FRAME.root["camera"].setBrightness(0);				// NOT OK
-FRAME.root["camera"].setSaturation(0);				// ok
-FRAME.root["camera"].setContrast(0);				// ok
-FRAME.root["camera"].setPowerlineFrequency(50);		// NOT OK
-FRAME.root["camera"].config();*/
+FRAME.root["camera"] = Camera(0, 0, 0, 640, 480, 0);
+pause(3.0);  // wait for camera to be ready
 
-while(1) {
+while(true) {
     FRAME.root["camera"].update();
     FRAME.render();
 	yield();

@@ -37,6 +37,7 @@ public:
 		return GM_OK;
 	}
 
+
 	void init(const char* port, const char* docroot, bool dirListing) {
 		mg_mgr_init(&mgr, this);
 		nc = mg_bind(&mgr, port, HttpEventHandler);
@@ -175,6 +176,12 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 		}
 	}
 	break;
+
+	case MG_EV_HTTP_PART_BEGIN:
+	case MG_EV_HTTP_PART_DATA:
+	case MG_EV_HTTP_PART_END:
+		mg_file_upload_handler(nc, ev, ev_data, "upload.dat");
+		break;
 	}
 }
 

@@ -18,7 +18,8 @@ public:
 		device = 0;
 
 		BindFunction("open", (SCRIPT_FUNCTION)&Camera::gm_open, "{int} open({sting} (or) {int} device, {int} width, {int} height, {int} bits)", "Opens the camera with the given settings, the 'device' can either be an index, the device name or part of the beginning of the device name. Returns non-zero on success.");
-//		BindFunction("close", (SCRIPT_FUNCTION)&Camera::gm_close, "{int} close()");
+		// TODO: Clean closing of camera
+		//		BindFunction("close", (SCRIPT_FUNCTION)&Camera::gm_close, "{int} close()");
 		BindFunction("update", (SCRIPT_FUNCTION)&Camera::gm_update, "[this] update()", "Does a manual update of the camera texture, may need to be called in sync with the cameras framerate.");
 		BindFunction("config", (SCRIPT_FUNCTION)&Camera::gm_config, "[this] config()", "Opens a DirectShow configuration dialog for the device. Some changes on that dialog should then be stored for this application (not reset on reboot). But this needs to be tested, since it is driver-dependend.");
 		BindFunction("setFocus",  (SCRIPT_FUNCTION)&Camera::gm_setFocus, "[this] setFocus({int} focus)", "Sets the focus for the device or enables the auto-focus when the value is zero or below.");

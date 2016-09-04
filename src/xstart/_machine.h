@@ -6,7 +6,7 @@
 #include <gm/gmCall.h>
 
 #define NAME "xstart"
-#define VERSION "0.2.5"
+#define VERSION "0.3.0"
 
 
 extern gmType GM_TYPE_OBJECT;  // script object types (will be set by GM)

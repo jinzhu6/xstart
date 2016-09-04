@@ -1,9 +1,0 @@
-global MyClass = function() {
-    local test = 99;
-    local Main = function() {
-        Log("this.test is "+this.test);
-    };
-};
-
-local o = MyClass();
-o.Main();

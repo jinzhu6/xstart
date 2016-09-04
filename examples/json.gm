@@ -1,9 +1,0 @@
-
-json = "{ \"list\": [ { \"test\": \"hallo\" }, { \"test\": \"welt\" } ]  }";
-print("Parsing:  "+json);
-o = Array().parse(json);
-
-print("\n List length: "+o.list.length()+"\n");
-for(n=0; n<o.list.length(); n+=1) {
-	print(" - "+n+". "+o.list.get(n).test + "\n");
-}

@@ -1,17 +1,11 @@
 m = Map();
-m.set("das", Object("das!"));
-m.set("ist", Object("ist!"));
-m.set("ein", Object("ein!"));
-m.set("test", Object("Test!"));
-
-m["und"] = Object(" Und ");
-m["noch"] = Object(" noch ");
-m["einer"] = Object(" einer.");
-
-m["test"] = Object("TEST");
-m["test"] = null;
-m["test"] = Object("TEST");
+m.set("das", "das!");
+m.set("ist", "ist!");
+m.set("ein", "ein!");
+m.set("test", "Test!");
+m.set("number", 1.23);
+m.set("das", null);
 
 foreach(e in m) {
-	log("- " + e.id);
+	print(" " + m[e]);
 }

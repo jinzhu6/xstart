@@ -4,6 +4,6 @@ REM echo CMAKE WILL NOW DO ITS JOB ...
 REM echo *****************************************************************************
 mkdir build
 cd build
-cmake ..
+cmake .. -DMSVC_RUNTIME=static
 cd ..
-timeout 3
+pause

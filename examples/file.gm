@@ -1,5 +1,5 @@
 // write a text to text.txt
-File("test.txt","wb").write("Hello World!\nHello xstart!\n").close();
+File("test.txt","wb").write("Hello World!\n").close();
 
 // read and print text
 print(File("test.txt","rb").read());

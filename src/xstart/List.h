@@ -1,9 +1,7 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
-//#include "cont.h"
 #include "ScriptObject.h"
-
 #include <string>
 
 

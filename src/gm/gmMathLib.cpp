@@ -830,18 +830,18 @@ static gmFunctionEntry s_mathLib[] =
 
 static gmFunctionEntry s_intLib[] = 
 { 
-  {"String", gmfToString},
-  {"Float", gmfToFloat},
-  {"Int", gmfToInt},
+  {"string", gmfToString},
+  {"float", gmfToFloat},
+  {"int", gmfToInt},
 };
 
 
 
 static gmFunctionEntry s_floatLib[] = 
 { 
-  {"String", gmfToString},
-  {"Float", gmfToFloat},
-  {"Int", gmfToInt},
+  {"string", gmfToString},
+  {"float", gmfToFloat},
+  {"int", gmfToInt},
 };
 
 
