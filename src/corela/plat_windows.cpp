@@ -10,9 +10,7 @@
 #include <string>
 #include <vector>
 
-
 DWORD dwWinStyle = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX);
-
 
 static FRAME* g_ActiveFrame = 0;
 static int g_frameCount = 0;
@@ -114,13 +112,25 @@ void _FrameGetMousePosition(FRAME* frame, double* x, double* y) {
 	}
 }
 
-#define EVENT_RAISE(e,_x,_y,_a,_b) {if(frame){fevent.id=e;fevent.sender=frame;fevent.user=frame->user;fevent.x=_x;fevent.y=_y;fevent.button=_a;fevent.key=_b;frame->cb(&fevent);}}
+static unsigned short ScancodeToAscii(DWORD scancode) {
+	static HKL layout = GetKeyboardLayout(0);
+	static unsigned char State[256];
+	unsigned short result;
+
+	if (GetKeyboardState(State) == FALSE) return 0;
+	UINT vk = MapVirtualKeyEx(scancode, 1, layout);
+	ToAsciiEx(vk, scancode, State, &result, 0, layout);
+	return result;
+}
+
+#define EVENT_RAISE(e,_x,_y,_px,_py,_a,_b,_t) {if(frame){fevent.id=e;fevent.sender=frame;fevent.user=frame->user;fevent.x=_x;fevent.y=_y;fevent.prevX=_px;fevent.prevY=_py;fevent.button=_a;fevent.key=_b;fevent.text=_t;frame->cb(&fevent);}}
 LRESULT CALLBACK _FrameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	// get frame object from window's user data
 	FRAME* frame = (FRAME*)GetWindowLongPtrA(hwnd, GWL_USERDATA);
 
 	// get translated mouse position
-	double mx,my;
+	static double mx=-1.0,my=-1.0;
+	double px = mx, py = my;
 	if(frame) {
 		_FrameGetMousePosition(frame, &mx, &my);
 	}
@@ -131,7 +141,7 @@ LRESULT CALLBACK _FrameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_CLOSE:
-		EVENT_RAISE(EVENT_CLOSE, mx, my, 0, wParam);
+		EVENT_RAISE(EVENT_CLOSE, mx, my, px, py, 0, wParam, "");
 		break;
 
 	case WM_QUIT:
@@ -146,33 +156,33 @@ LRESULT CALLBACK _FrameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_LBUTTONDOWN:
-		EVENT_RAISE(EVENT_MOUSE_BUTTON_DOWN, mx, my, 0, 0);
+		EVENT_RAISE(EVENT_MOUSE_BUTTON_DOWN, mx, my, px, py, 0, 0, "");
 		break;
 
 	case WM_LBUTTONUP:
-		EVENT_RAISE(EVENT_MOUSE_BUTTON_UP, mx, my, 0, 0);
+		EVENT_RAISE(EVENT_MOUSE_BUTTON_UP, mx, my, px, py, 0, 0, "");
 		break;
 
 	case WM_RBUTTONDOWN:
-		EVENT_RAISE(EVENT_MOUSE_BUTTON_DOWN, mx, my, 1, 0);
+		EVENT_RAISE(EVENT_MOUSE_BUTTON_DOWN, mx, my, px, py, 1, 0, "");
 		break;
 
 	case WM_RBUTTONUP:
-		EVENT_RAISE(EVENT_MOUSE_BUTTON_UP, mx, my, 1, 0);
+		EVENT_RAISE(EVENT_MOUSE_BUTTON_UP, mx, my, px, py, 1, 0, "");
 		break;
 
 	case WM_MOUSEMOVE:
-		EVENT_RAISE(EVENT_MOUSE_MOVE, mx, my, 0, 0);
+		EVENT_RAISE(EVENT_MOUSE_MOVE, mx, my, px, py, 0, 0, "");
 		break;
 
 	case WM_KEYDOWN:
 		if(~lParam & 0x40000000) {
-			EVENT_RAISE(EVENT_KEY_DOWN, mx, my, 0, wParam);
+			EVENT_RAISE(EVENT_KEY_DOWN, mx, my, px, py, 0, wParam, ScancodeToAscii(wParam));
 		}
 		break;
 
 	case WM_KEYUP:
-		EVENT_RAISE(EVENT_KEY_UP, mx, my, 0, wParam);
+		EVENT_RAISE(EVENT_KEY_UP, mx, my, px, py, 0, wParam, ScancodeToAscii(wParam));
 		if(wParam == VK_F11) {
 			FrameToggleFull(frame);
 		}

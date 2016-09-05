@@ -28,6 +28,7 @@ public:
 		valid = false;
 		visible = true;
 		clipLeft = clipTop = clipRight = clipBottom = -1.0f;
+		hitPrev = false;
 
 		BindMember("visible", &visible, TYPE_INT, 0, "{int} visible", "Visibility of the node and its child.");
 		BindMember("position", &position, TYPE_OBJECT, 0, "[Vector] position", "Position of the node on the frame.");
@@ -123,11 +124,6 @@ public:
 		glPushMatrix();
 		glTranslatef(position->x - pivot->x, position->y - pivot->y, position->z - pivot->z);
 
-		/*int n=0;
-		while(Node* c = GetChild(n++)) {
-			if(c->HandleEvent(e)) { return true; }
-		}*/
-
 		int n = childOrder.size() - 1;
 		while(n >= 0) {
 			Node* c = GetChild(n--);
@@ -152,19 +148,21 @@ public:
 		}
 
 		bool hit = this->hit(e->x - mx[12], e->y - mx[13]);
+		//bool hitPrev = this->hit(e->prevX - mx[12], e->prevY - mx[13]);
+
+		if (hit && !hitPrev) e->id = "MouseEnter";
+		if (!hit && hitPrev) e->id = "MouseLeave";
 
 		if(e->id == "MouseMove" || e->id == "MouseDown" || e->id == "MouseUp") {
 			if(hit) {
-				if(::HandleEvent(e, this)) {
-					return true;
-				}
+				if(::HandleEvent(e, this)) { return true; }
 			}
 		} else {
-			if(::HandleEvent(e, this)) {
-				return true;
-			}
+			if(::HandleEvent(e, this)) { return true; }
 		}
 
+		hitPrev = hit;
+		
 		return HandleEventChilds(e);
 	}
 
@@ -377,6 +375,7 @@ public:
 public:
 	int visible;
 	bool valid;
+	bool hitPrev;
 	Vector* position;
 	Vector* pivot;
 	Vector* dimension;

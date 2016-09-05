@@ -29,6 +29,7 @@ public:
 		BindFunction("saturateMask", (SCRIPT_FUNCTION)&Bitmap::gm_saturateMask, "saturateMask([Bitmap] mask, {float} offset, {float} scale)", "Changes saturation based on the given mask.");
 		BindFunction("getWidth", (SCRIPT_FUNCTION)&Bitmap::gm_getWidth, "{int} getWidth()", "Gets the current width of the bitmap.");
 		BindFunction("getHeight", (SCRIPT_FUNCTION)&Bitmap::gm_getHeight, "{int} getHeight()", "Gets the current height of the bitmap.");
+		// TODO: getPixel, setPixel
 	}
 
 	~Bitmap() {

@@ -4,6 +4,7 @@
 #include <corela.h>
 #include "ScriptObject.h"
 #include "Texture.h"
+#include "Bitmap.h"
 
 
 class Font : public ScriptObject {
@@ -21,6 +22,7 @@ public:
 		BindFunction("load", (SCRIPT_FUNCTION)&Font::gm_load, "[this] load({string} fontFile, {int} fontSize)", "Loads the font file with the given font size.");
 		BindFunction("measure", (SCRIPT_FUNCTION)&Font::gm_measure, "[Vector] measure({string} text, (optional) {int} outlineWidth)", "Measures the texture size of the text if rendered with this font. Only x and y of the [Vector] object will be set.");
 		BindFunction("drawText", (SCRIPT_FUNCTION)&Font::gm_drawText, "{int} drawText([Texture] texture, {string} text, {string} color, {int} x, {int} y), (optional) {int} outlineWidth, {string} outlineColor", "<b>Subject to change.</b> Draws a text directly in a given texture.");
+		BindFunction("drawBitmap", (SCRIPT_FUNCTION)&Font::gm_drawBitmap, "[Bitmap] drawBitmap([Bitmap] bitmap, {string} text, {string} color, {int} x, {int} y), (optional) {int} outlineWidth, {string} outlineColor", "<b>Subject to change.</b> Draws a text directly in a given bitmap.");
 	}
 
 	~Font() {
@@ -125,6 +127,33 @@ public:
 			a_thread->PushInt(drawText(texture, text, color, x, y));
 		}
 		return GM_OK;
+	}
+
+
+	bool drawBitmap(Bitmap* bitmap, const char* text, const char* color, int x, int y, int outline = 0, const char* colorOutline = "#000000") {
+		if (!font || !bitmap) { return false; }
+
+		// find minimum dimensions
+		int w, h;
+		FontRender(font, 0, x, y, &w, &h, text, color, outline, colorOutline, rightToLeft);
+		if (w <= 0 || h <= 0) { return false; }
+		if(!bitmap->image) bitmap->create(w, h);
+		
+		// render
+		FontRender(font, bitmap->image, x, y, 0, 0, text, color, outline, colorOutline, rightToLeft);
+
+		return true;
+	}
+	int gm_drawBitmap(gmThread* a_thread) {
+		GM_CHECK_USER_PARAM(Bitmap*, GM_TYPE_OBJECT, bitmap, 0);
+		GM_CHECK_STRING_PARAM(text, 1);
+		GM_CHECK_STRING_PARAM(color, 2);
+		GM_CHECK_INT_PARAM(x, 3);
+		GM_CHECK_INT_PARAM(y, 4);
+		int outline = a_thread->ParamInt(5, 0);
+		const char* outlineColor = a_thread->ParamString(6, "#000000");
+		if (drawBitmap(bitmap, text, color, x, y, outline, outlineColor)) { return bitmap->ReturnThis(a_thread); }
+		return this->ReturnNull(a_thread);
 	}
 
 public:

@@ -1,0 +1,17 @@
+global eventHandler = function(e) {
+	log("Frame: " + this.toString() + " - Received event: "+e.toString());
+	log("    key: " + e.key + "  x: " + e.x + "  y: " + e.y + "  button: " + e.button + "\n");
+	if(e.id == "Close") { exit(); }
+};
+
+frame = Frame("main", 50, 50, 640, 480, "#ffffff").toggle().showCursor(true);
+frame.root["texture"] = Texture("images/texture.png", 50, 50, 640-100, 480-100);
+frame.root["texture"].onKeyDown = eventHandler;
+frame.root["texture"].onKeyUp = eventHandler;
+frame.root["texture"].onMouseDown = eventHandler;
+frame.root["texture"].onMouseUp = eventHandler;
+//frame.root["texture"].onMouseMove = eventHandler;
+frame.root["texture"].onMouseEnter = eventHandler;
+frame.root["texture"].onMouseLeave = eventHandler;
+
+while(true) { frame.render(); yield(); }

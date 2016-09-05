@@ -296,6 +296,8 @@ bool FrameUpdate() {
 
 		else if(event.type == KeyPress) {
 			if(event.xkey.keycode > 0 && event.xkey.keycode < 256) g_keys[event.xkey.keycode] = true;
+			XLookupKeysym(event.xkey.keycode);
+			XLookupString
 			EVENT_RAISE(EVENT_KEY_DOWN, mx, my, 0, event.xkey.keycode);
 			char buffer[10];
 			XLookupString(&event.xkey, buffer, sizeof(buffer), NULL, NULL);

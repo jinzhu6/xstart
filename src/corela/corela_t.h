@@ -2,6 +2,7 @@
 #define _CORELA_T_
 
 #include "cont.h"
+#include <string>
 
 #ifndef _OPENMP
 #define _OPENMP 1
@@ -129,6 +130,8 @@ typedef enum EVENT_ID {
 	EVENT_MOUSE_MOVE,
 	EVENT_MOUSE_BUTTON_DOWN,
 	EVENT_MOUSE_BUTTON_UP,
+	EVENT_MOUSE_ENTER,
+	EVENT_MOUSE_LEAVE,
 	EVENT_KEY_DOWN,
 	EVENT_KEY_UP,
 	EVENT_END
@@ -139,7 +142,10 @@ typedef struct FRAME_EVENT {
 	FRAME* sender;
 	void* user;
 	double x, y;
-	int button, key;
+	double prevX, prevY;
+	int button;
+	unsigned int key;
+	std::string text;
 } FRAME_EVENT;
 
 

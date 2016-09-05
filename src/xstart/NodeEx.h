@@ -12,7 +12,7 @@ public:
 
 	NodeEx() : Node() {
 		id = "NodeEx";
-		help = "Generic extended scene node.";
+		help = "Generic extended scene node for shader support.";
 		ctor = "((optional) {string} id, (optional) {float} pos_x, (optional) {float} pos_y, (optional) {float} width, (optional) {float} height)";
 
 		useShader = 1;
@@ -20,8 +20,8 @@ public:
 		color = new Color();
 		color->fromStringRGBA("#FFFFFFFF");
 
-		BindMember("shader", &shader, TYPE_OBJECT, 0, "[Shader] shader", "<b>Experimental.</b> A shader used for rendering this node and its childs.");
-		BindMember("useShader", &useShader, TYPE_INT, 0, "{int} useShader", "<b>Experimental.</b> Enable/Disable shader on node level.");
+		BindMember("shader", &shader, TYPE_OBJECT, 0, "[Shader] shader", "A shader used for rendering this node and its childs.");
+		BindMember("useShader", &useShader, TYPE_INT, 0, "{int} useShader", "Enable/Disable shader on node level.");
 		BindMember("color", &color, TYPE_OBJECT, 0, "[Color] color", "<b>Experimental.</b> The color used while rendering.");
 	}
 

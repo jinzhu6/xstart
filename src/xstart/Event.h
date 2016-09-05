@@ -15,20 +15,25 @@ public:
 		help = "Event object that is received by all events as the first parameter. \
 [Handler] is the base class for all objects that can receive events. \
 The @id on this, is set to the event name.<br/><br/>\
-Common events are: <b>Close, MouseMove, MouseDown, MouseUp, KeyDown, KeyUp</b>.<br/>\
-These are received by setting these event handlers on the receiver object: <b>onClose, onMouseMove, onMouseDown, onMouseUp, onKeyDown, onKeyUp</b>. \
+Common events are: <b>Close, MouseMove, MouseDown, MouseUp, MouseEnter, MouseLeave, KeyDown, KeyUp</b>.<br/>\
+These are received by setting these event handlers on the receiver object: <b>onClose, onMouseMove, onMouseDown, onMouseUp, onMouseEnter, onMouseLeave, onKeyDown, onKeyUp</b>. \
 Mouse events are send to all elements under them, if an event handler returns true, the event is not send further down the scene-tree hierarchy - however, you should then avoid using sleep() or yield() in the event handler.";
 
 		sender = 0;
 		key = 0;
+		text = "";
 		x = y = 0;
+		prevX = prevY = 0;
 		button = 0;
 
 		BindMember("sender", &sender, TYPE_OBJECT, 0, "[Object] sender", "Origin of the event, this is set to the object on which the event was rised.");
 		BindMember("key", &key, TYPE_INT, 0, "{int} key", "For keyboard events, this is set to the keycode.");
-		BindMember("button", &button, TYPE_INT, 0, "{int} button", "For mouse events, this is set to the button.");
-		BindMember("x", &x, TYPE_FLOAT, 0, "{float} x", "For mouse move events, this is the mouse x-coordinate");
-		BindMember("y", &y, TYPE_FLOAT, 0, "{float} y", "For mouse move events, this is the mouse y-coordinate");
+		BindMember("text", &text, TYPE_STRING, 0, "{string} text", "<b>EXPERIMENTAL</b> Text representation of input key.");
+		BindMember("button", &button, TYPE_INT, 0, "{int} button", "For mouse events, this is set to the button index.");
+		BindMember("x", &x, TYPE_FLOAT, 0, "{float} x", "For mouse move events, this is the mouse x-coordinate.");
+		BindMember("y", &y, TYPE_FLOAT, 0, "{float} y", "For mouse move events, this is the mouse y-coordinate.");
+		BindMember("prevX", &prevX, TYPE_FLOAT, 0, "{float} prevX", "For mouse move events, the previous mouse x-coordinate.");
+		BindMember("prevY", &prevY, TYPE_FLOAT, 0, "{float} prevY", "For mouse move events, the previous mouse y-coordinate.");
 	}
 
 	void SetSender(ScriptObject* sender) {
@@ -36,11 +41,13 @@ Mouse events are send to all elements under them, if an event handler returns tr
 	}
 
 public:
-
 	ScriptObject* sender;
 	int key;
+	std::string text;
 	float x;
 	float y;
+	float prevX;
+	float prevY;
 	int button;
 };
 
@@ -112,7 +119,10 @@ static int OnEventGlobal(FRAME_EVENT* fe) {
 
 	e->x = (float)fe->x;
 	e->y = (float)fe->y;
+	e->prevX = (float)fe->prevX;
+	e->prevY = (float)fe->prevY;
 	e->key = fe->key;
+	e->text = fe->text;
 	e->button = fe->button;
 
 	switch(fe->id) {
@@ -138,6 +148,14 @@ static int OnEventGlobal(FRAME_EVENT* fe) {
 		break;
 	case EVENT_MOUSE_BUTTON_UP:
 		e->id = "MouseUp";
+		receiver->HandleEvent(e);
+		break;
+	case EVENT_MOUSE_ENTER:
+		e->id = "MouseEnter";
+		receiver->HandleEvent(e);
+		break;
+	case EVENT_MOUSE_LEAVE:
+		e->id = "MouseLeave";
 		receiver->HandleEvent(e);
 		break;
 	case EVENT_KEY_DOWN:
