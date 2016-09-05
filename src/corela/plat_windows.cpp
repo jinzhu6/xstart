@@ -112,15 +112,27 @@ void _FrameGetMousePosition(FRAME* frame, double* x, double* y) {
 	}
 }
 
-static unsigned short ScancodeToAscii(DWORD scancode) {
+static std::string ScancodeToAscii(UINT vk) {
 	static HKL layout = GetKeyboardLayout(0);
 	static unsigned char State[256];
 	unsigned short result;
 
 	if (GetKeyboardState(State) == FALSE) return 0;
-	UINT vk = MapVirtualKeyEx(scancode, 1, layout);
-	ToAsciiEx(vk, scancode, State, &result, 0, layout);
-	return result;
+
+	DWORD scancode = MapVirtualKeyEx(vk, 4, layout);
+	//ToAsciiEx(vk, scancode, State, &result, 0, layout);
+	
+	WCHAR uc[8] = {0,0,0,0,0,0,0,0};
+	int uclen;
+	uclen = ToUnicodeEx(vk, scancode, State, uc, 6, 0, layout);
+	
+	char utf8[8] = {0,0,0,0,0,0,0,0};
+	//wctomb(utf8, uc);
+	WideCharToMultiByte(CP_UTF8, 0, uc, wcslen(uc), utf8, 6, 0, 0);
+	
+	std::string out = utf8;
+
+	return out;
 }
 
 #define EVENT_RAISE(e,_x,_y,_px,_py,_a,_b,_t) {if(frame){fevent.id=e;fevent.sender=frame;fevent.user=frame->user;fevent.x=_x;fevent.y=_y;fevent.prevX=_px;fevent.prevY=_py;fevent.button=_a;fevent.key=_b;fevent.text=_t;frame->cb(&fevent);}}
