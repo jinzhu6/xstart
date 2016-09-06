@@ -34,3 +34,5 @@ _SETUP/
 lib/log/
 *.kdev4
 .kdev4/
+*.bat
+_extras/
