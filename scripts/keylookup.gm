@@ -1,0 +1,5 @@
+
+
+global FILE = File("../lib/Keyboard.gm", "rb");
+//FILE.asd
+

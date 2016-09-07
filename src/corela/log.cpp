@@ -24,6 +24,10 @@ void SetLogLevel(int level) {
 	g_LogLevel = level;
 }
 
+int GetLogLevel() {
+	return g_LogLevel;
+}
+
 void SetLogColors(int enable) {
 	g_LogUseColors = enable;
 }

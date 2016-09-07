@@ -1,3 +1,13 @@
+// A Basler (Pylon) camera class. Uses Shaders for BayerRG8 and BayerGB8 (may need to extend this for different cameras)
+// and a nice denoise/hotpixel shader filter. This class needs the whole Pylon-SDK installed and referenced in the IDE.
+// That is why it is not used by default compilation. Contact the maintainer to get some help to make this running.
+
+// To use this, I recommend to render this to a Framebuffer object,
+// this way you can have the colors and denoising picture beyond rendering.
+
+// TESTED ON WINDOWS ONLY
+
+
 #ifdef _WIN32
 
 #ifndef _BASLER_CAMERA_H_

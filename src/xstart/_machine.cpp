@@ -24,7 +24,7 @@ std::vector<std::string> classesOrder;
 * MachineRegisterFunction
 *******************************************************************************/
 void MachineRegisterFunction(const char* name, gmCFunction fn, std::string declaration, std::string help) {
-	machine->RegisterLibraryFunction(name, fn);
+	if(fn) machine->RegisterLibraryFunction(name, fn);
 
 	// add function pointer to "functions" list
 	SCRIPT_FUNCTION_DATA data;
@@ -157,8 +157,10 @@ bool MachineRunFile(const char* file) {
 
 	// execute buffer
 	Log(LOG_DEBUG, "Executing ...");
-	int errors = machine->ExecuteString((char*)buffer, NULL, false, "_xstart.gm.bak");
-
+	//machine->AddSourceCode();
+	int errors = machine->CheckSyntax((char*)buffer);
+	//int errors = machine->ExecuteString((char*)buffer, NULL, false, "_xstart.gm.bak");
+	
 	// show compile errors
 	if(errors) {
 		bool first = true;

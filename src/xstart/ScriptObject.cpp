@@ -144,7 +144,7 @@ void GM_CDECL Script_Object_Destruct(gmMachine* a_machine, gmUserObject* a_objec
 	if(object) {
 		if(machine->IsCPPOwnedGMObject(a_object)) {
 			Log(LOG_DEBUG, "Attempted to destruct user-owned object by GC: [%s] at [%x]", object->id.c_str(), object);
-			return;
+			//return;
 		}
 		a_object->m_user = 0;
 		if(!Script_Object_Find(object)) {

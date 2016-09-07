@@ -21,7 +21,7 @@ FRAME.root["shader"] = SHADER;
 FRAME.root["shader"]["image"] = Texture("images/earth-bg.jpg", 0, 0, DIM_X, DIM_Y);
 
 FRAME.root["help"] = Text("Press + and - to adjust blur filter size.", Font("fonts/liberation/LiberationSerif-Bold.ttf", 20));
-FRAME.root["info"] = Text("Blur: "+BLUR, Font("fonts/arial.ttf", 20), 0, 30);
+FRAME.root["info"] = Text("Blur: "+BLUR, Font("fonts/liberation/LiberationMono-Bold.ttf", 20), 0, 30);
 
 while(1) {
     FRAME.render();

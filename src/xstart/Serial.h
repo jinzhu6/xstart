@@ -39,6 +39,8 @@ public:
 		id = "Serial";
 		help = "Serial class";
 
+		hSerial = 0;
+
 		BindFunction("open", (SCRIPT_FUNCTION)&SerialPort::gm_open, "[this] open((optional) {string} port, (optional) {int} baudrate)");
 		BindFunction("close", (SCRIPT_FUNCTION)&SerialPort::gm_close, "[this] close()");
 		BindFunction("flush", (SCRIPT_FUNCTION)&SerialPort::gm_flush, "[this] flush()", "NOT SUPPORTED ON WINDOWS!");
@@ -51,7 +53,7 @@ public:
 	}
 
 	~SerialPort() {
-		_close();
+		if(hSerial) _close();
 	}
 
 	int Initialize(gmThread* a_thread) {
@@ -83,6 +85,7 @@ public:
 
 	int gm_close(gmThread* a_thread) {
 		_close();
+		hSerial = 0;
 		return ReturnThis(a_thread);
 	}
 

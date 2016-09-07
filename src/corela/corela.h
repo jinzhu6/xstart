@@ -136,6 +136,7 @@ CO_INTERFACE void TimeSleep(double t);
 CO_INTERFACE coBool KeyGet(int code);
 CO_INTERFACE void Log(LOG_TYPE t, const char* format, ...);
 CO_INTERFACE void SetLogLevel(int level);
+CO_INTERFACE int GetLogLevel();
 CO_INTERFACE void SetLogColors(int enable);
 
 CO_INTERFACE std::string WebHttpGet(std::string &url);

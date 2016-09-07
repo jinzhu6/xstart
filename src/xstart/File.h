@@ -24,6 +24,7 @@ public:
 		BindFunction("close",  (SCRIPT_FUNCTION)&File::gm_close, "close()", "Closes the file. This is also done by garbage collecting the object.");
 		BindFunction("write",  (SCRIPT_FUNCTION)&File::gm_write, "[this] write({string} data, (optional) {int} length)", "<b>Subject to change.</b> Write string to file.");
 		BindFunction("read",   (SCRIPT_FUNCTION)&File::gm_read, "{string} read( (optional) {int} length)", "<b>Subject to change.</b> Reads 'length' of bytes from file or the whole file if length is not specified.");
+		// TODO: readLine, readUntil
 		BindFunction("exists", (SCRIPT_FUNCTION)&File::gm_exists, "{int} exists({string} fileName)", "Checks if a given file name exists. Returns zero on failure or non-zero if the file exists.");
 		BindFunction("delete", (SCRIPT_FUNCTION)&File::gm_delete, "{bool} delete({string} fileName)", "Deletes the given file. Returns {false} only aif the file exists and can not be removed.");
 		BindFunction("seek",   (SCRIPT_FUNCTION)&File::gm_seek, "[this] seek({int} position)", "Moves the file cursor to the given position. No error checking performed.");
@@ -99,7 +100,8 @@ public:
 		if(hf) { fclose(hf); hf = 0; }
 		fileName = file;
 		Log(LOG_DEBUG, "Opening file '%s' in mode '%s'.", file, mode);
-		while(!hf) {
+		int count = 0;
+		while(!hf && count++ < 3) {
 			hf = fopen(file, mode);
 			TimeSleep(0.1);
 		}

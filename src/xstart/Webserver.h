@@ -14,8 +14,11 @@ public:
 	HttpServer() {
 		id = "HttpServer";
 		help = "Spawns a HTTP server. Note that bindung to port 80 may need root privileges. It is neccessary to call the poll() method since there is no background thread handling the requests.";
-		ctor = "({string} port, {string} docroot, {bool} dirListing)";
-
+		ctor = "({string} port, (optional) {string} docroot, (optional) {bool} dirListing)";
+		
+		nc = 0;
+		
+		// TODO: open() and close() for HttpServer
 		BindFunction("poll", (SCRIPT_FUNCTION)&HttpServer::gm_poll, "[this] poll({float} timeoutSeconds)", "Polls for incoming http requests.");
 		BindFunction("onRequest", (SCRIPT_FUNCTION)&HttpServer::gm_onRequest, "onRequest({string} url, {string} get, {string} post, {string} auth)", "Request handler/callback, the default request handler sends a 404 http error code to all request. Override this handler to your own logic.");
 		BindFunction("sendFile", (SCRIPT_FUNCTION)&HttpServer::gm_sendFile, "sendFile((optional){string} file)", "When called inside the request-handler, it send a file to the client. If the file parameter is omitted, it sends the requested file from the URI.");
@@ -26,14 +29,14 @@ public:
 	}
 
 	~HttpServer() {
-		mg_mgr_free(&mgr);
+		if(nc) mg_mgr_free(&mgr);
 	}
 
 	int Initialize(gmThread* a_thread) {
 		const char* port = a_thread->ParamString(0, "80");
 		const char* docroot = a_thread->ParamString(1, ".");
 		bool dirListing = a_thread->ParamInt(2, 0);
-		init(port, docroot, dirListing);
+		if(a_thread->GetNumParams() > 0) init(port, docroot, dirListing);
 		return GM_OK;
 	}
 

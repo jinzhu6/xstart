@@ -168,7 +168,8 @@ int GM_CDECL Script_System_Async(gmThread* a_thread) {
 	startupInfo.dwYCountChars = STARTF_USESIZE;
 	startupInfo.dwFillAttribute = FOREGROUND_BLUE;
 
-	CreateProcessA(NULL, (LPSTR)sys, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &procInfo);
+	BOOL success = CreateProcessA(NULL, (LPSTR)sys, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &procInfo);
+	a_thread->PushInt(success ? 1 : 0);
 #else
 	std::string cmd = sys + std::string(" &");
 	system(cmd.c_str());
@@ -445,12 +446,12 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("_fcloseAll", Script_FcloseAll);
 	MachineRegisterFunction("version", Script_GetVersion, " {string} version()", "Returns the version string.");
 	MachineRegisterFunction("exit", Script_Exit, "exit()", "Terminates the program immediately.");
-	MachineRegisterFunction("throw", Script_Throw, "throw()", "Throws an exception.");
-	MachineRegisterFunction("ascii", Script_Ascii, " {string} ascii({int} ascii)", "Returns the string character for the given ascii code.");
+	MachineRegisterFunction("throw", Script_Throw, "throw((optional) {string} message)", "Throws a script error.");
+	MachineRegisterFunction("ascii", Script_Ascii, " {string} ascii({int} ascii)", "Returns the string character for the given ascii code number.");
 	MachineRegisterFunction("system", Script_System, " {string} system({string} command)", "Executes a command and redirects output via pipe so you can catch the output of the command.");
-	MachineRegisterFunction("start", Script_System_Async, " {string} start({string} command)", "Executes a command without waiting for it to finish, thus returning immediately.");
-	MachineRegisterFunction("random", Script_Random, " {float} random( (optional) {float} (or) {int} max)", "Returns a random number between 0 and 'max'. If 'max' is a floating point number, the result is a floating point number too, otherwise its an integer.");
-	MachineRegisterFunction("time", Script_GetTime, " {float} time()", "Gets the elapsed time since the program start in seconds.");
+	MachineRegisterFunction("start", Script_System_Async, "{bool} start({string} command)", "Executes a command without waiting for it to finish, thus returning immediately.");
+	MachineRegisterFunction("random", Script_Random, "{float} (or) {int} random( (optional) {float} (or) {int} max)", "Returns a random number between 0 and 'max', including 'max'. For example: random(2) may give 0, 1 or 2. If 'max' is a floating point number, the result is a floating point number too, otherwise its an integer.");
+	MachineRegisterFunction("time", Script_GetTime, "{float} time()", "Gets the elapsed time since the program start in seconds.");
 	MachineRegisterFunction("print", Script_Print, "print({string})", "Outputs the string on the console, no newline is added.");
 	MachineRegisterFunction("println", Script_PrintLine, "println({string})", "Outputs the string on the console, a newline is added.");
 	MachineRegisterFunction("log", Script_Log, "log({string} message)", "Writes a log message to the console.");
@@ -458,21 +459,26 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("error", Script_Error, "error({string} error)", "Reports a error on the console.");
 	MachineRegisterFunction("fatal", Script_Fatal, "fatal({string} error)", "Reports a fatal error on the console and terminates the program immediately!");
 	MachineRegisterFunction("popup", Script_Popup, "popup({string} info)", "Opens a message box with the given information.");
-	MachineRegisterFunction("ask", Script_Ask, " {string} ask({string} question)", "Prompts the user for a line of input.");
+	MachineRegisterFunction("ask", Script_Ask, " {string} ask({string} question)", "Prompts the user for a line of input on the console.");
 	MachineRegisterFunction("redirect", Script_Redirect, "redirect({string} file)", "Redirects the console output to a file of the given name.");
-	MachineRegisterFunction("load", Script_LoadConfig, " {string} get({string} key)", "Loads a config string.");
-	MachineRegisterFunction("save", Script_SaveConfig, "save({string} key, {string} value)", "Saves a config string.");
+	MachineRegisterFunction("load", Script_LoadConfig, " {string} get({string} key)", "Loads a config string from 'config.ini'.");
+	MachineRegisterFunction("save", Script_SaveConfig, "save({string} key, {string} value)", "Saves a config string into 'config.ini'. If it does not exist, the file will be created.");
 	MachineRegisterFunction("instance", Script_CreateInstance, "{object} instance({string} class)", "Creates an instance from a class type name. Used for introspection.");
-	MachineRegisterFunction("pause", Script_Pause, "pause( {float} s)", "Pauses the execution for the given time in seconds.");
-	MachineRegisterFunction("eval", Script_Eval, "eval({string} code)", "Execute given code.");
+	MachineRegisterFunction("pause", Script_Pause, "pause( {float} s)", "Pauses the execution of the whole process for the given time in seconds. Reduces CPU usage of real-time applications.");
+	MachineRegisterFunction("eval", Script_Eval, "eval({string} code)", "Execute given code on the same script context, meaning, it has access to global functions and variables.");
 	MachineRegisterFunction("callstack", Script_Callstack, "{string} callstack()", "Returns the current callback as string.");
 	MachineRegisterFunction("debug", Script_EnableConsoleDebug, "debug({int} level)", "Enable/Disable console debug messages.");
 	MachineRegisterFunction("colors", Script_EnableConsoleColors, "colors({int} enable)", "Enable/Disable console colors.");
 	MachineRegisterFunction("arg", Script_GetArguments, "{string} arg({int} number)", "Get command-line arguments.");
 #ifdef _WIN32
+	// TODO: implement at least sound() and askFile() for linux too.
 	MachineRegisterFunction("sound", Script_PlaySound, "sound({string} file)", "Plays a sound file. (This is a simple and inefficient way to play a sound file)");
 	MachineRegisterFunction("askFile", Script_InputFile, "{string} askFile()", "Opens a dialog where the user can select a file.");
 	MachineRegisterFunction("monitor", Script_GetMonitorRect, "[Rect] monitor({int} index)", "Gets the rectangle area of the given monitor in virtual screen space.");
 #endif
+
+	// only documentation here
+	MachineRegisterFunction("yield", 0, "yield()", "Gives control to the script-runtime and the next thread/coroutine. It is important to yield in a main-loop and in threads/coroutines otherwise the applications may not run correctly and garbage-collection will never take place.");
+	MachineRegisterFunction("sleep", 0, "sleep({float} time", "Same as yield() but continues the current thread/coroutine only after the given time, effectively let the thread/coroutine sleep.");
 }
 

@@ -1,0 +1,13 @@
+/*global function ghi() { log("ghi"); log("Callstack:\n"+callstack()); }
+global function def() { log("def"); ghi(); throw("My Error!"); }
+global function abc() { log("abc"); def(); }
+
+eval("abc();");
+askFile();
+
+for(i=0; i<1000; ++i) {
+    log(""+random(2));
+}
+*/
+//log(""+format("%d", 1.234));
+a = Array();

@@ -1,6 +1,6 @@
 global eventHandler = function(e) {
 	log("Frame: " + this.toString() + " - Received event: "+e.toString());
-	log("    key: " + e.key + "text: " + e.text + "  x: " + e.x + "  y: " + e.y + "  button: " + e.button + "\n");
+	log("    key: " + e.key + "text: " + ascii(e.key) + "  x: " + e.x + "  y: " + e.y + "  button: " + e.button + "\n");
 	if(e.id == "Close") { exit(); }
 };
 

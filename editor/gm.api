@@ -1,11 +1,11 @@
 string version()
 exit()
-throw()
+throw((optional) string message)
 string ascii(int ascii)
 string system(string command)
-string start(string command)
-float random( (optional) float (or) int max)
-float time()
+start(string command) : bool
+(or) int random( (optional) float (or) int max) : float
+time() : float
 print(string)
 println(string)
 log(string message)
@@ -27,6 +27,8 @@ arg(int number) : string
 sound(string file)
 askFile() : string
 monitor(int index) : Rect
+yield()
+sleep(float time
 Object((optional) string id)
 toString() : string
 id : string
@@ -199,6 +201,7 @@ toString() : string
 load(string fontFile, int fontSize) : this
 measure(string text, (optional) int outlineWidth) : Vector
 drawText(Texture texture, string text, string color, int x, int y), (optional) int outlineWidth, string outlineColor : int
+drawBitmap(Bitmap bitmap, string text, string color, int x, int y), (optional) int outlineWidth, string outlineColor : Bitmap
 id : string
 _key : string
 _table : table
@@ -226,9 +229,12 @@ _key : string
 _table : table
 sender : Object
 key : int
+text : string
 button : int
 x : float
 y : float
+prevX : float
+prevY : float
 Handler((optional) string id)
 toString() : string
 id : string
@@ -597,7 +603,7 @@ _key : string
 _table : table
 data : Data
 client : string
-HttpServer(string port, string docroot, bool dirListing)
+HttpServer(string port, (optional) string docroot, (optional) bool dirListing)
 toString() : string
 poll(float timeoutSeconds) : this
 onRequest(string url, string get, string post, string auth)
@@ -878,4 +884,199 @@ useShader : int
 color : Color
 clearColor : string
 opacity : float
-
+0.735 |  DEBUG-INFO: Garbage collection of [Array] at [100ff08]
+0.735 |  DEBUG-INFO: Garbage collection of [File] at [1020150]
+0.735 |  DEBUG-INFO: Garbage collection of [File] at [104fdf8]
+0.735 |  DEBUG-INFO: Closing file '..\editor\gm.properties.a'.
+0.735 |  DEBUG-INFO: Garbage collection of [Object] at [1044568]
+0.735 |  DEBUG-INFO: Garbage collection of [Array] at [1050280]
+0.735 |  DEBUG-INFO: Garbage collection of [List] at [10b8f38]
+0.735 |  DEBUG-INFO: Garbage collection of [Map] at [104ff00]
+0.735 |  DEBUG-INFO: Garbage collection of [Data] at [10bead0]
+0.735 |  DEBUG-INFO: Garbage collection of [Vector] at [356d990]
+0.735 |  DEBUG-INFO: Garbage collection of [Color] at [358e670]
+0.735 |  DEBUG-INFO: Garbage collection of [Rect] at [358ea40]
+0.735 |  DEBUG-INFO: Garbage collection of [Date] at [35b6710]
+0.735 |  DEBUG-INFO: Garbage collection of [File] at [35b8820]
+0.735 |  DEBUG-INFO: Garbage collection of [Midi] at [35b8d38]
+0.750 |  DEBUG-INFO: Garbage collection of [XMLDocument] at [35cdbf0]
+0.750 |  DEBUG-INFO: Garbage collection of [XMLNode] at [35baf60]
+0.750 |  DEBUG-INFO: Garbage collection of [Bitmap] at [1043e28]
+0.750 |  DEBUG-INFO: Garbage collection of [Font] at [36035e0]
+0.750 |  DEBUG-INFO: Garbage collection of [Frame] at [3603ff0]
+0.750 |  DEBUG-INFO: Garbage collection of [Event] at [362ce48]
+0.750 |  DEBUG-INFO: Garbage collection of [Handler] at [1044bc0]
+0.750 |  DEBUG-INFO: Garbage collection of [Node] at [363eed8]
+0.750 |  DEBUG-INFO: Garbage collection of [NodeEx] at [3769f30]
+0.750 |  DEBUG-INFO: Garbage collection of [Texture] at [37a8c48]
+0.750 |  DEBUG-INFO: Garbage collection of [Canvas] at [37e19e0]
+0.750 |  DEBUG-INFO: Garbage collection of [Text] at [38711c8]
+0.750 |  DEBUG-INFO: Garbage collection of [Shader] at [388ee38]
+0.750 |  DEBUG-INFO: Garbage collection of [Framebuffer] at [38ca010]
+0.750 |  DEBUG-INFO: Garbage collection of [Recorder] at [3937178]
+0.750 |  DEBUG-INFO: Garbage collection of [Detector] at [39791c0]
+0.750 |  DEBUG-INFO: Garbage collection of [Socket] at [38c4fb8]
+0.750 |  DEBUG-INFO: Garbage collection of [Listener] at [398d1e0]
+0.750 |  DEBUG-INFO: Garbage collection of [HttpServer] at [398d3e0]
+0.766 |  DEBUG-INFO: Garbage collection of [Serial] at [39ec6c0]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioDevice] at [39ee960]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioDeviceInfo] at [3a4f448]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioFile] at [3a4f7f0]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioFilter] at [3a33d98]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioPitch] at [3a1da98]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioDelay] at [3ad1f08]
+0.766 |  DEBUG-INFO: Garbage collection of [Dmx] at [1044908]
+0.766 |  DEBUG-INFO: Garbage collection of [Video] at [3ad2db0]
+0.766 |  DEBUG-INFO: Garbage collection of [Camera] at [3b48e60]
+0.766 |  DEBUG-INFO: Garbage collection of [File] at [39f4b50]
+0.766 |  DEBUG-INFO: Closing file '..\editor\gm.properties.b'.
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37c01c8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfb38]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfe08]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be3c8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be4b8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5648]
+0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [38b4688]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5fa8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5af8]
+0.766 |  DEBUG-INFO: Garbage collection of [Color] at [392b448]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6818]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6908]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5738]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5eb8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6098]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5468]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c69f8]
+0.766 |  DEBUG-INFO: Garbage collection of [Dmx] at [1043f10]
+0.766 |  DEBUG-INFO: Garbage collection of [Map] at [100e618]
+0.766 |  DEBUG-INFO: Garbage collection of [File] at [1020408]
+0.766 |  DEBUG-INFO: Garbage collection of [Texture] at [102a0d0]
+0.766 |  DEBUG-INFO: Garbage collection of [Node] at [10295f0]
+0.766 |  DEBUG-INFO: Garbage collection of [Camera] at [1045130]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioPitch] at [10442b0]
+0.766 |  DEBUG-INFO: Garbage collection of [XMLNode] at [1023a50]
+0.766 |  DEBUG-INFO: Garbage collection of [Video] at [1044480]
+0.766 |  DEBUG-INFO: Garbage collection of [Serial] at [10297c0]
+0.766 |  DEBUG-INFO: Garbage collection of [Frame] at [10274d8]
+0.766 |  DEBUG-INFO: Garbage collection of [Midi] at [10214f8]
+0.766 |  DEBUG-INFO: Garbage collection of [Framebuffer] at [102a2a0]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioFile] at [10441c8]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioDevice] at [10298a8]
+0.766 |  DEBUG-INFO: Garbage collection of [NodeEx] at [102a470]
+0.766 |  DEBUG-INFO: Garbage collection of [Data] at [10167e0]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioDeviceInfo] at [102a1b8]
+0.766 |  DEBUG-INFO: Garbage collection of [HttpServer] at [1029a78]
+0.766 |  DEBUG-INFO: Garbage collection of [Date] at [101bd18]
+0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [1029f00]
+0.766 |  DEBUG-INFO: Garbage collection of [Rect] at [101bc30]
+0.766 |  DEBUG-INFO: Garbage collection of [Socket] at [102a388]
+0.766 |  DEBUG-INFO: Garbage collection of [Event] at [1029c48]
+0.766 |  DEBUG-INFO: Garbage collection of [List] at [100e430]
+0.766 |  DEBUG-INFO: Garbage collection of [Bitmap] at [1026b48]
+0.766 |  DEBUG-INFO: Garbage collection of [Recorder] at [10296d8]
+0.766 |  DEBUG-INFO: Garbage collection of [Canvas] at [1029b60]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioDelay] at [1043a88]
+0.766 |  DEBUG-INFO: Garbage collection of [Color] at [101bb48]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [10169c8]
+0.766 |  DEBUG-INFO: Garbage collection of [Detector] at [1029990]
+0.766 |  DEBUG-INFO: Garbage collection of [AudioFilter] at [1044d90]
+0.766 |  DEBUG-INFO: Garbage collection of [Text] at [1029e18]
+0.766 |  DEBUG-INFO: Garbage collection of [Font] at [1026c30]
+0.766 |  DEBUG-INFO: Garbage collection of [Handler] at [1029d30]
+0.766 |  DEBUG-INFO: Garbage collection of [Listener] at [1029fe8]
+0.766 |  DEBUG-INFO: Garbage collection of [Array] at [100e348]
+0.766 |  DEBUG-INFO: Garbage collection of [XMLDocument] at [1023968]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5be8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6278]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5cd8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5828]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c50a8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5378]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5dc8]
+0.766 |  DEBUG-INFO: Garbage collection of [Color] at [3b41030]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6ae8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5558]
+0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [3ad1170]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6188]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5288]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6458]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6548]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c4ec8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6638]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b46708]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b458f8]
+0.766 |  DEBUG-INFO: Garbage collection of [Color] at [3b47150]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45f88]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45538]
+0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [3ad13e0]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b46618]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45808]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45bc8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45718]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45e98]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b46e88]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf3b8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bec38]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be5a8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be878]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37c00d8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be698]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37beff8]
+0.766 |  DEBUG-INFO: Garbage collection of [Color] at [3845800]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf2c8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bea58]
+0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [37e3018]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bef08]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be968]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfd18]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be788]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfef8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf868]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bee18]
+0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [384dc68]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf1d8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfa48]
+0.766 |  DEBUG-INFO: Garbage collection of [Color] at [38b41d0]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf778]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bed28]
+0.766 |  DEBUG-INFO: Garbage collection of [Map] at [35bb1b8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf958]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf4a8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf598]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf688]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfc28]
+0.766 |  DEBUG-INFO: Garbage collection of [Node] at [3607a98]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [361e438]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [36045b0]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3604958]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3614e20]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3619da0]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3734ce0]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [361eac8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [371b708]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [371b7f8]
+0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [372b8f0]
+0.766 |  DEBUG-INFO: Garbage collection of [Data] at [397cf48]
+0.782 |  DEBUG-INFO: Garbage collection of [Data] at [398d2e8]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735190]
+0.782 |  DEBUG-INFO: Garbage collection of [Shader] at [376e068]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735460]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3734fb0]
+0.782 |  DEBUG-INFO: Garbage collection of [Color] at [379a890]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735af0]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735550]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [37350a0]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3734dd0]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735910]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735640]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735730]
+0.782 |  DEBUG-INFO: Garbage collection of [AudioData] at [3a33ef0]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3734ec0]
+0.782 |  DEBUG-INFO: Garbage collection of [Shader] at [37aa1f0]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735370]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735280]
+0.782 |  DEBUG-INFO: Garbage collection of [Color] at [37dd578]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735820]
+0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735a00]
+0.782 |  DEBUG-INFO: Garbage collection of [AudioData] at [3a34b28]
+0.782 |  DEBUG-INFO: Garbage collection of [AudioData] at [3ad2468]

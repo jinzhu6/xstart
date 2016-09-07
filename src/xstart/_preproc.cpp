@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <corela.h>
 
-
 static char _libPath[1024];
 
 void SetLibraryPath(const char* path) {

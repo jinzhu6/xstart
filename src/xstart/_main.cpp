@@ -45,9 +45,6 @@
 #endif
 
 
-FRAME* g_FRAME = 0;
-
-
 /******************************************************************************
 * IsParam
 *******************************************************************************/
@@ -85,6 +82,21 @@ int CheckForParam(const char* _arg, const char* param) {
 }
 
 
+void LogVersion() {
+	Log(LOG_INFO, "%s %s  -  Compiled at %s %s. Debug: %s. OpenMP: %s.", NAME, VERSION, __DATE__, __TIME__,
+#ifdef _DEBUG
+		"yes",
+#else
+		"no",
+#endif
+#ifdef _OPENMP
+		"yes");
+#else
+		"no");
+#endif
+}
+
+
 /******************************************************************************
 * ParseArgs
 *******************************************************************************/
@@ -96,30 +108,20 @@ int ParseArgs(int argc, char* argv[]) {
 			continue;
 		}
 
-		if (CheckForParam(argv[n], "silent")) {
+		if (CheckForParam(argv[n], "silent") || CheckForParam(argv[n], "s")) {
 			SetLogLevel(0);
 		}
 
-		if (CheckForParam(argv[n], "debug")) {
+		if (CheckForParam(argv[n], "debug") || CheckForParam(argv[n], "d")) {
 			SetLogLevel(2);
 		}
 
-		if(CheckForParam(argv[n], "nocolors")) {
+		if(CheckForParam(argv[n], "nocolors") || CheckForParam(argv[n], "nc")) {
 			SetLogColors(0);
 		}
 
 		if(CheckForParam(argv[n], "version") || CheckForParam(argv[n], "v")) {
-			Log(LOG_INFO, "%s %s  -  Compiled at %s %s. Debug: %s. OpenMP: %s.", NAME, VERSION, __DATE__, __TIME__,
-#ifdef _DEBUG
-			    "yes",
-#else
-			    "no",
-#endif
-#ifdef _OPENMP
-			    "yes");
-#else
-			    "no");
-#endif
+			LogVersion();
 			exit(0);
 		}
 	}
@@ -150,21 +152,24 @@ std::string GetFileDirectory(const char* file) {
 * main - main entry point
 *******************************************************************************/
 int main(int _argc, char* _argv[]) {
-	argc = _argc;
-	argv = _argv;
-
+	// parse command line args
+	argc = _argc; argv = _argv;
 	int fileArg = ParseArgs(argc, argv);
 	char cwd[2048];
 	getcwd(cwd, 2047);
 
 	// get xstart folder
+	// TODO: Get exe-path on Mac
 #if _WIN32
 	char* exePath = argv[0];
-#else
+#else // linux
 	char exePath[2048];
 	memset(exePath, 0, 2048);
 	readlink("/proc/self/exe", exePath, 2047);
 #endif
+
+	// log version
+	if (GetLogLevel() > 1) { LogVersion(); }
 
 	// get library directory
 	Log(LOG_DEBUG, "xstart is here '%s'.", exePath);

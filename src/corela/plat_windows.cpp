@@ -198,9 +198,9 @@ LRESULT CALLBACK _FrameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		if(wParam == VK_F11) {
 			FrameToggleFull(frame);
 		}
-		if(wParam == VK_ESCAPE) {
+		/*if(wParam == VK_ESCAPE) {
 			SendMessage(hwnd, WM_CLOSE, 0, 0);
-		}
+		}*/
 		if(wParam == VK_F12) {
 			//FrameShowCursor(frame, !frame->showCursor);
 			FrameShowCursor(frame, true);

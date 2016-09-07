@@ -8,6 +8,7 @@
 #include "Event.h"
 
 extern FRAME* g_FRAME;
+extern int MachineDestroy();
 
 class Frame : public Handler {
 public:
@@ -36,7 +37,7 @@ public:
 
 		BindFunction("_open", (SCRIPT_FUNCTION)&Frame::gm_open, "[this] _open({int} pos_x, {int} pos_y, {int} width, {int} height, (optional) {string} color)", "Opens the frame on the given coordinates.");
 		BindFunction("close", (SCRIPT_FUNCTION)&Frame::gm_close, "[this] close()", "Closes the window. Please note that any textures, shaders and other assets may be internally destroyed if no other window has a valid context on these.");
-		BindFunction("render", (SCRIPT_FUNCTION)&Frame::gm_render, "[this] render()", "Immediately renders the frames scene graph.");
+		BindFunction("render", (SCRIPT_FUNCTION)&Frame::gm_render, "{bool} render()", "Immediately renders the frames scene graph.");
 		BindFunction("toggle", (SCRIPT_FUNCTION)&Frame::gm_toggle, "[this] toggle()", "Toggles the frame from/to frameless mode.");
 		BindFunction("showCursor", (SCRIPT_FUNCTION)&Frame::gm_showCursor, "[this] showCursor({int} show)", "Shows or hides the cursor when its over the frame window.");
 		BindFunction("setDimensions", (SCRIPT_FUNCTION)&Frame::gm_setDimensions, "[this] setDimensions({int} width, {int} height)", "(Experimental) Sets the virtual dimensions of the frame. If not set, the frames dimensions is used instead.");
@@ -213,19 +214,21 @@ public:
 		return GM_OK;
 	}
 
-	void render(bool doClear) {
-		if(!internalHandle) { Log(LOG_ERROR, "Attempted to render to non-opened frame."); return; }
+	bool render(bool doClear) {
+		if(!internalHandle) { /*Log(LOG_ERROR, "Attempted to render to non-opened frame."); */return false; }
 		glUtilsSetRenderTarget(0); select();
 		if(doClear) { clear(); }
 		if(root) { root->ValidateAndRender(); }
 		if(doClear) { flip(); show(true); }
+		return true;
 	}
 	int gm_render(gmThread* a_thread) {
 		int doClear = 1;
 		a_thread->ParamInt(0, doClear, 1);
-		render((bool)doClear);
-		return ReturnThis(a_thread);
+		a_thread->PushInt(render((bool)doClear));
+		//return ReturnThis(a_thread);
 		//return GM_SYS_YIELD;
+		return GM_OK;
 	}
 
 	void show(bool _show) {
