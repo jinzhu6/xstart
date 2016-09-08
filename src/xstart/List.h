@@ -17,7 +17,7 @@ public:
 		BindFunction("clear", (SCRIPT_FUNCTION)&List::gm_clear, "[this] clear()", "Clears the list by removing all items from the list.");
 		BindFunction("first", (SCRIPT_FUNCTION)&List::gm_first, "[Object] first()", "Gets the first item from the list.");
 		BindFunction("last", (SCRIPT_FUNCTION)&List::gm_last, "[Object] last()", "Gets the last item from the list.");
-		BindFunction("fromIndex", (SCRIPT_FUNCTION)&List::gm_fromIndex, "[Object] fromIndex({int} index)", "Gets the item at the given index position.");
+		BindFunction("_index", (SCRIPT_FUNCTION)&List::gm_fromIndex, "[Object] fromIndex({int} index)", "Gets the item at the given index position.");
 		BindFunction("pop", (SCRIPT_FUNCTION)&List::gm_popFirst, "[this] pop()", "Removes the first item from list.");
 		BindFunction("popFirst", (SCRIPT_FUNCTION)&List::gm_popFirst, "[this] popFirst()", "Removes the first item from list.");
 		BindFunction("popLast", (SCRIPT_FUNCTION)&List::gm_popLast, "[this] popLast()", "Removes the last item from list.");
@@ -34,16 +34,19 @@ public:
 	}
 
 	gmVariable iteratorGet(int n) {
-		if(n >= count()) {
-			gmVariable v;
-			v.Nullify();
-			return v;
-		}
-
+		if (n >= count()) { gmVariable v; v.Nullify(); return v; }
 		return getFromIndex(n);
 	}
+	void GetDot(const char* key, gmVariable &res) {
+		int i = atoi(key);
+		if (i == 0 && key[0] != '0') { return; }
+		gmVariable _res = iteratorGet(i);
+		res = _res;
+	}
 
-	gmVariable findObject(ScriptObject* o) {
+	// TODO: SetDot
+
+	/*gmVariable findObject(ScriptObject* o) {
 		CONT_ITEM* ci = cfirst(cont);
 		while(ci) {
 			if(ci->pData == o) {
@@ -56,7 +59,7 @@ public:
 		gmVariable nullvar;
 		nullvar.Nullify();
 		return nullvar;
-	}
+	}*/
 
 	int count() { return cont->nItems; }
 	int gm_count(gmThread* a_thread) {
@@ -67,7 +70,8 @@ public:
 	void clear() {
 		while(CONT_ITEM* ci = cfirst(cont)) {
 			char key[32];  sprintf(key, "_%d", ci->nCustomId);
-			RemoveMember(key);
+			gmVariable nullvar; nullvar.Nullify();
+			table->Set(machine, key, nullvar);
 			cpop(cont);
 		}
 	}
@@ -79,7 +83,6 @@ public:
 
 	gmVariable first() {
 		if(count() <= 0) { gmVariable nullvar; nullvar.Nullify(); return nullvar; }
-
 		CONT_ITEM* ci = cfirst(cont);
 		char key[32];  sprintf(key, "_%d", ci->nCustomId);
 		return this->table->Get(machine, key);
@@ -92,7 +95,6 @@ public:
 
 	gmVariable last() {
 		if(count() <= 0) { gmVariable nullvar; nullvar.Nullify(); return nullvar; }
-
 		CONT_ITEM* ci = clast(cont);
 		char key[32];  sprintf(key, "_%d", ci->nCustomId);
 		return this->table->Get(machine, key);
@@ -104,7 +106,6 @@ public:
 	}
 
 	gmVariable getFromIndex(int i) {
-		if(count() <= 0) { gmVariable nullvar; nullvar.Nullify(); return nullvar; }
 		CONT_ITEM* ci = cfirst(cont);
 		while(ci) {
 			if(i--<=0) {
@@ -125,11 +126,11 @@ public:
 
 	void popFirst() {
 		if(count() <= 0) { return; }
-
 		CONT_ITEM* ci = cfirst(cont);
-		char key[32];  sprintf(key, "_%d", ci->nCustomId);
-		RemoveMember(key);
 		cpop_front(cont);
+		char key[32];  sprintf(key, "_%d", ci->nCustomId);
+		gmVariable nullvar; nullvar.Nullify();
+		table->Set(machine, key, nullvar);
 	}
 	int gm_popFirst(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(0);
@@ -140,11 +141,11 @@ public:
 
 	void popLast() {
 		if(count() <= 0) { return; }
-
 		CONT_ITEM* ci = clast(cont);
-		char key[32];  sprintf(key, "_%d", ci->nCustomId);
-		RemoveMember(key);
 		cpop(cont);
+		char key[32];  sprintf(key, "_%d", ci->nCustomId);
+		gmVariable nullvar; nullvar.Nullify();
+		table->Set(machine, key, nullvar);
 	}
 	int gm_popLast(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(0);
@@ -169,7 +170,7 @@ public:
 	}
 	int gm_randomPop(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(1);
-		a_thread->Push(randomPop(a_thread->Param(0)));
+		a_thread->Push(*randomPop(a_thread->Param(0)));
 		return GM_OK;
 	}
 

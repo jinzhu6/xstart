@@ -408,8 +408,7 @@ public:
 			}
 		}
 
-		gmVariable nullvar;
-		nullvar.Nullify();
+		gmVariable nullvar; nullvar.Nullify();
 		table->Set(machine, key, nullvar);
 	}
 

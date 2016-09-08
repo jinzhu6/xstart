@@ -158,8 +158,8 @@ bool MachineRunFile(const char* file) {
 	// execute buffer
 	Log(LOG_DEBUG, "Executing ...");
 	//machine->AddSourceCode();
-	int errors = machine->CheckSyntax((char*)buffer);
-	//int errors = machine->ExecuteString((char*)buffer, NULL, false, "_xstart.gm.bak");
+	//int errors = machine->CheckSyntax((char*)buffer);
+	int errors = machine->ExecuteString((char*)buffer, NULL, false, "_xstart.gm.bak");
 	
 	// show compile errors
 	if(errors) {

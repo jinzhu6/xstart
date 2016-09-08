@@ -1,11 +1,14 @@
 global l = List();
 
-l.push(Object("a"));
-l.push(Object("b"));
-l.push(Object("c"));
-l.pop();
-l.push(Object("d"));
+l.push(1);
+l.push(2);
+l.push("abc");
+l.push(12.1);
 l.pop();
 
-log(l.toString());
-log("Count: "+l.count());^
+log("count:  "+l.count());
+log("first:  "+l.first());
+log("last:   "+l.last());
+log("1:      "+l[1]);
+
+foreach(e in l) { log(""+e); }
