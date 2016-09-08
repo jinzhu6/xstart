@@ -3,12 +3,15 @@ global l = List();
 l.push(1);
 l.push(2);
 l.push("abc");
-l.push(12.1);
+l.push(12.3);
+l.push(45.5);
 l.pop();
-
+log("removed: "+l.remove(1));
+log("");
 log("count:  "+l.count());
 log("first:  "+l.first());
 log("last:   "+l.last());
 log("1:      "+l[1]);
+log("");
 
 foreach(e in l) { log(""+e); }

@@ -22,7 +22,7 @@ public:
 		BindFunction("popFirst", (SCRIPT_FUNCTION)&List::gm_popFirst, "[this] popFirst()", "Removes the first item from list.");
 		BindFunction("popLast", (SCRIPT_FUNCTION)&List::gm_popLast, "[this] popLast()", "Removes the last item from list.");
 		//BindFunction("randomPop", (SCRIPT_FUNCTION)&List::gm_randomPop, "[this] randomPop([Object] object)", "Removes the given item from list.");
-		//BindFunction("remove", (SCRIPT_FUNCTION)&List::gm_randomPop, "[this] remove([Object] object)", "Removes the given item from list.");
+		BindFunction("remove", (SCRIPT_FUNCTION)&List::gm_randomPop, "[Object] remove({int} index)", "Removes the item at the given index from list.");
 		BindFunction("push", (SCRIPT_FUNCTION)&List::gm_pushBack, "[this] push([Object] object)", "Pushes the given object at the end of the list.");
 		BindFunction("pushBack", (SCRIPT_FUNCTION)&List::gm_pushBack, "[this] pushBack([Object] object)", "Pushes the given object at the end of the list.");
 		BindFunction("pushFront", (SCRIPT_FUNCTION)&List::gm_pushFront, "[this] pushFront([Object] object)", "Pushes the given object at the start of the list.");
@@ -154,23 +154,23 @@ public:
 		return ReturnThis(a_thread);
 	}
 
-	gmVariable* randomPop(gmVariable& value) {
+	gmVariable randomPop(int i) {
 		CONT_ITEM* ci = cfirst(cont);
-		while(ci) {
-			gmVariable* valueIn = (gmVariable*)cidata(ci);
-			if(gmVariable::Compare(value, *valueIn)) {
+		while (ci) {
+			if (i-- <= 0) {
 				char key[32];  sprintf(key, "_%d", ci->nCustomId);
-				crndpop(cont, valueIn);
-				gmVariable var = gmVariable();  var.Nullify();  table->Set(machine, ci->nCustomId, var);
-				return valueIn;
+				gmVariable var = this->table->Get(machine, key);
+				crem(cont, ci);
+				return var;
 			}
 			ci = cinext(ci);
 		}
-		return 0;
+		gmVariable nullvar; nullvar.Nullify(); return nullvar;
 	}
 	int gm_randomPop(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(1);
-		a_thread->Push(*randomPop(a_thread->Param(0)));
+		GM_CHECK_INT_PARAM(index, 0);
+		a_thread->Push(randomPop(index));
 		return GM_OK;
 	}
 
