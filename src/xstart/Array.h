@@ -49,23 +49,14 @@ public:
 	}
 
 	int addObject(ScriptObject* value, gmVariable* var = 0) {
-		length += 1;
-
-		char _key[12];
-		sprintf(_key, "%d", length-1);
+		char _key[12]; sprintf(_key, "%d", length);
 		BindMember(_key, &value, TYPE_OBJECT, var);
-
-		return length-1;
+		return length++;
 	}
 	int add(gmVariable& value) {
-		length += 1;
-
-		char _key[12];
-		sprintf(_key, "%d", length-1);
-//		BindMember(_key, &value, TYPE_OBJECT, var);
+		char _key[12]; sprintf(_key, "%d", length);
 		table->Set(machine, _key, value);
-
-		return length-1;
+		return length++;
 	}
 	int gm_add(gmThread* a_thread) {
 		GM_CHECK_NUM_PARAMS(1);

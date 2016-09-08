@@ -2,8 +2,211 @@
 #define _LIST_H_
 
 #include "ScriptObject.h"
-#include <string>
 
+class List : public ScriptObject {
+public:
+
+	List() : ScriptObject() {
+		id = "List";
+		help = "Double linked list for fast insertion and removal of objects or natives.";
+
+		cont = cnew();
+		index = 0;
+
+		BindFunction("count", (SCRIPT_FUNCTION)&List::gm_count, "{int} count()", "Counts number of items in the list.");
+		BindFunction("clear", (SCRIPT_FUNCTION)&List::gm_clear, "[this] clear()", "Clears the list by removing all items from the list.");
+		BindFunction("first", (SCRIPT_FUNCTION)&List::gm_first, "[Object] first()", "Gets the first item from the list.");
+		BindFunction("last", (SCRIPT_FUNCTION)&List::gm_last, "[Object] last()", "Gets the last item from the list.");
+		BindFunction("fromIndex", (SCRIPT_FUNCTION)&List::gm_fromIndex, "[Object] fromIndex({int} index)", "Gets the item at the given index position.");
+		BindFunction("pop", (SCRIPT_FUNCTION)&List::gm_popFirst, "[this] pop()", "Removes the first item from list.");
+		BindFunction("popFirst", (SCRIPT_FUNCTION)&List::gm_popFirst, "[this] popFirst()", "Removes the first item from list.");
+		BindFunction("popLast", (SCRIPT_FUNCTION)&List::gm_popLast, "[this] popLast()", "Removes the last item from list.");
+		//BindFunction("randomPop", (SCRIPT_FUNCTION)&List::gm_randomPop, "[this] randomPop([Object] object)", "Removes the given item from list.");
+		//BindFunction("remove", (SCRIPT_FUNCTION)&List::gm_randomPop, "[this] remove([Object] object)", "Removes the given item from list.");
+		BindFunction("push", (SCRIPT_FUNCTION)&List::gm_pushBack, "[this] push([Object] object)", "Pushes the given object at the end of the list.");
+		BindFunction("pushBack", (SCRIPT_FUNCTION)&List::gm_pushBack, "[this] pushBack([Object] object)", "Pushes the given object at the end of the list.");
+		BindFunction("pushFront", (SCRIPT_FUNCTION)&List::gm_pushFront, "[this] pushFront([Object] object)", "Pushes the given object at the start of the list.");
+	}
+
+	~List() {
+		while(ccount(cont))	{ cpop(cont); }
+		cdel(cont);
+	}
+
+	gmVariable iteratorGet(int n) {
+		if(n >= count()) {
+			gmVariable v;
+			v.Nullify();
+			return v;
+		}
+
+		return getFromIndex(n);
+	}
+
+	gmVariable findObject(ScriptObject* o) {
+		CONT_ITEM* ci = cfirst(cont);
+		while(ci) {
+			if(ci->pData == o) {
+				char key[32];  sprintf(key, "_%d", ci->nCustomId);
+				return this->table->Get(machine, key);
+			}
+			ci = cinext(ci);
+		}
+
+		gmVariable nullvar;
+		nullvar.Nullify();
+		return nullvar;
+	}
+
+	int count() { return cont->nItems; }
+	int gm_count(gmThread* a_thread) {
+		a_thread->PushInt(count());
+		return GM_OK;
+	}
+
+	void clear() {
+		while(CONT_ITEM* ci = cfirst(cont)) {
+			char key[32];  sprintf(key, "_%d", ci->nCustomId);
+			RemoveMember(key);
+			cpop(cont);
+		}
+	}
+	int gm_clear(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(0);
+		clear();
+		return ReturnThis(a_thread);
+	}
+
+	gmVariable first() {
+		if(count() <= 0) { gmVariable nullvar; nullvar.Nullify(); return nullvar; }
+
+		CONT_ITEM* ci = cfirst(cont);
+		char key[32];  sprintf(key, "_%d", ci->nCustomId);
+		return this->table->Get(machine, key);
+	}
+	int gm_first(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(0);
+		a_thread->Push(first());
+		return GM_OK;
+	}
+
+	gmVariable last() {
+		if(count() <= 0) { gmVariable nullvar; nullvar.Nullify(); return nullvar; }
+
+		CONT_ITEM* ci = clast(cont);
+		char key[32];  sprintf(key, "_%d", ci->nCustomId);
+		return this->table->Get(machine, key);
+	}
+	int gm_last(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(0);
+		a_thread->Push(last());
+		return GM_OK;
+	}
+
+	gmVariable getFromIndex(int i) {
+		if(count() <= 0) { gmVariable nullvar; nullvar.Nullify(); return nullvar; }
+		CONT_ITEM* ci = cfirst(cont);
+		while(ci) {
+			if(i--<=0) {
+				char key[32];  sprintf(key, "_%d", ci->nCustomId);
+				gmVariable var = this->table->Get(machine, key);
+				return var;
+			}
+			ci = cinext(ci);
+		}
+		gmVariable nullvar; nullvar.Nullify(); return nullvar;
+	}
+	int gm_fromIndex(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(1);
+		GM_CHECK_INT_PARAM(i, 0);
+		a_thread->Push(getFromIndex(i));
+		return GM_OK;
+	}
+
+	void popFirst() {
+		if(count() <= 0) { return; }
+
+		CONT_ITEM* ci = cfirst(cont);
+		char key[32];  sprintf(key, "_%d", ci->nCustomId);
+		RemoveMember(key);
+		cpop_front(cont);
+	}
+	int gm_popFirst(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(0);
+		a_thread->Push(first());
+		popFirst();
+		return ReturnThis(a_thread);
+	}
+
+	void popLast() {
+		if(count() <= 0) { return; }
+
+		CONT_ITEM* ci = clast(cont);
+		char key[32];  sprintf(key, "_%d", ci->nCustomId);
+		RemoveMember(key);
+		cpop(cont);
+	}
+	int gm_popLast(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(0);
+		a_thread->Push(last());
+		popLast();
+		return ReturnThis(a_thread);
+	}
+
+	gmVariable* randomPop(gmVariable& value) {
+		CONT_ITEM* ci = cfirst(cont);
+		while(ci) {
+			gmVariable* valueIn = (gmVariable*)cidata(ci);
+			if(gmVariable::Compare(value, *valueIn)) {
+				char key[32];  sprintf(key, "_%d", ci->nCustomId);
+				crndpop(cont, valueIn);
+				gmVariable var = gmVariable();  var.Nullify();  table->Set(machine, ci->nCustomId, var);
+				return valueIn;
+			}
+			ci = cinext(ci);
+		}
+		return 0;
+	}
+	int gm_randomPop(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(1);
+		a_thread->Push(randomPop(a_thread->Param(0)));
+		return GM_OK;
+	}
+
+	void pushBack(gmVariable& value) {
+		cpush(cont, &value, index);
+		char key[32];  sprintf(key, "_%d", index);
+		table->Set(machine, key, value);
+		index++;
+	}
+	int gm_pushBack(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(1);
+		pushBack(a_thread->Param(0));
+		return ReturnThis(a_thread);
+	}
+
+	void pushFront(gmVariable& value) {
+		cpush_front(cont, &value, index);
+		char key[32];  sprintf(key, "_%d", index);
+		table->Set(machine, key, value);
+		index++;
+	}
+	int gm_pushFront(gmThread* a_thread) {
+		GM_CHECK_NUM_PARAMS(1);
+		pushFront(a_thread->Param(0));
+		return ReturnThis(a_thread);
+	}
+
+public:
+	CONT* cont;
+	unsigned long index;
+};
+
+
+
+
+
+#if 0
 
 class List : public ScriptObject {
 public:
@@ -244,7 +447,7 @@ public:
 	CONT* cont;
 	unsigned long index;
 };
-
+#endif
 
 
 #endif
