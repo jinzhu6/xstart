@@ -12,7 +12,7 @@ public:
 	Video() : Texture() {
 		id = "Video";
 		ctor = "({string} file, {int} pos_x, {int} pos_y, {int} width, {int} height)";
-		help = "Video playback node.";
+		help = "EXPERIMENTAL, SUBJECT TO CHANGE. Video playback node.";
 
 		textureFlags = TEX_NOMIPMAP | TEX_PBO | TEX_CLAMP | TEX_NOALPHA;
 		video = 0;
