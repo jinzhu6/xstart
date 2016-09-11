@@ -263,10 +263,12 @@ FRAME* FrameCreate(const char* name, EVENT_CALLBACK callback, void* user, long x
 	return frame;
 }
 
-#define EVENT_RAISE(e,_x,_y,_a,_b) {if(frame){fevent.id=e;fevent.sender=frame;fevent.user=frame->user;fevent.x=_x;fevent.y=_y;fevent.button=_a;fevent.key=_b;frame->cb(&fevent);}}
+//#define EVENT_RAISE(e,_x,_y,_a,_b) {if(frame){fevent.id=e;fevent.sender=frame;fevent.user=frame->user;fevent.x=_x;fevent.y=_y;fevent.button=_a;fevent.key=_b;frame->cb(&fevent);}}
+#define EVENT_RAISE(e,_x,_y,_px,_py,_a,_b,_t) {if(frame){fevent.id=e;fevent.sender=frame;fevent.user=frame->user;fevent.x=_x;fevent.y=_y;fevent.prevX=_px;fevent.prevY=_py;fevent.button=_a;fevent.key=_b;fevent.text=_t;frame->cb(&fevent);}}
 bool FrameUpdate() {
     if(!frame) return false;
 
+	static int px, py;
 	static int mx, my;
 	FRAME_EVENT fevent;
 
@@ -282,7 +284,7 @@ bool FrameUpdate() {
 
 		else if(event.type == ClientMessage) {
 			Log(LOG_DEBUG, "Window received: ClientMessage");
-			EVENT_RAISE(EVENT_CLOSE, mx, my, 0, 0);
+			EVENT_RAISE(EVENT_CLOSE, mx, my, px, py, 0, 0, "");
 			return false;
 		}
 
@@ -296,31 +298,38 @@ bool FrameUpdate() {
 
 		else if(event.type == KeyPress) {
 			if(event.xkey.keycode > 0 && event.xkey.keycode < 256) g_keys[event.xkey.keycode] = true;
-			XLookupKeysym(event.xkey.keycode);
-			XLookupString
-			EVENT_RAISE(EVENT_KEY_DOWN, mx, my, 0, event.xkey.keycode);
-			char buffer[10];
-			XLookupString(&event.xkey, buffer, sizeof(buffer), NULL, NULL);
-			if (buffer[0] == 27) { EVENT_RAISE(EVENT_CLOSE, mx, my, 0, 0); }
+			
+			// TODO: Translate key to virtual keycode
+			//int vkey = XLookupKeysym(&event.xkey, 0); or XLookupString?
+			
+			char keyuc[8];
+			XLookupString(&event.xkey, keyuc, sizeof(keyuc), NULL, NULL);
+			
+			EVENT_RAISE(EVENT_KEY_DOWN, mx, my, px, py, 0, event.xkey.keycode - 8, keyuc);
+			//if (buffer[0] == 27) { EVENT_RAISE(EVENT_CLOSE, mx, my, 0, 0); }
 		}
 
 		else if(event.type == KeyRelease) {
 			if(event.xkey.keycode > 0 && event.xkey.keycode < 256) g_keys[event.xkey.keycode] = false;
-			EVENT_RAISE(EVENT_KEY_UP, mx, my, 0, event.xkey.keycode);
+
+			char keyuc[8];
+			XLookupString(&event.xkey, keyuc, sizeof(keyuc), NULL, NULL);
+
+			EVENT_RAISE(EVENT_KEY_UP, mx, my, px, py, 0, event.xkey.keycode - 8, keyuc);
 		}
 
 		else if(event.type == ButtonPress) {
-			EVENT_RAISE(EVENT_MOUSE_BUTTON_DOWN, mx, my, event.xbutton.button, 0);
+			EVENT_RAISE(EVENT_MOUSE_BUTTON_DOWN, mx, my, px, py, event.xbutton.button, 0, "");
 		}
 
 		else if(event.type == ButtonRelease) {
-			EVENT_RAISE(EVENT_MOUSE_BUTTON_UP, mx, my, event.xbutton.button, 0);
+			EVENT_RAISE(EVENT_MOUSE_BUTTON_UP, mx, my, px, py, event.xbutton.button, 0, "");
 		}
 
 		else if(event.type == MotionNotify) {
 			mx = (double)event.xmotion.x / frame->width  * frame->vwidth;
 			my = (double)event.xmotion.y / frame->height * frame->vheight;
-			EVENT_RAISE(EVENT_MOUSE_MOVE, mx, my, 0, 0);
+			EVENT_RAISE(EVENT_MOUSE_MOVE, mx, my, px, py, 0, 0, "");
 		}
 	}
 

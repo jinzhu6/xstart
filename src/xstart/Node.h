@@ -49,7 +49,7 @@ public:
 		BindFunction("hit", (SCRIPT_FUNCTION)&Node::gm_hit, "{int} hit({float} x, {float} y)", "Does a hit-test on the node, returns 1 if the coordinates hit the node on the screen.");
 		BindFunction("setClipRegion", (SCRIPT_FUNCTION)&Node::gm_setClipRegion, "[this] setClipRegion({float} left, {float} top, {float} right, {float} bottom)", "Sets the scissor clip region, everything inside will clip to that region.");
 		BindFunction("getChild", (SCRIPT_FUNCTION)&Node::gm_getChild, "[Node] getChild({int} index)");
-		BindFunction("trigger", (SCRIPT_FUNCTION)&Node::gm_trigger, "");
+		//BindFunction("trigger", (SCRIPT_FUNCTION)&Node::gm_trigger, "");
 
 		BindFunction("left", (SCRIPT_FUNCTION)&Node::gm_left, "[this] left()", "Aligns the left of the node to the pivot.");
 		BindFunction("center", (SCRIPT_FUNCTION)&Node::gm_center, "[this] center()", "Aligns the horizontal center of the node to the pivot.");

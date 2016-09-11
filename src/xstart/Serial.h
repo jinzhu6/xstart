@@ -39,7 +39,11 @@ public:
 		id = "Serial";
 		help = "Serial class";
 
+#ifdef _WIN32
 		hSerial = 0;
+#else
+		fd = 0;
+#endif
 
 		BindFunction("open", (SCRIPT_FUNCTION)&SerialPort::gm_open, "[this] open((optional) {string} port, (optional) {int} baudrate)");
 		BindFunction("close", (SCRIPT_FUNCTION)&SerialPort::gm_close, "[this] close()");
@@ -53,7 +57,11 @@ public:
 	}
 
 	~SerialPort() {
+#ifdef _WIN32
 		if(hSerial) _close();
+#else
+		if(fd) _close();
+#endif
 	}
 
 	int Initialize(gmThread* a_thread) {
@@ -85,7 +93,11 @@ public:
 
 	int gm_close(gmThread* a_thread) {
 		_close();
+#ifdef _WIN32
 		hSerial = 0;
+#else
+		fd = 0;
+#endif
 		return ReturnThis(a_thread);
 	}
 
@@ -508,11 +520,9 @@ public:
 #ifdef _WIN32
 	HANDLE          hSerial;
 	COMMTIMEOUTS    timeouts;
-#endif
-#ifdef __GNUC__
+#else
 	int             fd;
 #endif
-
 };
 
 

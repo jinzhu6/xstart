@@ -143,9 +143,7 @@ LRESULT CALLBACK _FrameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 	// get translated mouse position
 	static double mx=-1.0,my=-1.0;
 	double px = mx, py = my;
-	if(frame) {
-		_FrameGetMousePosition(frame, &mx, &my);
-	}
+	if(frame) { _FrameGetMousePosition(frame, &mx, &my); }
 
 	FRAME_EVENT fevent;
 	switch(msg) {

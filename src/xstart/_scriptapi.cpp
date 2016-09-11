@@ -433,10 +433,6 @@ int GM_CDECL Script_FcloseAll(gmThread* a_thread) {
 	return GM_OK;
 }
 
-/*int GM_CDECL Script_Format(gmThread* a_thread) {
-
-}*/
-
 void RegisterCommonAPI() {
 	srand(time(0));
 	MachineRegisterFunction("_help", Script_GlobalHelp);
