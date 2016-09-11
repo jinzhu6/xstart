@@ -1,0 +1,7 @@
+redirect("scancode.c");
+print("int ScancodeToVirtual(int k) {\n");
+for(i=0; i<256; i+=1) {
+    vk = _mapKey(i,3);
+    if(vk) { print("    if(k=="+(i+8)+") return "+vk+";\n"); }
+}
+print("}\n");

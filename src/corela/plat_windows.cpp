@@ -112,7 +112,11 @@ void _FrameGetMousePosition(FRAME* frame, double* x, double* y) {
 	}
 }
 
-static std::string ScancodeToAscii(UINT vk) {
+int MapKey(int code, int mode) {
+	return MapVirtualKey(code, mode);
+}
+
+static std::string VKtoUnicode(UINT vk) {
 	static HKL layout = GetKeyboardLayout(0);
 	static unsigned char State[256];
 	unsigned short result;
@@ -187,12 +191,12 @@ LRESULT CALLBACK _FrameWinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 	case WM_KEYDOWN:
 		if(~lParam & 0x40000000) {
-			EVENT_RAISE(EVENT_KEY_DOWN, mx, my, px, py, 0, wParam, ScancodeToAscii(wParam));
+			EVENT_RAISE(EVENT_KEY_DOWN, mx, my, px, py, 0, wParam, VKtoUnicode(wParam));
 		}
 		break;
 
 	case WM_KEYUP:
-		EVENT_RAISE(EVENT_KEY_UP, mx, my, px, py, 0, wParam, ScancodeToAscii(wParam));
+		EVENT_RAISE(EVENT_KEY_UP, mx, my, px, py, 0, wParam, VKtoUnicode(wParam));
 		if(wParam == VK_F11) {
 			FrameToggleFull(frame);
 		}

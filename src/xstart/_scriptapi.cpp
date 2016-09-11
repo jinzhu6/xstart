@@ -433,6 +433,19 @@ int GM_CDECL Script_FcloseAll(gmThread* a_thread) {
 	return GM_OK;
 }
 
+#ifdef _WIN32
+int GM_CDECL Script_MapKey(gmThread* a_thread) {
+	GM_CHECK_INT_PARAM(code, 0);
+	GM_CHECK_INT_PARAM(mode, 1);
+	a_thread->PushInt(MapKey(code, mode));
+	return GM_OK;
+}
+#endif
+
+/*int GM_CDECL Script_Format(gmThread* a_thread) {
+
+}*/
+
 void RegisterCommonAPI() {
 	srand(time(0));
 	MachineRegisterFunction("_help", Script_GlobalHelp);
@@ -471,6 +484,7 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("sound", Script_PlaySound, "sound({string} file)", "Plays a sound file. (This is a simple and inefficient way to play a sound file)");
 	MachineRegisterFunction("askFile", Script_InputFile, "{string} askFile()", "Opens a dialog where the user can select a file.");
 	MachineRegisterFunction("monitor", Script_GetMonitorRect, "[Rect] monitor({int} index)", "Gets the rectangle area of the given monitor in virtual screen space.");
+	MachineRegisterFunction("_mapKey", Script_MapKey, "{int} _mapKey({int} key, {int} mode)", "Translate from/to scancode to virtual-keycode or vice versa.");
 #endif
 
 	// only documentation here

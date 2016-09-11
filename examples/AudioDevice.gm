@@ -1,0 +1,14 @@
+// enumerate audio devices
+global ADEVICE_ENUM = AudioDeviceInfo();
+for(i=0; true; i+=1) {
+	ADEVICE_ENUM.getDevice(i);
+	if(ADEVICE_ENUM.index == -1) { break; }
+	log("Found audio-device: "+ADEVICE_ENUM.name);
+}
+
+// play some sound
+global DEVICE = AudioDevice(22050, 2, 512, -1, 3);
+global SOUND = AudioFile("misc/snap.wav").convert(22050,16);
+DEVICE.play(SOUND);
+sleep(2.0);
+DEVICE.close();
