@@ -4,7 +4,7 @@ global KEYS = Map();
 global FRAME = Frame("Game Example", 50, 50, 640, 480, "#000030");
 FRAME.onKeyDown = function(evt) { if(evt.key < 255){KEYS[evt.key] = true;} };
 FRAME.onKeyUp = function(evt) { if(evt.key==KEY_ESCAPE){FRAME.close();} if(evt.key < 255){KEYS[evt.key] = false;} };
-FRAME.root["ship"] = Texture("images/ship1.png");
+FRAME.root["ship"] = Texture("images/ship1.png", 320, 240);
 FRAME.root["ship"].pivot = Vector(FRAME.root["ship"].width/2, FRAME.root["ship"].height/2);
 
 local prevT = time();

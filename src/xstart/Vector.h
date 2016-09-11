@@ -16,7 +16,7 @@ public:
 		BindMember("x", &x, TYPE_FLOAT);
 		BindMember("y", &y, TYPE_FLOAT);
 		BindMember("z", &z, TYPE_FLOAT);
-		BindFunction("set", (SCRIPT_FUNCTION)&Vector::gm_set);
+		BindFunction("set", (SCRIPT_FUNCTION)&Vector::gm_set, "[this] set({float} x, {float} y, float {z}");
 		BindFunction("length", (SCRIPT_FUNCTION)&Vector::gm_length);
 		BindFunction("add", (SCRIPT_FUNCTION)&Vector::gm_add);
 		BindFunction("subtract", (SCRIPT_FUNCTION)&Vector::gm_subtract);
@@ -46,7 +46,7 @@ public:
 			x = vin->x;
 			y = vin->y;
 			z = vin->z;
-			return GM_OK;
+			return ReturnThis(a_thread);
 		}
 		if(a_thread->GetNumParams() >= 1) {
 			GM_CHECK_FLOAT_OR_INT_PARAM(_x, 0);
@@ -60,7 +60,7 @@ public:
 			GM_CHECK_FLOAT_OR_INT_PARAM(_z, 2);
 			z = _z;
 		}
-		return GM_OK;
+		return ReturnThis(a_thread);
 	}
 
 	int gm_length(gmThread* a_thread) {

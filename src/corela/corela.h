@@ -26,6 +26,7 @@ CO_INTERFACE bool FrameGetMultitouch(FRAME* frame, int index, float* x, float* y
 CO_INTERFACE void SoundSimplePlay(const char* file);
 CO_INTERFACE bool GetMonitorRect(int i, CORECT* rcOut);
 CO_INTERFACE std::string RequestFileName();
+CO_INTERFACE int MapKey(int code, int mode);
 
 CO_INTERFACE IMAGE* ImageCreate(int width, int height);
 CO_INTERFACE IMAGE* ImageLoad(const char* filename);
