@@ -1,43 +1,75 @@
+#include "config.h"
 #include <string>
 #include <iostream>
 #include <corela.h>
 #include "_machine.h"
 
-#include "Xml.h"
+
+#if _API_CONTAINERS
 #include "Array.h"
 #include "List.h"
 #include "Map.h"
+#endif
+
+#if _API_STANDARD
 #include "File.h"
+#include "Date.h"
+#include "Data.h"
+#endif
+
+#if _API_XML
+#include "Xml.h"
+#endif
+
+#if _API_GRAPHICS
 #include "Frame.h"
-#include "Socket.h"
 #include "Node.h"
-#include "Bitmap.h"
-#include "Font.h"
-#include "Shader.h"
-#include "Text.h"
-#include "Camera.h"
 #include "Texture.h"
+#include "Canvas.h"
+#include "Text.h"
+//#include "Model.h"
+#include "Shader.h"
 #include "Framebuffer.h"
 #include "Recorder.h"
+#include "Bitmap.h"
+#include "Font.h"
 #include "Color.h"
-//#include "ADDevice.h"
 #include "Rect.h"
-#include "Canvas.h"
+#endif
+
+#if _API_OPENCV
 #include "Detector.h"
-#include "Video.h"
-//#include "Sound.h"
-//#include "Model.h"
-//#include "Astro.h"
-#include "Date.h"
-#include "Serial.h"
-#include "MidiFile.h"
-#include "Data.h"
-#include "Audio.h"
-//#include "Logo.h"
-#include "GStreamer.h"
-#include "Dmx.h"
+#endif
+
+#if _API_NETWORK
+#include "Socket.h"
 #include "Webserver.h"
+#endif
+
+#if _API_ADVANCED_AUDIO
+#include "Audio.h"
+#endif
+
+#if _API_VIDEO
+#include "GStreamer.h"
+#include "Video.h"
+#endif
+
+#if _API_EXTRAS
+#include "MidiFile.h"
+#include "Sound.h"
+//#include "Astro.h"
+#endif
+
+#if _API_HARDWARE
+#include "Serial.h"
+//#include "Logo.h"
+//#include "ADDevice.h"
+#include "Dmx.h"
 //#include "BaslerCam.h"
+#include "Camera.h"
+#endif
+
 
 #ifdef _WIN32
 #include <direct.h>
@@ -194,22 +226,29 @@ int main(int _argc, char* _argv[]) {
 	MachineCreate(true);
 	RegisterCommonAPI();
 
+
+
 	// register script classes
 	Log(LOG_DEBUG, "Registering classes: ");
+
+#if _API_CONTAINERS
 	MachineRegisterClass<ArrayObject>("Array");
 	MachineRegisterClass<List>("List");
 	MachineRegisterClass<Map>("Map");
-	MachineRegisterClass<Data>("Data");
-	MachineRegisterClass<Vector>("Vector");
-	MachineRegisterClass<Color>("Color");
-	MachineRegisterClass<Rect>("Rect");
-	MachineRegisterClass<Date>("Date");
+#endif
+
+#if _API_STANDARD
 	MachineRegisterClass<File>("File");
-	MachineRegisterClass<Midi>("Midi");
+	MachineRegisterClass<Date>("Date");
+	MachineRegisterClass<Data>("Data");
+#endif
+
+#if _API_XML
 	MachineRegisterClass<XMLDocument>("XMLDocument");
 	MachineRegisterClass<XMLNode>("XMLNode");
-	MachineRegisterClass<Bitmap>("Bitmap");
-	MachineRegisterClass<Font>("Font");
+#endif
+
+#if _API_GRAPHICS
 	MachineRegisterClass<Frame>("Frame");
 	MachineRegisterClass<Event>("Event");
 	MachineRegisterClass<Handler>("Handler");
@@ -222,44 +261,69 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<Shader>("Shader");
 	MachineRegisterClass<Framebuffer>("Framebuffer");
 	MachineRegisterClass<Recorder>("Recorder");
+	MachineRegisterClass<Bitmap>("Bitmap");
+	MachineRegisterClass<Font>("Font");
+	MachineRegisterClass<Vector>("Vector");
+	MachineRegisterClass<Color>("Color");
+	MachineRegisterClass<Rect>("Rect");
+
+#endif
+
+#if _API_OPENCV
 	MachineRegisterClass<Detector>("Detector");
+#endif
+
+#if _API_NETWORK
 	MachineRegisterClass<Socket>("Socket");
 	MachineRegisterClass<SocketListener>("Listener");
 	MachineRegisterClass<HttpServer>("HttpServer");
-	MachineRegisterClass<SerialPort>("Serial");
-	//MachineRegisterClass<Logo>("Logo");
+#endif
+
+#if _API_ADVANCED_AUDIO
 	MachineRegisterClass<AudioDevice>("AudioDevice");
 	MachineRegisterClass<AudioDeviceInfo>("AudioDeviceInfo");
 	MachineRegisterClass<AudioFile>("AudioFile");
 	MachineRegisterClass<AudioFilter>("AudioFilter");
 	MachineRegisterClass<AudioPitch>("AudioPitch");
 	MachineRegisterClass<AudioDelay>("AudioDelay");
-
-#ifdef _MSC_BUILD
-	//MachineRegisterClass<Astro>("Astro");
-	//MachineRegisterClass<ADDevice>("ADDevice");
-	MachineRegisterClass<Dmx>("Dmx");
-//	MachineRegisterClass<Sound>("Sound");
-	MachineRegisterClass<Video>("Video");
-	MachineRegisterClass<Camera>("Camera");
-//	MachineRegisterClass<BaslerCam>("BaslerCam");
 #endif
 
-#ifdef __linux__
+#if _API_VIDEO
+	#ifdef __linux__
 	MachineRegisterClass<GStreamer>("GStreamer");
+	#endif
+	#ifdef _MSC_BUILD
+	MachineRegisterClass<Video>("Video");
+	#endif
 #endif
 
-	// run script or script terminal
-	if(fileArg == -1) {
-		MachineRun(stdin);
-	} else {
-		MachineRunFile(argv[fileArg]);
-	}
+#if _API_EXTRAS
+	MachineRegisterClass<Midi>("Midi");
+	#ifdef _MSC_BUILD
+	MachineRegisterClass<Sound>("Sound");
+	//MachineRegisterClass<Astro>("Astro");  // TODO: Port libastro to Linux.
+	#endif
+#endif
+
+#if _API_HARDWARE
+	MachineRegisterClass<SerialPort>("Serial");
+	//MachineRegisterClass<Logo>("Logo"); // TODO: Fix Siemens Logo (interface to libnodave)
+	#ifdef _MSC_BUILD
+	//MachineRegisterClass<ADDevice>("ADDevice"); // requires libad.dll on Windows, needs Linux porting
+	MachineRegisterClass<Dmx>("Dmx"); // requires dashard.dll
+	MachineRegisterClass<Camera>("Camera"); // unfinished directshow implementation
+	//MachineRegisterClass<BaslerCam>("BaslerCam"); // Works, but is disabled by default because it has too many dependencies.
+	#endif
+#endif
+
+
+	// run script or script console
+	TimeSet(TimeGet());
+	if(fileArg == -1) { MachineRun(stdin); }
+	else { MachineRunFile(argv[fileArg]); }
 
 	// exit
 	MachineDestroy();
-	//Log(LOG_INFO, "Machine exited.");
-
-	printf("\n");
+	Log(LOG_DEBUG, "Machine destroyed.");
 	return 0;
 }

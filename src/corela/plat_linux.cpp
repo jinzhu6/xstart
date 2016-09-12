@@ -414,7 +414,7 @@ bool FrameUpdate() {
 		}
 
 		else if(event.type == KeyPress) {
-			if(event.xkey.keycode > 0 && event.xkey.keycode < 256) g_keys[event.xkey.keycode] = true;
+			if(event.xkey.keycode > 0 && event.xkey.keycode < 256) g_keys[ScancodeToVirtual(event.xkey.keycode)] = true;
 			
 			// TODO: Translate key to virtual keycode
 			//int vkey = XLookupKeysym(&event.xkey, 0); or XLookupString?
@@ -427,7 +427,7 @@ bool FrameUpdate() {
 		}
 
 		else if(event.type == KeyRelease) {
-			if(event.xkey.keycode > 0 && event.xkey.keycode < 256) g_keys[event.xkey.keycode] = false;
+			if(event.xkey.keycode > 0 && event.xkey.keycode < 256) g_keys[ScancodeToVirtual(event.xkey.keycode)] = false;
 
 			char keyuc[8];
 			XLookupString(&event.xkey, keyuc, sizeof(keyuc), NULL, NULL);

@@ -258,6 +258,12 @@ int GM_CDECL Script_GetTime(gmThread* a_thread) {
 	return GM_OK;
 }
 
+int GM_CDECL Script_SetTime(gmThread* a_thread) {
+	GM_CHECK_FLOAT_OR_INT_PARAM(t, 0);
+	TimeSet(t);
+	return GM_OK;
+}
+
 int GM_CDECL Script_GetMemUsage(gmThread* a_thread) {
 	GM_CHECK_NUM_PARAMS(0);
 	a_thread->PushInt(machine->GetCurrentMemoryUsage());
@@ -460,7 +466,8 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("system", Script_System, " {string} system({string} command)", "Executes a command and redirects output via pipe so you can catch the output of the command.");
 	MachineRegisterFunction("start", Script_System_Async, "{bool} start({string} command)", "Executes a command without waiting for it to finish, thus returning immediately.");
 	MachineRegisterFunction("random", Script_Random, "{float} (or) {int} random( (optional) {float} (or) {int} max)", "Returns a random number between 0 and 'max', including 'max'. For example: random(2) may give 0, 1 or 2. If 'max' is a floating point number, the result is a floating point number too, otherwise its an integer.");
-	MachineRegisterFunction("time", Script_GetTime, "{float} time()", "Gets the elapsed time since the program start in seconds.");
+	MachineRegisterFunction("time", Script_GetTime, "{float} time()", "Gets the internal counter time in seconds.");
+	MachineRegisterFunction("setTime", Script_SetTime, "setTime({float} t", "Sets the internal counter time to the given seconds.");
 	MachineRegisterFunction("print", Script_Print, "print({string})", "Outputs the string on the console, no newline is added.");
 	MachineRegisterFunction("println", Script_PrintLine, "println({string})", "Outputs the string on the console, a newline is added.");
 	MachineRegisterFunction("log", Script_Log, "log({string} message)", "Writes a log message to the console.");

@@ -31,7 +31,7 @@ public:
 		BindMember("texture1", &texture0, TYPE_OBJECT);
 		BindMember("texture2", &texture0, TYPE_OBJECT);
 		BindMember("texture3", &texture0, TYPE_OBJECT);
-		BindFunction("LoadObj", (SCRIPT_FUNCTION)&Mesh::gm_loadObj, "[this] loadObj({string} file)");
+		BindFunction("loadObj", (SCRIPT_FUNCTION)&Mesh::gm_loadObj, "[this] loadObj({string} file)");
 		BindFunction("setPosition", (SCRIPT_FUNCTION)&Mesh::gm_setPosition, "[this] setPosition({int} index, {float} x, {float} y, {float} z)");
 		BindFunction("setTexCoord", (SCRIPT_FUNCTION)&Mesh::gm_setTexCoord, "[this] setTexCoord({int} index, {float} u, {float} v, {float} w)");
 		BindFunction("setNormal", (SCRIPT_FUNCTION)&Mesh::gm_setNormal, "[this] setNormal({int} index)");

@@ -1,6 +1,5 @@
 #ifdef _WIN32
 
-
 #ifndef _SOUND_H_
 #define _SOUND_H_
 

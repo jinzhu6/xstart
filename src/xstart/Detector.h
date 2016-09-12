@@ -1,12 +1,10 @@
 #ifndef _DETECTOR_H_
 #define _DETECTOR_H_
 
-
 #include "ScriptObject.h"
 #include "Rect.h"
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 
 class Detector : public ScriptObject {
 public:

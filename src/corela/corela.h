@@ -133,6 +133,7 @@ CO_INTERFACE void INISetEntryHex(INIENTRY* iniEnt, coDword h);
 CO_INTERFACE void INISetEntryFloat(INIENTRY* iniEnt, float f);
 
 CO_INTERFACE double TimeGet();
+CO_INTERFACE void TimeSet(double t);
 CO_INTERFACE void TimeSleep(double t);
 CO_INTERFACE coBool KeyGet(int code);
 CO_INTERFACE void Log(LOG_TYPE t, const char* format, ...);

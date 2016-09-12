@@ -5,7 +5,7 @@
 #include <gm/gmStringLib.h>  // some extra functionality on strings
 #include <gm/gmMathLib.h>  // some extra functionality on strings
 #include "ScriptObject.h"
-#include "_machine.h"
+#include "machine.h"
 
 typedef struct CLASS_CONSTRUCTOR {
 	std::string typeName;

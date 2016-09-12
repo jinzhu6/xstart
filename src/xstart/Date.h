@@ -9,65 +9,6 @@
 void GetGregorianFromHijri(int& day, int& month, int& year, int offset);
 void GetHijriFromGregorian(int& day, int& month, int& year, int offset);
 
-/*class DateConverter : public ScriptObject {
-public:
-	DateConverter() : ScriptObject() {
-		id = "DateConverter";
-		help = "Date converter.";
-	}
-
-	void fromJulian() {  }
-	void fromGregorian() {
-		int N = day;		// days this month
-		for(int m = month - 1;  m > 0; m--) { N = N + LastDayOfGregorianMonth(m, year); }  // days in prior months this year
-		d = (N                    // days this year
-		     + 365 * (year - 1)   // days in previous years ignoring leap days
-		     + (year - 1)/4       // Julian leap days before this year...
-		     - (year - 1)/100     // ...minus prior century years...
-		     + (year - 1)/400);   // ...plus prior years divisible by 400
-	}
-	void fromHijri() {
-		d = (day                      // days so far this month
-		     + 29 * (month - 1)       // days so far...
-		     + month/2                //            ...this year
-		     + 354 * (year - 1)       // non-leap days in prior years
-		     + (3 + (11 * year)) / 30 // leap days in prior years
-		     + IslamicEpoch);         // days before start of calendar
-	}
-
-	void toJulian() {  }
-	void toGregorian() { // Computes the Gregorian date from the absolute date.
-		// Search forward year by year from approximate year
-		year = d/366;
-		while (d >= GregorianDate(1,1,year+1)) { year++; }
-		// Search forward month by month from January
-		month = 1;
-		while (d > GregorianDate(month, LastDayOfGregorianMonth(month,year), year)) { month++; }
-		day = d - GregorianDate(month,1,year) + 1;
-	}
-	void toHijri() {
-		if (d <= IslamicEpoch) { // Date is pre-Islamic
-			month = 0;
-			day = 0;
-			year = 0;
-		} else {
-			// Search forward year by year from approximate year
-			year = (d - IslamicEpoch) / 355;
-			while (d >= IslamicDate(1,1,year+1)) { year++; }
-			// Search forward month by month from Muharram
-			month = 1;
-			while (d > IslamicDate(month, LastDayOfIslamicMonth(month,year), year)) { month++; }
-			day = d - IslamicDate(month,1,year) + 1;
-		}
-	}
-
-public:
-	int d;
-	int day;
-	int month;
-	int year;
-};*/
-
 class Date : public ScriptObject {
 public:
 	Date() : ScriptObject() {
@@ -299,6 +240,3 @@ public:
 
 
 #endif
-
-
-//#endif

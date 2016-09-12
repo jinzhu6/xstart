@@ -1,3 +1,6 @@
+#ifndef _AUDIO_H_
+#define _AUDIO_H_
+
 #include "ScriptObject.h"
 #include "Data.h"
 #include "Socket.h"
@@ -968,3 +971,4 @@ public:
 	float defaultHighOutputLatency;
 };
 
+#endif
