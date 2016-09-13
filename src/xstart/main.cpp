@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 #include <corela.h>
-#include "_machine.h"
+#include "machine.h"
 
 
 #if _API_CONTAINERS
@@ -27,7 +27,8 @@
 #include "Texture.h"
 #include "Canvas.h"
 #include "Text.h"
-//#include "Model.h"
+#include "Model.h"
+#include "Sprite.h"
 #include "Shader.h"
 #include "Framebuffer.h"
 #include "Recorder.h"
@@ -257,7 +258,8 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<Texture>("Texture");
 	MachineRegisterClass<Canvas>("Canvas");
 	MachineRegisterClass<Text>("Text");
-	//MachineRegisterClass<Model>("Model");
+	MachineRegisterClass<Mesh>("Model");
+	MachineRegisterClass<Box>("Box");
 	MachineRegisterClass<Shader>("Shader");
 	MachineRegisterClass<Framebuffer>("Framebuffer");
 	MachineRegisterClass<Recorder>("Recorder");

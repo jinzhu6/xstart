@@ -93,6 +93,7 @@ coDword FileReadText(const char* file, char* bufferOut, coDword* sizeInOut) {
 		// return size
 		return size;
 #else
+		// TODO: Support loading of unicode text under linux
 		Log(LOG_FATAL, "Multibyte Unicode found in '%s', this is currently not supported under Linux.", file);
 #endif
 	}

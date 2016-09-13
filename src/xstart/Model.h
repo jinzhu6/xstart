@@ -73,6 +73,7 @@ public:
 
 	bool loadObj(const char* file) {
 		Load3D_OBJ(this, file);
+		return true;
 	}
 	int gm_loadObj(gmThread* a_thread) {
 		GM_CHECK_STRING_PARAM(file, 0);

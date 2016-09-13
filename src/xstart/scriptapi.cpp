@@ -2,7 +2,7 @@
 #include <strtrim.h>
 #include <time.h>
 #include <math.h>
-#include "_machine.h"
+#include "machine.h"
 #include "Rect.h"
 
 int argc;

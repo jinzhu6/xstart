@@ -1,0 +1,35 @@
+global frame = Frame("Model Example", 0, 0, 1000, 800, "#336699").toggle().showCursor(true);
+global model = Model(null, 100, 100, 800, 600);
+frame.root["model"] = model;
+
+model.setPosition(0, 0.0, 0.0, 0.0);
+model.setTexCoord(0, 0.0, 0.0, 0.0);
+model.setNormal(0, 0.0, 0.0, 1.0);
+
+model.setPosition(1, 100.0, 0.0, 0.0);
+model.setTexCoord(1, 1.0, 0.0, 0.0);
+model.setNormal(1, 0.0, 0.0, 1.0);
+
+model.setPosition(2, 0.0, 100.0, 0.0);
+model.setTexCoord(2, 0.0, 1.0, 0.0);
+model.setNormal(2, 0.0, 0.0, 1.0);
+
+model.setPosition(3, 100.0, 0.0, 0.0);
+model.setTexCoord(3, 1.0, 0.0, 0.0);
+model.setNormal(3, 0.0, 0.0, 1.0);
+
+model.setPosition(4, 100.0, 100.0, 0.0);
+model.setTexCoord(4, 1.0, 1.0, 0.0);
+model.setNormal(4, 0.0, 0.0, 1.0);
+
+model.setPosition(5, 0.0, 100.0, 0.0);
+model.setTexCoord(5, 0.0, 1.0, 0.0);
+model.setNormal(5, 0.0, 0.0, 1.0);
+
+model.texture = Texture("images/texture.png");
+
+while(true) {
+	frame.render();
+	model.rotate += 0.01;
+	sleep(1/60);
+}
