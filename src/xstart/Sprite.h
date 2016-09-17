@@ -12,8 +12,11 @@ public:
 	}
 
 	virtual int Initialize(gmThread* a_thread) {
-		int w = 100;
-		int h = 100;
+		if (a_thread->ParamType(0) == GM_TYPE_OBJECT) {
+			SetMemberObject("texture0", (Texture*)a_thread->ParamUser_NoCheckTypeOrParam(0));
+		}
+		float w = a_thread->ParamFloatOrInt(1, 64.0);
+		float h = a_thread->ParamFloatOrInt(2, 64.0);
 		setPosition(0, -1.0*w / 2, -1.0*h / 2, 0.0);
 		setPosition(1, 1.0*w / 2, -1.0*h / 2, 0.0);
 		setPosition(2, 1.0*w / 2, 1.0*h / 2, 0.0);
