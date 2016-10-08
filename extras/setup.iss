@@ -1,11 +1,12 @@
 //#define SETUP_FILE "xstart-"+GetDateTimeString("dddd_dd/mm_(hh:nn)", '.', '-');
-#define SETUP_FILE "xstart-dev-setup"
+#define SETUP_FILE "xstart-setup"
 
 [Setup]
-AppName=xstart Development Environment
-DefaultGroupName=xstart Development
+AppName=xStart Development Kit
+DefaultGroupName=xStart Development Kit
+UninstallDisplayIcon={app}\icon.ico
 PrivilegesRequired=none
-DefaultDirName={pf}\xstart-dev\
+DefaultDirName={pf}\xstart\
 AllowRootDirectory=true
 DirExistsWarning=no
 ShowLanguageDialog=no
@@ -37,11 +38,11 @@ Source: *; Excludes: ".git,.gitignore,build,src,extras,scripts,build*.bat,make.b
 ;Name: startup; Description: "Run SBC-Connect on startup";
 
 [Icons]
-Name: "{group}\Script Editor"; Filename: "{app}\editor\scite.exe";
-Name: "{group}\Script Reference"; Filename: "{app}\editor\help.htm";
-Name: "{group}\Interactive Console"; Filename: "{app}\bin\xstart.exe";
-Name: "{group}\Examples"; Filename: "{app}\examples\";
-Name: "{userdesktop}\Script Editor (xstart)"; Filename: "{app}\editor\scite.exe";
+Name: "{group}\xStart Editor"; Filename: "{app}\editor\scite.exe";
+Name: "{group}\xStart Reference"; Filename: "{app}\editor\help.htm";
+Name: "{group}\xStart Console"; Filename: "{app}\bin\xstart.exe";
+Name: "{group}\xStart Examples"; Filename: "{app}\examples\";
+Name: "{userdesktop}\xStart Editor"; Filename: "{app}\editor\scite.exe";
 
 [Registry]
 Root: HKCR; Subkey: ".gm"; ValueType: string; ValueName: ""; ValueData: "GM-Script"; Flags: uninsdeletevalue

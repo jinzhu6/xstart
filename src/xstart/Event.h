@@ -19,14 +19,14 @@ Common events are: <b>Close, MouseMove, MouseDown, MouseUp, MouseEnter, MouseLea
 These are received by setting these event handlers on the receiver object: <b>onClose, onMouseMove, onMouseDown, onMouseUp, onMouseEnter, onMouseLeave, onKeyDown, onKeyUp</b>. \
 Mouse events are send to all elements under them, if an event handler returns true, the event is not send further down the scene-tree hierarchy - however, you should then avoid using sleep() or yield() in the event handler.";
 
-		sender = 0;
+		node = 0;
 		key = 0;
 		text = "";
 		x = y = 0;
 		prevX = prevY = 0;
 		button = 0;
 
-		BindMember("sender", &sender, TYPE_OBJECT, 0, "[Object] sender", "Origin of the event, this is set to the object on which the event was rised.");
+		BindMember("node", &node, TYPE_OBJECT, 0, "[Object] node", "Receiving node of the event, this is set to the object on which the event was rised.");
 		BindMember("key", &key, TYPE_INT, 0, "{int} key", "For keyboard events, this is set to the keycode.");
 		BindMember("text", &text, TYPE_STRING, 0, "{string} text", "<b>EXPERIMENTAL</b> Text representation of input key.");
 		BindMember("button", &button, TYPE_INT, 0, "{int} button", "For mouse events, this is set to the button index.");
@@ -36,12 +36,12 @@ Mouse events are send to all elements under them, if an event handler returns tr
 		BindMember("prevY", &prevY, TYPE_FLOAT, 0, "{float} prevY", "For mouse move events, the previous mouse y-coordinate.");
 	}
 
-	void SetSender(ScriptObject* sender) {
-		SetMemberObject("sender", sender, 0);
+	void SetSender(ScriptObject* node) {
+		SetMemberObject("node", node, 0);
 	}
 
 public:
-	ScriptObject* sender;
+	ScriptObject* node;
 	int key;
 	std::string text;
 	float x;

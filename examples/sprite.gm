@@ -1,5 +1,6 @@
 global FRAME = Frame("Sprite Example", 50, 50, 800, 600, "#606060").toggle().showCursor(true);
 FRAME.root["model"] = Box(Texture("images/texture.png"), 200, 200);
+FRAME.root["model"].onMouseMove = function(e) { exit(); };
 //FRAME.root["model"].texture = Texture("images/texture.png");
 FRAME.root["model"].x = 400;
 FRAME.root["model"].y = 300;

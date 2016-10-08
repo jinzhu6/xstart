@@ -301,7 +301,6 @@ public:
 		return ReturnNull(a_thread);
 	}
 
-
 	void centerAll() {
 		this->pivot->x = (gmfloat)(this->dimension->x * 0.5);
 		this->pivot->y = (gmfloat)(this->dimension->y * 0.5);
