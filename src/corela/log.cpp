@@ -18,7 +18,7 @@ static int g_LogLevel = 1;  // 0=silent, 1=normal, 2=debug
 
 typedef enum CONSOLE_COLORS { CON_NORMAL=0, CON_WARNING, CON_ERROR, CON_SCRIPT, CON_DEBUG, CON_FATAL, CON_INFO, CON_COMPILE, CON_USER };
 
-double _startTime = TimeGet();
+double _startTime = 0.0; //TimeGet();
 
 void SetLogLevel(int level) {
 	g_LogLevel = level;

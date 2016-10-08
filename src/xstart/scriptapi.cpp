@@ -252,16 +252,27 @@ int GM_CDECL Script_Ask(gmThread* a_thread) {
 	return GM_OK;
 }
 
+static float g_TimeOffset = 0.0;
 int GM_CDECL Script_GetTime(gmThread* a_thread) {
 	float t = (float)TimeGet();
-	a_thread->PushFloat(t);
+	a_thread->PushFloat(t - g_TimeOffset);
 	return GM_OK;
 }
 
 int GM_CDECL Script_SetTime(gmThread* a_thread) {
-	GM_CHECK_FLOAT_OR_INT_PARAM(t, 0);
-	TimeSet(t);
+	GM_CHECK_FLOAT_OR_INT_PARAM(nt, 0);
+	float t = (float)TimeGet();
+	g_TimeOffset = t - nt;
+	a_thread->PushFloat(t - g_TimeOffset);
 	return GM_OK;
+}
+
+int GM_CDECL Script_Time(gmThread* a_thread) {
+	if(a_thread->GetNumParams()) {
+		return Script_SetTime(a_thread);
+	} else {
+		return Script_GetTime(a_thread);
+	}
 }
 
 int GM_CDECL Script_GetMemUsage(gmThread* a_thread) {
@@ -466,8 +477,7 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("system", Script_System, " {string} system({string} command)", "Executes a command and redirects output via pipe so you can catch the output of the command.");
 	MachineRegisterFunction("start", Script_System_Async, "{bool} start({string} command)", "Executes a command without waiting for it to finish, thus returning immediately.");
 	MachineRegisterFunction("random", Script_Random, "{float} (or) {int} random( (optional) {float} (or) {int} max)", "Returns a random number between 0 and 'max', including 'max'. For example: random(2) may give 0, 1 or 2. If 'max' is a floating point number, the result is a floating point number too, otherwise its an integer.");
-	MachineRegisterFunction("time", Script_GetTime, "{float} time()", "Gets the internal counter time in seconds.");
-	MachineRegisterFunction("setTime", Script_SetTime, "setTime({float} t", "Sets the internal counter time to the given seconds.");
+	MachineRegisterFunction("time", Script_Time, "{float} time((optional) {float} time)", "Gets or sets the internal timer (in seconds).");
 	MachineRegisterFunction("print", Script_Print, "print({string})", "Outputs the string on the console, no newline is added.");
 	MachineRegisterFunction("println", Script_PrintLine, "println({string})", "Outputs the string on the console, a newline is added.");
 	MachineRegisterFunction("log", Script_Log, "log({string} message)", "Writes a log message to the console.");
