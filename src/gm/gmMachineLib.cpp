@@ -1009,12 +1009,12 @@ static gmFunctionEntry s_binding[] =
   */
   {"typeId", gmTypeId},
   /*gm
-    \function typeName
+    \function type
     \brief typeName will return the type name of the passed var
     \param var
     \return string
   */
-  {"typeName", gmTypeName},
+  {"type", gmTypeName},
   /*gm
     \function typeRegisterOperator
     \brief typeRegisterOperator will register an operator for a type
@@ -1192,7 +1192,7 @@ static gmFunctionEntry s_binding[] =
     \function exit
     \brief exit will kill this thread
   */
-  {"exit", gmExit},
+  {"_exit", gmExit},
   /*gm
     \function assert
     \brief assert 

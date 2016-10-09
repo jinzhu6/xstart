@@ -506,6 +506,21 @@ void RegisterCommonAPI() {
 
 	// only documentation here
 	MachineRegisterFunction("yield", 0, "yield()", "Gives control to the script-runtime and the next thread/coroutine. It is important to yield in a main-loop and in threads/coroutines otherwise the applications may not run correctly and garbage-collection will never take place.");
-	MachineRegisterFunction("sleep", 0, "sleep({float} time", "Same as yield() but continues the current thread/coroutine only after the given time, effectively let the thread/coroutine sleep.");
+	MachineRegisterFunction("sleep", 0, "sleep({float} time)", "Same as yield() but continues the current thread/coroutine only after the given time, effectively let the thread/coroutine sleep.");
+	MachineRegisterFunction("type", 0, "{string} type({any} any)", "Returns the name of the type of the given parameter.");
+	MachineRegisterFunction("format", 0, "{string} format({string} format, ...)", "Like printf() in C. Formats a string by using %d, %s, %f, %c, %b, %x, %e and multiple input parameters.");
+
+	// math functions
+	MachineRegisterFunction("abs, floor, ceil, round, cos, sin, tan, acos, asin, deg2rad, rad2deg", 0, "{float} cos({float} p)", "Common math functions with one parameters.");
+	MachineRegisterFunction("sqrt, power, atan, atan2, log, min, max", 0, "{float} cos({float} x, {float} y)", "Common math functions two parameters.");
+	MachineRegisterFunction("clamp", 0, "{float} clamp({float} min, {float} value, {float} max)", "Returns the clamped value.");
+
+	// string functions
+	MachineRegisterFunction("string.length", 0, "{int}  [string].length()", "Returns the length of the given string, use dot notation on the string: local len = myString.length();");
+	MachineRegisterFunction("string.upper", 0, "{string}  [string].upper()", "Returns a upper case copy of the string, use dot notation on the string: local myUpper = myString.upper();");
+	MachineRegisterFunction("string.lower", 0, "{string}  [string].lower()", "Returns a lower case copy of the string, use dot notation on the string: local myLower = myString.lower();");
+	MachineRegisterFunction("string.find", 0, "{int}  [string].find({string} search, {int} startIndex)", "Returns the index of the first occurance of the search-string or -1. Use dot notation on string to call this function.");
+	MachineRegisterFunction("string.getAt, string.setAt", 0, "{string}  [string].setAt({int} index, {int} set)", "Gets or sets the character at the given index. Use dot notation on string to call this function.");
+	MachineRegisterFunction("string.trimLeft, string.trimRight", 0, "{string}  [string].trimLeft({string} str)", "Returns a trimmed copy of original string. Use dot notation on string to call this function.");
 }
 

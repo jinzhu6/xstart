@@ -54,7 +54,7 @@ void MachineRegisterClass(const char* typeName, gmCFunction ctor) {
 *******************************************************************************/
 std::string MachineGlobalHelp() {
 	std::string out;
-	out += "GLOBAL\t \tGlobal interface.\t\n\n";
+	out += "GLOBAL\t\t\t\n\n";
 
 	std::vector<std::string>::iterator i;
 	for(i = functionsOrder.begin(); i != functionsOrder.end(); i++) {

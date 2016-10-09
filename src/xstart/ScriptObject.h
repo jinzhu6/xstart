@@ -119,7 +119,7 @@ public:
 		BindMember("id", &id, TYPE_STRING, 0, "{string} id", "Idenfication string of the object, initially set to class name but can be changed in script.");
 		BindMember("_key", &_key, TYPE_STRING);
 		BindMember("_table", &table, TYPE_TABLE);
-		BindFunction("toString", (SCRIPT_FUNCTION)&ScriptObject::gm_toString, "{string} toString()", "Get string representation of object.");
+		BindFunction("string", (SCRIPT_FUNCTION)&ScriptObject::gm_toString, "{string} string()", "Get a string representation of the object.");
 		BindFunction("_help", (SCRIPT_FUNCTION)&ScriptObject::gm_help);
 		BindFunction("_getTableString", (SCRIPT_FUNCTION)&ScriptObject::gm_getTableString);
 	}
