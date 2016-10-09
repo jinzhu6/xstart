@@ -62,13 +62,13 @@ public:
 		return ReturnThis(a_thread);
 	}
 
-	void sendFile(const char* file="") {
+	void sendFile(const char* file=0) {
 		mg_serve_http(nc_req, (http_message*)ev_data, s_http_server_opts, file);
 	}
 	int gm_sendFile(gmThread* a_thread) {
 		const char* file;
 		a_thread->ParamString(0, file, "");
-		sendFile(file);
+		sendFile(strlen(file) ? file : 0);
 		return ReturnThis(a_thread);
 	}
 

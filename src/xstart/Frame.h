@@ -39,7 +39,7 @@ public:
 		BindFunction("close", (SCRIPT_FUNCTION)&Frame::gm_close, "[this] close()", "Closes the window. Please note that any textures, shaders and other assets may be internally destroyed if no other window has a valid context on these.");
 		BindFunction("render", (SCRIPT_FUNCTION)&Frame::gm_render, "{bool} render()", "Immediately renders the frames scene graph.");
 		BindFunction("toggle", (SCRIPT_FUNCTION)&Frame::gm_toggle, "[this] toggle()", "Toggles the frame from/to frameless mode.");
-		BindFunction("showCursor", (SCRIPT_FUNCTION)&Frame::gm_showCursor, "[this] showCursor({int} show)", "Shows or hides the cursor when its over the frame window.");
+		BindFunction("cursor", (SCRIPT_FUNCTION)&Frame::gm_showCursor, "[this] cursor({int} show)", "Shows or hides the cursor when its over the frame window.");
 		BindFunction("setDimensions", (SCRIPT_FUNCTION)&Frame::gm_setDimensions, "[this] setDimensions({int} width, {int} height)", "(Experimental) Sets the virtual dimensions of the frame. If not set, the frames dimensions is used instead.");
 		BindFunction("flip", (SCRIPT_FUNCTION)&Frame::gm_flip);
 		BindFunction("select", (SCRIPT_FUNCTION)&Frame::gm_select);

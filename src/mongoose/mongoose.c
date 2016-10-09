@@ -7244,7 +7244,7 @@ void mg_serve_http(struct mg_connection *nc, struct http_message *hm,
   if(file) { path = (char*)file; }
   mg_send_http_file(nc, path, &path_info, hm, &opts);
 
-  MG_FREE(path);
+  if(!file) { MG_FREE(path); }
   path = NULL;
 
   /* Close connection for non-keep-alive requests */
