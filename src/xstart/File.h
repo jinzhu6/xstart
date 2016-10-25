@@ -24,9 +24,10 @@ public:
 		BindFunction("close",  (SCRIPT_FUNCTION)&File::gm_close, "close()", "Closes the file. This is also done by garbage collecting the object.");
 		BindFunction("write",  (SCRIPT_FUNCTION)&File::gm_write, "[this] write({string} data, (optional) {int} length)", "<b>Subject to change.</b> Write string to file.");
 		BindFunction("read",   (SCRIPT_FUNCTION)&File::gm_read, "{string} read( (optional) {int} length)", "<b>Subject to change.</b> Reads 'length' of bytes from file or the whole file if length is not specified.");
-		// TODO: readLine, readUntil
+		// TODO: readLine, readUntil, rename, move, copy
 		BindFunction("exists", (SCRIPT_FUNCTION)&File::gm_exists, "{int} exists({string} fileName)", "Checks if a given file name exists. Returns zero on failure or non-zero if the file exists.");
 		BindFunction("delete", (SCRIPT_FUNCTION)&File::gm_delete, "{bool} delete({string} fileName)", "Deletes the given file. Returns {false} only aif the file exists and can not be removed.");
+		BindFunction("rename", (SCRIPT_FUNCTION)&File::gm_rename, "{bool} rename({string} source, {string} destination)", "Renames a file.");
 		BindFunction("seek",   (SCRIPT_FUNCTION)&File::gm_seek, "[this] seek({int} position)", "Moves the file cursor to the given position. No error checking performed.");
 		BindFunction("tell",   (SCRIPT_FUNCTION)&File::gm_tell, "{int} tell()", "Returns the current file cursor position.");
 		BindFunction("size",   (SCRIPT_FUNCTION)&File::gm_size, "{int} size()", "Returns the file size in bytes.");
@@ -87,12 +88,23 @@ public:
 	bool del(const char* file) {
 		if(!exists(file)) return true;
 		int r = remove(file);
-		if(r == 0) { return true; }
-		return false;
+		return r==0;
 	}
 	int gm_delete(gmThread* a_thread) {
 		GM_CHECK_STRING_PARAM(file, 0);
 		a_thread->PushInt(del(file));
+		return GM_OK;
+	}
+
+	bool ren(const char* fileSrc, const char* fileDst) {
+		if(!exists(fileSrc)) return true;
+		int r = rename(fileSrc, fileDst);
+		return r==0;
+	}
+	int gm_rename(gmThread* a_thread) {
+		GM_CHECK_STRING_PARAM(fileSrc, 0);
+		GM_CHECK_STRING_PARAM(fileDst, 1);
+		a_thread->PushInt(ren(fileSrc, fileDst));
 		return GM_OK;
 	}
 

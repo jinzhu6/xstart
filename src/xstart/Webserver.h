@@ -82,7 +82,7 @@ public:
 	}
 
 	void send404() {
-		mg_printf(nc_req, "HTTP/1.1 404 Not Found\r\nContent-Length: 9\r\n\r\nnot found");
+		mg_printf(nc_req, "HTTP/1.1 404 Not Found\r\nContent-Length: 9\r\n\r\n404 - not found");
 	}
 	int gm_send404(gmThread* a_thread) {
 		send404();
@@ -111,6 +111,53 @@ public:
 	void *ev_data;
 };
 
+static void HttpScriptCallback(HttpServer* server, std::string uri, std::string query, std::string post, std::string auth) {
+	gmStringObject* authString = machine->AllocStringObject(auth.c_str());
+	gmStringObject* uriString = machine->AllocStringObject(uri.c_str());
+	gmStringObject* queryString = machine->AllocStringObject(query.c_str());
+	gmStringObject* postString = machine->AllocStringObject(post.c_str());
+
+	int retval = 0;
+	gmVariable fnVar;
+	gmFunctionObject* fnObj;
+	gmCall call;
+
+	std::replace(uri.begin(), uri.end(), '/', '_');
+	fnVar = server->table->Get(machine, (std::string("")+uri).c_str());
+	if(!fnVar.IsNull()) {
+		if(fnVar.m_type == GM_FUNCTION) {
+			fnObj = fnVar.GetFunctionObjectSafe();
+			if(call.BeginTableFunction(machine, (std::string("")+uri).c_str(), server->table, gmVariable(server->userObject), false)) {
+				call.AddParamString(uriString);
+				call.AddParamString(queryString);
+				call.AddParamString(postString);
+				call.AddParamString(authString);
+				if(call.DidReturnVariable()) {
+					call.GetReturnedInt(retval);
+				}
+				call.End();
+			}
+		}
+	} else {
+		fnVar = server->table->Get(machine, "onRequest");
+		if(!fnVar.IsNull()) {
+			if(fnVar.m_type == GM_FUNCTION) {
+				fnObj = fnVar.GetFunctionObjectSafe();
+				if(call.BeginTableFunction(machine, "onRequest", server->table, gmVariable(server->userObject), false)) {
+					call.AddParamString(uriString);
+					call.AddParamString(queryString);
+					call.AddParamString(postString);
+					call.AddParamString(authString);
+					if(call.DidReturnVariable()) {
+						call.GetReturnedInt(retval);
+					}
+					call.End();
+				}
+			}
+		}
+	}
+}
+
 static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	HttpServer* server = (HttpServer*)nc->mgr->user_data;
 	server->ev_data = ev_data;
@@ -121,70 +168,34 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	case MG_EV_HTTP_REQUEST: {
 		http_message* msg = (http_message*)ev_data;
 
-		gmStringObject* authString;
+		// check if there is an authentification in the header
+		std::string auth = "";
 		char auth_dst[1024];
 		mg_str* _auth = mg_get_http_header(msg, "Authorization");
 		if(_auth) {
 			mg_base64_decode((const unsigned char*)&_auth->p[6], _auth->len-6, auth_dst);
-			std::string auth(&auth_dst[0], strlen(&auth_dst[0]));
-			authString = machine->AllocStringObject(auth.c_str());
+			auth = std::string(&auth_dst[0], strlen(&auth_dst[0]));
 		}
 
+		// get uri, get and post
 		std::string uri(msg->uri.p, msg->uri.len);
 		std::string query(msg->query_string.p, msg->query_string.len);
 		std::string post(msg->body.p, msg->body.len);
 
-		gmStringObject* uriString = machine->AllocStringObject(uri.c_str());
-		gmStringObject* queryString = machine->AllocStringObject(query.c_str());
-		gmStringObject* postString = machine->AllocStringObject(post.c_str());
-
-		int retval = 0;
-		gmVariable fnVar;
-		gmFunctionObject* fnObj;
-		gmCall call;
-
-		std::replace(uri.begin(), uri.end(), '/', '_');
-		fnVar = server->table->Get(machine, (std::string("")+uri).c_str());
-		if(!fnVar.IsNull()) {
-			if(fnVar.m_type == GM_FUNCTION) {
-				fnObj = fnVar.GetFunctionObjectSafe();
-				if(call.BeginTableFunction(machine, (std::string("")+uri).c_str(), server->table, gmVariable(server->userObject), false)) {
-					call.AddParamString(uriString);
-					call.AddParamString(queryString);
-					call.AddParamString(postString);
-					if(_auth) { call.AddParamString(authString); }
-					if(call.DidReturnVariable()) {
-						call.GetReturnedInt(retval);
-					}
-					call.End();
-				}
-			}
-		} else {
-			fnVar = server->table->Get(machine, "onRequest");
-			if(!fnVar.IsNull()) {
-				if(fnVar.m_type == GM_FUNCTION) {
-					fnObj = fnVar.GetFunctionObjectSafe();
-					if(call.BeginTableFunction(machine, "onRequest", server->table, gmVariable(server->userObject), false)) {
-						call.AddParamString(uriString);
-						call.AddParamString(queryString);
-						call.AddParamString(postString);
-						if(_auth) { call.AddParamString(authString); }
-						if(call.DidReturnVariable()) {
-							call.GetReturnedInt(retval);
-						}
-						call.End();
-					}
-				}
-			}
-		}
+		HttpScriptCallback(server, uri, query, post, auth);
 	}
 	break;
 
 	case MG_EV_HTTP_PART_BEGIN:
 	case MG_EV_HTTP_PART_DATA:
-	case MG_EV_HTTP_PART_END:
-		mg_file_upload_handler(nc, ev, ev_data, "upload.dat");
+	case MG_EV_HTTP_PART_END: {
+		mg_http_multipart_part* msg = (mg_http_multipart_part*)ev_data;
+		mg_file_upload_handler(nc, ev, ev_data, "upload");
+		if(ev==MG_EV_HTTP_PART_END) {
+			HttpScriptCallback(server, "onUploaded", msg->file_name, "", "");
+		}
 		break;
+		}
 	}
 }
 

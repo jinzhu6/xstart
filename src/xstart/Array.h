@@ -183,6 +183,7 @@ public:
 			switch(c) {
 			case '}':
 				return n;
+
 			case ':':
 				// read value
 				n_value = 0;

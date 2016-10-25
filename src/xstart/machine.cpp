@@ -3,7 +3,7 @@
 #include <gm/gmThread.h>
 #include <gm/gmMachine.h>
 #include <gm/gmStringLib.h>  // some extra functionality on strings
-#include <gm/gmMathLib.h>  // some extra functionality on strings
+#include <gm/gmMathLib.h>  // some extra functionality on math
 #include "ScriptObject.h"
 #include "machine.h"
 
@@ -157,7 +157,7 @@ bool MachineRunFile(const char* file) {
 
 	// execute buffer
 	Log(LOG_DEBUG, "Executing ...");
-	//machine->AddSourceCode();
+	//machine->AddSourceCode((char*)buffer, "_xstart.gm.bak");
 	//int errors = machine->CheckSyntax((char*)buffer);
 	int errors = machine->ExecuteString((char*)buffer, NULL, false, "_xstart.gm.bak");
 	

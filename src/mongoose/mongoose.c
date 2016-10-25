@@ -5102,10 +5102,10 @@ void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
       fus->lfn = (char *) malloc(lfn.len + 1);
       memcpy(fus->lfn, lfn.p, lfn.len);
       fus->lfn[lfn.len] = '\0';
-      if (lfn.p != mp->file_name) free((char *) lfn.p);
+      //if (lfn.p != mp->file_name) free((char *) lfn.p);
       LOG(LL_DEBUG,
           ("%p Receiving file %s -> %s", nc, mp->file_name, fus->lfn));
-      fus->fp = fopen(fus->lfn, "w");
+      fus->fp = fopen(fus->lfn, "wb");
       if (fus->fp == NULL) {
         mg_printf(nc,
                   "HTTP/1.1 500 Internal Server Error\r\n"
@@ -5170,12 +5170,12 @@ void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
       if (mp->status >= 0 && fus->fp != NULL) {
         LOG(LL_DEBUG, ("%p Uploaded %s (%s), %d bytes", nc, mp->file_name,
                        fus->lfn, (int) fus->num_recd));
-        mg_printf(nc,
+/*        mg_printf(nc,
                   "HTTP/1.1 200 OK\r\n"
                   "Content-Type: text/plain\r\n"
                   "Connection: close\r\n\r\n"
                   "Ok, %s - %d bytes.\r\n",
-                  mp->file_name, (int) fus->num_recd);
+                  mp->file_name, (int) fus->num_recd);*/
       } else {
         LOG(LL_ERROR, ("Failed to store %s (%s)", mp->file_name, fus->lfn));
         /*

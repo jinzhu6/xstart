@@ -73,9 +73,7 @@ void StromgReplaceAll(std::string& str, const std::string& from, const std::stri
 void ErrorBox(const char* _error) {
 #ifdef _WIN32
 	MessageBox(GetForegroundWindow(), _error, "ERROR", MB_OK | MB_ICONERROR);
-#ifdef _DEBUG
-	if(g_LogLevel >= 1) { __debugbreak(); }
-#endif
+//	if(g_LogLevel >= 1) { __debugbreak(); }
 #else
 	std::string error;
 	error = _error;
