@@ -1,3 +1,6 @@
+#define NAME "xstart"
+#define VERSION "0.3.1"
+
 #define _API_CONTAINERS 1
 #define _API_STANDARD 1
 #define _API_XML 1

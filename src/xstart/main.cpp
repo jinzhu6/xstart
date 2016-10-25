@@ -65,7 +65,7 @@
 #if _API_HARDWARE
 #include "Serial.h"
 //#include "Logo.h"
-//#include "ADDevice.h"
+#include "ADDevice.h"
 #include "Dmx.h"
 //#include "BaslerCam.h"
 #include "Camera.h"
@@ -202,6 +202,7 @@ int main(int _argc, char* _argv[]) {
 #endif
 
 	// log version
+	TimeSet(TimeGet());
 	if (GetLogLevel() > 1) { LogVersion(); }
 
 	// get library directory
@@ -311,7 +312,7 @@ int main(int _argc, char* _argv[]) {
 	MachineRegisterClass<SerialPort>("Serial");
 	//MachineRegisterClass<Logo>("Logo"); // TODO: Fix Siemens Logo (interface to libnodave)
 	#ifdef _MSC_BUILD
-	//MachineRegisterClass<ADDevice>("ADDevice"); // requires libad.dll on Windows, needs Linux porting
+	MachineRegisterClass<ADDevice>("ADDevice"); // requires libad.dll on Windows, needs Linux porting
 	MachineRegisterClass<Dmx>("Dmx"); // requires dashard.dll
 	MachineRegisterClass<Camera>("Camera"); // unfinished directshow implementation
 	//MachineRegisterClass<BaslerCam>("BaslerCam"); // Works, but is disabled by default because it has too many dependencies.
@@ -320,7 +321,6 @@ int main(int _argc, char* _argv[]) {
 
 
 	// run script or script console
-	TimeSet(TimeGet());
 	if(fileArg == -1) { MachineRun(stdin); }
 	else { MachineRunFile(argv[fileArg]); }
 

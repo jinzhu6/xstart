@@ -1,3 +1,4 @@
+#include "config.h"
 #include <corela.h>
 #include <strtrim.h>
 #include <time.h>
