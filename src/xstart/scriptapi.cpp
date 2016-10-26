@@ -460,6 +460,32 @@ int GM_CDECL Script_MapKey(gmThread* a_thread) {
 }
 #endif
 
+
+//#include <stdio.h>
+extern "C" {
+#include <markdown\markdown.h>
+}
+int GM_CDECL Script_Markdown(gmThread* a_thread) {
+	GM_CHECK_STRING_PARAM(fileIn, 0);
+	GM_CHECK_STRING_PARAM(fileOut, 1);
+	
+	FILE* fin = fopen(fileIn, "rb");
+	FILE* fou = fopen(fileOut, "wb");
+	if (!fin) { Log(LOG_ERROR, "Error while opening file '%s'!", fileIn); return GM_OK; }
+	if (!fou) { Log(LOG_ERROR, "Error while opening file '%s'!", fileOut); return GM_OK; }
+	
+	//mkd_initialize();
+	Document* md = mkd_in(fin, 0);
+	mkd_compile(md, 0);
+	mkd_generatehtml(md, fou);
+	
+	fclose(fin);
+	fclose(fou);
+
+	return GM_OK;
+}
+
+
 /*int GM_CDECL Script_Format(gmThread* a_thread) {
 
 }*/
@@ -491,6 +517,7 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("load", Script_LoadConfig, " {string} get({string} key)", "Loads a config string from 'config.ini'.");
 	MachineRegisterFunction("save", Script_SaveConfig, "save({string} key, {string} value)", "Saves a config string into 'config.ini'. If it does not exist, the file will be created.");
 	MachineRegisterFunction("instance", Script_CreateInstance, "{object} instance({string} class)", "Creates an instance from a class type name. Used for introspection.");
+	MachineRegisterFunction("markdown", Script_Markdown, "markdown({string} fileIn, {string} fileOut)", "Loads a markdown file and saves the HTML to another file.");
 	MachineRegisterFunction("pause", Script_Pause, "pause( {float} s)", "Pauses the execution of the whole process for the given time in seconds. Reduces CPU usage of real-time applications.");
 	MachineRegisterFunction("eval", Script_Eval, "eval({string} code)", "Execute given code on the same script context, meaning, it has access to global functions and variables.");
 	MachineRegisterFunction("callstack", Script_Callstack, "{string} callstack()", "Returns the current callback as string.");

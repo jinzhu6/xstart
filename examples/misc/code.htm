@@ -1,0 +1,198 @@
+<p>. tests/functions.sh</p>
+
+<p>title &ldquo;code blocks&rdquo;</p>
+
+<p>rc=0
+MARKDOWN_FLAGS=</p>
+
+<p>try &lsquo;format for code block html&rsquo; \
+&lsquo;    this is
+    code&rsquo; \
+    &lsquo;<pre><code>this is
+code
+</code></pre>&rsquo;</p>
+
+<p>try &lsquo;mismatched backticks&rsquo; &lsquo;<code>tick``' '&lt;p&gt;&lt;code&gt;`tick&lt;/code&gt;&lt;/p&gt;'
+try 'mismatched backticks(2)' '``tick</code>&rsquo; &lsquo;<p><code>tick```&lt;/p&gt;'
+try 'unclosed single backtick' '`hi there' '&lt;p&gt;`hi there&lt;/p&gt;'
+try 'unclosed double backtick' '</code>hi there&rsquo; &lsquo;<p><code>hi there&lt;/p&gt;'
+try 'triple backticks' '```hi there```' '&lt;p&gt;&lt;code&gt;hi there&lt;/code&gt;&lt;/p&gt;'
+try 'quadruple backticks' '````hi there````' '&lt;p&gt;&lt;code&gt;hi there&lt;/code&gt;&lt;/p&gt;'
+try 'remove space around code' '</code> hi there <code>' '&lt;p&gt;&lt;code&gt;hi there&lt;/code&gt;&lt;/p&gt;'
+try 'code containing backticks' '</code> a<code>b ``' '&lt;p&gt;&lt;code&gt;a</code>b</code></p>&rsquo;
+try &lsquo;backslash before backtick&rsquo; &lsquo;<code>a\</code>&rsquo; &lsquo;<p><code>a\</code></p>&rsquo;
+try &lsquo;<code>&gt;</code>&rsquo; &lsquo;<code>&gt;</code>&rsquo; &lsquo;<p><code>&gt;</code></p>&rsquo;
+try &lsquo;<code>`</code>&rsquo; &lsquo;<code>`</code>&rsquo; &lsquo;<p><code><code>&lt;/code&gt;&lt;/p&gt;'
+try '````` ```</code>&rsquo; &lsquo;<code>``` `' '&lt;p&gt;&lt;code&gt;``&lt;/code&gt; `&lt;/p&gt;'
+try '</code> <code>```' '`````</code> <code>`' '&lt;p&gt;&lt;code&gt;</code> <code>&lt;/code&gt;&lt;/p&gt;'
+try 'backslashes in code(1)' '    printf "%s: \n", $1;' \
+'&lt;pre&gt;&lt;code&gt;printf "%s: \n", $1;
+&lt;/code&gt;&lt;/pre&gt;'
+try 'backslashes in code(2)' '</code>printf &ldquo;%s: \n&rdquo;, $1;`&rsquo; \
+&lsquo;<p><code>printf &ldquo;%s: \n&rdquo;, $1;</code></p>&rsquo;</p>
+
+<p>try &lsquo;fenced code disabled backtick&rsquo; \
+&lsquo;```</p>
+
+<p>unrecognized code!
+<code>' \
+'&lt;p&gt;</code></p></p>
+
+<p>unrecognized code!
+```</p>
+
+
+<p>'</p>
+
+<h1>no <pre/> proves it’s the inline variant of <code>code</code> delimitation</h1>
+
+<p>try &lsquo;fenced code disabled backtick as inline code&rsquo; \
+&lsquo;<code>
+inline code?
+</code>&rsquo; \
+&lsquo;<p><code>
+inline code?
+</code></p>&rsquo;</p>
+
+<p>try &lsquo;fenced code disabled tilde&rsquo; \
+&lsquo;~~~</p>
+
+<p>unrecognized code!
+<del>&lsquo; \
+&rsquo;<p></del></p></p>
+
+<p>unrecognized code!
+~~~</p>
+
+
+<p>'</p>
+
+<p>try -ffencedcode &lsquo;fenced code block with blank lines&rsquo; \
+&lsquo;~~~
+code!</p>
+
+<p>still code!
+~~~&lsquo; \
+    &rsquo;<pre><code>code!</p>
+
+<p>still code!
+</code></pre>'</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block&rsquo; \
+&lsquo;~~~
+code!
+~~~&rsquo; \
+    &lsquo;<pre><code>code!
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block in list&rsquo; \
+&lsquo;1. ~~~
+code block
+~~~&rsquo; \
+&lsquo;<ol>
+<li><pre><code>code block
+</code></pre></li>
+</ol>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block in blockquote&rsquo; \
+&lsquo;>~~~
+code
+~~~&rsquo; \
+&lsquo;<blockquote><pre><code>code
+</code></pre></blockquote>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;unterminated fenced code block&rsquo; \
+&lsquo;~~~
+code&rsquo; \
+&lsquo;<p>~~~
+code</p>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with tildes&rsquo; \
+&lsquo;~~~~~
+~~~
+code with tildes
+~~~
+<del>~~&lsquo; \
+&rsquo;<pre><code></del>
+code with tildes
+~~~
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;paragraph with trailing fenced block&rsquo; \
+&lsquo;text text text
+text text text
+~~~
+code code code?
+<del>&lsquo; \
+&rsquo;<p>text text text
+text text text
+</del>
+code code code?
+~~~</p>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code blocks with backtick delimiters&rsquo; \
+&lsquo;<code>
+code
+</code>&rsquo; \
+&lsquo;<pre><code>code
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with mismatched delimters&rsquo; \
+&lsquo;<code>
+code
+~~~' \
+'&lt;p&gt;</code>
+code
+~~~</p>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with lang attribute&rsquo; \
+&lsquo;<code>lang
+code
+</code>&rsquo; \
+&lsquo;<pre><code class="lang">code
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with lang-name attribute&rsquo; \
+&lsquo;<code>lang-name
+code
+</code>&rsquo; \
+&lsquo;<pre><code class="lang-name">code
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with lang_name attribute&rsquo; \
+&lsquo;<code>lang_name
+code
+</code>&rsquo; \
+&lsquo;<pre><code class="lang_name">code
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with lang attribute and space&rsquo; \
+&lsquo;<code>lang
+code
+</code>&rsquo; \
+&lsquo;<pre><code class="lang">code
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with lang attribute and multiple spaces&rsquo; \
+&lsquo;<code>      lang
+code
+</code>&rsquo; \
+&lsquo;<pre><code class="lang">code
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with lang-name attribute and space&rsquo; \
+&lsquo;<code>lang-name
+code
+</code>&rsquo; \
+&lsquo;<pre><code class="lang-name">code
+</code></pre>&rsquo;</p>
+
+<p>try  -ffencedcode &lsquo;fenced code block with lang_name attribute and space&rsquo; \
+&lsquo;<code>lang_name
+code
+</code>&rsquo; \
+&lsquo;<pre><code class="lang_name">code
+</code></pre>&rsquo;</p>
+
+<p>summary $0
+exit $rc</p>
