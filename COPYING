@@ -2915,4 +2915,15 @@ EXHIBIT A -Mozilla Public License.
 
 
 --------------------------------------------------------------------------------
+GNU C Library
+--------------------------------------------------------------------------------
+
+This software may be linked to the GLIBC (GNU C Library) on a Linux based
+system.
+
+Note that under that circumstances, the GNU C Library is licensed 
+under the terms of the GNU GENERAL PUBLIC LICENSE as seen above.
+
+
+--------------------------------------------------------------------------------
 END OF DOCUMENT
