@@ -25,6 +25,7 @@
 #ifdef _WIN32
 #define strnicmp _strnicmp
 #define strncasecmp strnicmp
+#define inline _inline
 #else
 #define strnicmp strncasecmp
 #endif

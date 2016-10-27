@@ -3738,7 +3738,7 @@ int mg_normalize_uri_path(const struct mg_str *in, struct mg_str *out) {
 #define MG_DISABLE_CGI 1
 #endif
 
-static const char *mg_version_header = "Mongoose/" MG_VERSION;
+static const char *mg_version_header = "xstart-Mongoose/" MG_VERSION;
 
 enum mg_http_proto_data_type { DATA_NONE, DATA_FILE, DATA_PUT };
 
@@ -6815,7 +6815,7 @@ static void mg_prepare_cgi_environment(struct mg_connection *nc,
   }
   mg_addenv(blk, "SERVER_ROOT=%s", opts->document_root);
   mg_addenv(blk, "DOCUMENT_ROOT=%s", opts->document_root);
-  mg_addenv(blk, "SERVER_SOFTWARE=%s/%s", "Mongoose", MG_VERSION);
+  mg_addenv(blk, "SERVER_SOFTWARE=%s/%s", "xstart-Mongoose", MG_VERSION);
 
   /* Prepare the environment block */
   mg_addenv(blk, "%s", "GATEWAY_INTERFACE=CGI/1.1");

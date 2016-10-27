@@ -49,6 +49,8 @@ public:
 
 		memset(&s_http_server_opts, 0, sizeof(mg_serve_http_opts));
 		s_http_server_opts.document_root = docroot;
+		s_http_server_opts.dav_document_root = docroot;
+		s_http_server_opts.dav_auth_file = "-";
 		s_http_server_opts.enable_directory_listing = dirListing ? "yes" : "no";
 	}
 
@@ -163,13 +165,14 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	server->ev_data = ev_data;
 	server->nc_req = nc;
 	mbuf *io = &nc->recv_mbuf;
+	static std::string auth, uri, query, post;
 
 	switch(ev) {
+	case MG_EV_HTTP_MULTIPART_REQUEST:
 	case MG_EV_HTTP_REQUEST: {
 		http_message* msg = (http_message*)ev_data;
 
 		// check if there is an authentification in the header
-		std::string auth = "";
 		char auth_dst[1024];
 		mg_str* _auth = mg_get_http_header(msg, "Authorization");
 		if(_auth) {
@@ -178,11 +181,12 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 		}
 
 		// get uri, get and post
-		std::string uri(msg->uri.p, msg->uri.len);
-		std::string query(msg->query_string.p, msg->query_string.len);
-		std::string post(msg->body.p, msg->body.len);
+		uri = std::string(msg->uri.p, msg->uri.len);
+		query = std::string(msg->query_string.p, msg->query_string.len);
+		if(ev == MG_EV_HTTP_REQUEST) post = std::string(msg->body.p, msg->body.len);
+		else post = "";
 
-		HttpScriptCallback(server, uri, query, post, auth);
+		if(ev == MG_EV_HTTP_REQUEST) HttpScriptCallback(server, uri, query, post, auth);
 	}
 	break;
 
@@ -192,7 +196,7 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 		mg_http_multipart_part* msg = (mg_http_multipart_part*)ev_data;
 		mg_file_upload_handler(nc, ev, ev_data, "upload");
 		if(ev==MG_EV_HTTP_PART_END) {
-			HttpScriptCallback(server, "onUploaded", msg->file_name, "", "");
+			HttpScriptCallback(server, uri, query, msg->file_name, auth); // 
 		}
 		break;
 		}
