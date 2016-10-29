@@ -44,7 +44,11 @@ casort(struct kw *a, struct kw *b)
 {
     if ( a->size != b->size )
 	return a->size - b->size;
-    return strncasecmp(a->id, b->id, b->size);
+#ifdef _WIN32
+	return strnicmp(a->id, b->id, b->size);
+#else
+	return strncasecmp(a->id, b->id, b->size);
+#endif
 }
 
 

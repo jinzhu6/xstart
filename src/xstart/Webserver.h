@@ -65,7 +65,7 @@ public:
 	}
 
 	void sendFile(const char* file=0, const char* mime=0) {
-		if(file==0) mg_serve_http(nc_req, (http_message*)ev_data, s_http_server_opts, file);
+		if(file==0) mg_serve_http(nc_req, (http_message*)ev_data, s_http_server_opts);
 		else mg_http_serve_file(nc_req, (http_message*)ev_data, file, mg_mk_str(mime), mg_mk_str(""));
 	}
 	int gm_sendFile(gmThread* a_thread) {
@@ -162,6 +162,10 @@ static void HttpScriptCallback(HttpServer* server, std::string uri, std::string 
 	}
 }
 
+mg_str HttpUploadFileNameCallback(struct mg_connection *nc, struct mg_str fname) {
+	return fname;
+};
+
 static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	HttpServer* server = (HttpServer*)nc->mgr->user_data;
 	server->ev_data = ev_data;
@@ -196,7 +200,7 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	case MG_EV_HTTP_PART_DATA:
 	case MG_EV_HTTP_PART_END: {
 		mg_http_multipart_part* msg = (mg_http_multipart_part*)ev_data;
-		mg_file_upload_handler(nc, ev, ev_data, "upload");
+		mg_file_upload_handler(nc, ev, ev_data, HttpUploadFileNameCallback);
 		if(ev==MG_EV_HTTP_PART_END) {
 			HttpScriptCallback(server, uri, query, msg->file_name, auth); //
 		}

@@ -8,11 +8,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <unistd.h>
 #include <mkdio.h>
 #include <errno.h>
 #include <string.h>
 #include <stdarg.h>
+
+#ifdef _WIN32
+#include "unistd_win.h"
+#else
+#include <unistd.h>
+#endif
 
 #include "config.h"
 #include "amalloc.h"
