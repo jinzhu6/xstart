@@ -28,6 +28,7 @@
 #define inline _inline
 #else
 #define strnicmp strncasecmp
+#define _strnicmp strncasecmp
 #endif
 
 #endif/* __AC_MARKDOWN_D */

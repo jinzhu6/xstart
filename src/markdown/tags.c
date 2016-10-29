@@ -44,7 +44,7 @@ casort(struct kw *a, struct kw *b)
 {
     if ( a->size != b->size )
 	return a->size - b->size;
-    return _strnicmp(a->id, b->id, b->size);
+    return strncasecmp(a->id, b->id, b->size);
 }
 
 
@@ -70,16 +70,16 @@ mkd_search_tags(char *pat, int len)
 {
     struct kw key;
     struct kw *ret;
-    
+
     key.id = pat;
     key.size = len;
-    
+
     if ( (ret=bsearch(&key,blocktags,NR_blocktags,sizeof key,(stfu)casort)) )
 	return ret;
 
     if ( S(extratags) )
 	return bsearch(&key,T(extratags),S(extratags),sizeof key,(stfu)casort);
-    
+
     return 0;
 }
 

@@ -15,9 +15,9 @@ public:
 		id = "HttpServer";
 		help = "Spawns a HTTP server. Note that bindung to port 80 may need root privileges. It is neccessary to call the poll() method since there is no background thread handling the requests.";
 		ctor = "({string} port, (optional) {string} docroot, (optional) {bool} dirListing)";
-		
+
 		nc = 0;
-		
+
 		// TODO: open() and close() for HttpServer
 		BindFunction("poll", (SCRIPT_FUNCTION)&HttpServer::gm_poll, "[this] poll({float} timeoutSeconds)", "Polls for incoming http requests.");
 		BindFunction("onRequest", (SCRIPT_FUNCTION)&HttpServer::gm_onRequest, "onRequest({string} url, {string} get, {string} post, {string} auth)", "Request handler/callback, the default request handler sends a 404 http error code to all request. Override this handler to your own logic.");
@@ -64,13 +64,15 @@ public:
 		return ReturnThis(a_thread);
 	}
 
-	void sendFile(const char* file=0) {
-		mg_serve_http(nc_req, (http_message*)ev_data, s_http_server_opts, file);
+	void sendFile(const char* file=0, const char* mime=0) {
+		if(file==0) mg_serve_http(nc_req, (http_message*)ev_data, s_http_server_opts, file);
+		else mg_http_serve_file(nc_req, (http_message*)ev_data, file, mg_mk_str(mime), mg_mk_str(""));
 	}
 	int gm_sendFile(gmThread* a_thread) {
-		const char* file;
+		const char* file, *mime;
 		a_thread->ParamString(0, file, "");
-		sendFile(strlen(file) ? file : 0);
+		a_thread->ParamString(1, mime, "text/html");
+		sendFile(strlen(file) ? file : 0, strlen(mime) ? mime : 0);
 		return ReturnThis(a_thread);
 	}
 
@@ -196,7 +198,7 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 		mg_http_multipart_part* msg = (mg_http_multipart_part*)ev_data;
 		mg_file_upload_handler(nc, ev, ev_data, "upload");
 		if(ev==MG_EV_HTTP_PART_END) {
-			HttpScriptCallback(server, uri, query, msg->file_name, auth); // 
+			HttpScriptCallback(server, uri, query, msg->file_name, auth); //
 		}
 		break;
 		}

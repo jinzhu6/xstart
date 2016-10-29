@@ -463,7 +463,7 @@ int GM_CDECL Script_MapKey(gmThread* a_thread) {
 
 //#include <stdio.h>
 extern "C" {
-#include <markdown\markdown.h>
+#include "markdown/markdown.h"
 }
 int GM_CDECL Script_Markdown(gmThread* a_thread) {
 	GM_CHECK_STRING_PARAM(fileIn, 0);
