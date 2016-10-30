@@ -174,7 +174,7 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	static std::string auth, uri, query, post;
 
 	switch(ev) {
-	case MG_EV_HTTP_MULTIPART_REQUEST:
+	//case MG_EV_HTTP_MULTIPART_REQUEST:
 	case MG_EV_HTTP_REQUEST: {
 		http_message* msg = (http_message*)ev_data;
 

@@ -33,8 +33,8 @@
 #define MG_ENABLE_SSL 0
 #define MG_DISABLE_HTTP_DIGEST_AUTH 1
 #define MG_DISABLE_HTTP_KEEP_ALIVE 1
-#define MG_ENABLE_DEBUG 1
-#define MG_ENABLE_FAKE_DAVLOCK 1
+#define MG_ENABLE_DEBUG 0
+#define MG_ENABLE_FAKE_DAVLOCK 0
 #define MG_ENABLE_GETADDRINFO 1
 
 /* Local tweaks, applied before any of Mongoose's own headers. */
@@ -518,7 +518,7 @@ typedef struct stat cs_stat_t;
 
 #include <simplelink.h>
 #include <netapp.h>
-#undef timeval 
+#undef timeval
 
 typedef int sock_t;
 #define INVALID_SOCKET (-1)
