@@ -130,6 +130,8 @@ public:
 				free(dst);
 				vars->set(key, value);
 				inKey = true;
+				key = "";
+				value = "";
 				break;
 			default:
 				if(inKey) key += c;
