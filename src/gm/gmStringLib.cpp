@@ -417,6 +417,35 @@ static int GM_CDECL gmfStringAppendPath(gmThread * a_thread)
   return GM_EXCEPTION;
 }
 
+#include <string>
+void StringReplaceAll(std::string& str, const std::string& from, const std::string& to) {
+    if(from.empty()) return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
+
+static int GM_CDECL gmfStringReplaceAll(gmThread* a_thread) {
+	GM_STRING_PARAM(from, 0, "{{}}");
+	GM_STRING_PARAM(to, 1, "");
+
+	const gmVariable* varA = a_thread->GetThis();
+	GM_ASSERT(varA->m_type == GM_STRING);
+
+	gmStringObject * strObjA = (gmStringObject *) GM_OBJECT(varA->m_value.m_ref);
+	const char* cStrA = strObjA->GetString();
+	int lenA = strObjA->GetLength();
+
+	std::string newStr = cStrA;
+	StringReplaceAll(newStr, from, to);
+	const char* cStrB = newStr.c_str();
+
+	a_thread->PushNewString(cStrB, strlen(cStrB));
+	return GM_OK;
+}
+
 
 // string.RemoveInvalidChars(a_replaceChar, a_invalidSet)
 // eg. "File Name#1.tga".RemoveInvalidChars("_","# ") returns "File_Name_1.tga"
@@ -1174,6 +1203,7 @@ static gmFunctionEntry s_stringLib[] =
   {"Replace", }, //int Replace(char/string,char/string)
   {"Scan", },
 */
+  {"replace", gmfStringReplaceAll},
 };
 
 void gmBindStringLib(gmMachine * a_machine)
