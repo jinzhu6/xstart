@@ -3,6 +3,7 @@
 
 #include "ScriptObject.h"
 #include "Data.h"
+#include "Map.h"
 #include <mongoose.h>
 
 class HttpServer;
@@ -26,6 +27,7 @@ public:
 		//BindFunction("sendData", (SCRIPT_FUNCTION)&HttpServer::gm_sendData, "[this] sendData([Data] data)", "When called inside the request-handler, it sends the content of a Data object back to the client.");
 		BindFunction("send404", (SCRIPT_FUNCTION)&HttpServer::gm_send404, "[this] send404()", "When called inside the request-handler, it sends a a 404 error back to the client.");
 		BindFunction("sendAuthRequest", (SCRIPT_FUNCTION)&HttpServer::gm_sendAuthRequest, "[this] sendAuthRequest({string} message)", "When called inside the request-handler, it sends a authorizsation request ('401 Access Denied') back to the client.");
+		BindFunction("parseForm", (SCRIPT_FUNCTION)&HttpServer::gm_parseForm, "[Map] parseForm({string} getOrPostVars)", "Parses vars in an get or post string to a [Map] object.");
 	}
 
 	~HttpServer() {
@@ -105,6 +107,44 @@ public:
 	int gm_onRequest(gmThread* a_thread) {
 		send404();
 		return GM_OK;
+	}
+
+	Map* parseForm(const char* q) {
+		Map* vars = new Map();
+
+		bool inKey=true;
+		std::string key = "";
+		std::string value = "";
+		char* dst = 0;
+		for(int i=0; true; i++) {
+			char c = q[i];
+			switch(c) {
+			case '=':
+				inKey=false;
+				break;
+			case '&':
+			case '\0':
+				dst = (char*)malloc(value.length());
+				mg_url_decode(value.c_str(), value.length(), dst, value.length(), 1);
+				value = dst;
+				free(dst);
+				vars->set(key, value);
+				inKey = true;
+				break;
+			default:
+				if(inKey) key += c;
+				else value += c;
+				break;
+			}
+			if(c == '\0') break;
+		}
+		
+		return vars;
+	}
+
+	int gm_parseForm(gmThread* a_thread) {
+		GM_CHECK_STRING_PARAM(query,0);
+		return parseForm(query)->ReturnThis(a_thread, false);
 	}
 
 public:
