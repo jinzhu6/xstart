@@ -50,10 +50,13 @@ public:
 		
 #ifndef _WIN32
 		if(strlen(sslCert)) {
+			const char *err;
 			memset(&bind_opts, 0, sizeof(bind_opts));
 			bind_opts.ssl_cert = sslCert;
 			bind_opts.ssl_key = sslKey;
+			bind_opts.error_string = &err;
 			nc = mg_bind_opt(&mgr, port, HttpEventHandler, bind_opts);
+			if (!nc) { Log(LOG_ERROR, "Failed to create listener for HttpServer: %s\n", err); }
 		} else {
 			nc = mg_bind(&mgr, port, HttpEventHandler);
 		}
@@ -166,7 +169,6 @@ public:
 
 public:
 	mg_mgr mgr;
-	char *err;
 	mg_bind_opts bind_opts;
 	mg_connection *nc;
 	mg_serve_http_opts s_http_server_opts;
