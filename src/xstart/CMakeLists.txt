@@ -26,6 +26,6 @@ target_link_libraries(xstart gmscript expat freetype cairo zlib ssockets opencv2
 if(WIN32)
     target_link_libraries(xstart wsock32 ws2_32 winmm dsound ogg vorbis soundy) # libnova
 else()
-    target_link_libraries(xstart pthread Xrandr Xext Xxf86vm Xext X11 GL rt)
+    target_link_libraries(xstart pthread Xrandr Xext Xxf86vm Xext X11 GL rt ssl crypto)
     target_link_libraries(xstart gstinterfaces-0.10 gstreamer-0.10 gobject-2.0 gmodule-2.0 gthread-2.0 xml2 glib-2.0)
 endif(WIN32)

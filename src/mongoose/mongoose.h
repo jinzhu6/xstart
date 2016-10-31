@@ -30,12 +30,14 @@
 #define MG_ENABLE_HTTP_CGI 1
 #define MG_ENABLE_HTTP_STREAMING_MULTIPART 1
 #define MG_ENABLE_HTTP_WEBDAV 1
-#define MG_ENABLE_SSL 0
 #define MG_DISABLE_HTTP_DIGEST_AUTH 1
 #define MG_DISABLE_HTTP_KEEP_ALIVE 1
 #define MG_ENABLE_DEBUG 0
 #define MG_ENABLE_FAKE_DAVLOCK 0
 #define MG_ENABLE_GETADDRINFO 1
+#ifndef _WIN32
+#define MG_ENABLE_SSL 1
+#endif
 
 /* Local tweaks, applied before any of Mongoose's own headers. */
 #ifdef MG_LOCALS
