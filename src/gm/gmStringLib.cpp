@@ -990,6 +990,34 @@ static int GM_CDECL gmStringGetPath(gmThread * a_thread)
   return GM_OK;
 }
 
+static int GM_CDECL gmHtmlEncode(gmThread* a_thread)
+{
+	const gmVariable* varA = a_thread->GetThis();
+	GM_ASSERT(varA->m_type == GM_STRING);
+	gmStringObject * strObjA = (gmStringObject *) GM_OBJECT(varA->m_value.m_ref);
+	const char* cStrA = strObjA->GetString();
+	int lenA = strObjA->GetLength();
+
+	std::string data = cStrA;
+	std::string buffer;
+    buffer.reserve(data.size());
+    for(size_t pos = 0; pos != data.size(); ++pos) {
+        switch(data[pos]) {
+            case '&':  buffer.append("&amp;");       break;
+            case '\"': buffer.append("&quot;");      break;
+            case '\'': buffer.append("&apos;");      break;
+            case '<':  buffer.append("&lt;");        break;
+            case '>':  buffer.append("&gt;");        break;
+            default:   buffer.append(&data[pos], 1); break;
+        }
+    }
+    //data.swap(buffer);
+
+	const char* cStrB = buffer.c_str();
+	a_thread->PushNewString(cStrB, strlen(cStrB));
+	return GM_OK;	
+}
+
 extern int GM_CDECL gmfToInt(gmThread * a_thread);
 extern int GM_CDECL gmfToFloat(gmThread * a_thread);
 extern int GM_CDECL gmfToString(gmThread * a_thread);
@@ -1204,6 +1232,7 @@ static gmFunctionEntry s_stringLib[] =
   {"Scan", },
 */
   {"replace", gmfStringReplaceAll},
+  {"htmlEncode", gmHtmlEncode},
 };
 
 void gmBindStringLib(gmMachine * a_machine)
