@@ -16,7 +16,7 @@ elseif(UNIX)
 #  add_subdirectory(glxgears)
 endif()
 
-#add_subdirectory(curl)
+add_subdirectory(curl)
 add_subdirectory(gm)
 add_subdirectory(expat)
 add_subdirectory(zlib)

@@ -38,14 +38,29 @@ public:
 		const char* port = a_thread->ParamString(0, "80");
 		const char* docroot = a_thread->ParamString(1, ".");
 		bool dirListing = a_thread->ParamInt(2, 0);
-		if(a_thread->GetNumParams() > 0) init(port, docroot, dirListing);
+		const char* sslCert = a_thread->ParamString(3, "");
+		const char* sslKey = a_thread->ParamString(4, "");
+		if(a_thread->GetNumParams() > 0) init(port, docroot, dirListing, sslCert, sslKey);
 		return GM_OK;
 	}
 
 
-	void init(const char* port, const char* docroot, bool dirListing) {
+	void init(const char* port, const char* docroot, bool dirListing, const char* sslCert, const char* sslKey) {
 		mg_mgr_init(&mgr, this);
+		
+#ifndef _WIN32
+		if(strlen(sslCert)) {
+			memset(&bind_opts, 0, sizeof(bind_opts));
+			bind_opts.ssl_cert = sslCert;
+			bind_opts.ssl_key = sslKey;
+			nc = mg_bind_opt(&mgr, port, HttpEventHandler, bind_opts);
+		} else {
+			nc = mg_bind(&mgr, port, HttpEventHandler);
+		}
+#else
 		nc = mg_bind(&mgr, port, HttpEventHandler);
+#endif
+
 		if (!nc) { Log(LOG_FATAL, "Binding HttpServer to port '%s' has failed!", port); }
 		mg_set_protocol_http_websocket(nc);
 
@@ -151,6 +166,8 @@ public:
 
 public:
 	mg_mgr mgr;
+	char *err;
+	mg_bind_opts bind_opts;
 	mg_connection *nc;
 	mg_serve_http_opts s_http_server_opts;
 	mg_connection *nc_req;
