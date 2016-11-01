@@ -47,7 +47,7 @@ public:
 
 	void init(const char* port, const char* docroot, bool dirListing, const char* sslCert, const char* sslKey) {
 		mg_mgr_init(&mgr, this);
-		
+
 #ifndef _WIN32
 		if(strlen(sslCert)) {
 			const char *err;
@@ -158,7 +158,7 @@ public:
 			}
 			if(c == '\0') break;
 		}
-		
+
 		return vars;
 	}
 
@@ -224,6 +224,7 @@ static void HttpScriptCallback(HttpServer* server, std::string uri, std::string 
 }
 
 mg_str HttpUploadFileNameCallback(struct mg_connection *nc, struct mg_str fname) {
+	//return mg_mk_str("__upload.dat");
 	return fname;
 };
 
@@ -235,7 +236,7 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	static std::string auth, uri, query, post;
 
 	switch(ev) {
-	//case MG_EV_HTTP_MULTIPART_REQUEST:
+	case MG_EV_HTTP_MULTIPART_REQUEST:
 	case MG_EV_HTTP_REQUEST: {
 		http_message* msg = (http_message*)ev_data;
 
@@ -260,9 +261,10 @@ static void HttpEventHandler(struct mg_connection *nc, int ev, void *ev_data) {
 	case MG_EV_HTTP_PART_BEGIN:
 	case MG_EV_HTTP_PART_DATA:
 	case MG_EV_HTTP_PART_END: {
-		mg_http_multipart_part* msg = (mg_http_multipart_part*)ev_data;
 		mg_file_upload_handler(nc, ev, ev_data, HttpUploadFileNameCallback);
 		if(ev==MG_EV_HTTP_PART_END) {
+            mg_http_multipart_part* msg = (mg_http_multipart_part*)ev_data;
+            Log(LOG_DEBUG, "HttpServer uploaded file '%s' with uri '%s' and query '%s'.", msg->file_name, uri.c_str(), query.c_str());
 			HttpScriptCallback(server, uri, query, msg->file_name, auth); //
 		}
 		break;

@@ -208,19 +208,23 @@ extern enum cs_log_level cs_log_level;
 void cs_log_print_prefix(const char *func);
 void cs_log_printf(const char *fmt, ...);
 
-#define LOG(l, x)                  \
-  if (cs_log_level >= l) {         \
-    cs_log_print_prefix(__func__); \
-    cs_log_printf x;               \
-  }
+#define LOG(l, x)                    \
+  do {                               \
+    if (cs_log_level >= l) {         \
+      cs_log_print_prefix(__func__); \
+      cs_log_printf x;               \
+    }                                \
+  } while (0)
 
 #ifndef CS_NDEBUG
 
-#define DBG(x)                            \
-  if (cs_log_level >= LL_VERBOSE_DEBUG) { \
-    cs_log_print_prefix(__func__);        \
-    cs_log_printf x;                      \
-  }
+#define DBG(x)                              \
+  do {                                      \
+    if (cs_log_level >= LL_VERBOSE_DEBUG) { \
+      cs_log_print_prefix(__func__);        \
+      cs_log_printf x;                      \
+    }                                       \
+  } while (0)
 
 #else /* NDEBUG */
 
@@ -721,9 +725,10 @@ typedef int cs_dirent_dummy;
 /*
  * There is no sys/time.h on ARMCC.
  */
-#if !(defined(__ARMCC_VERSION) || defined(__ICCARM__)) && \
-    (!defined(CS_PLATFORM) ||                             \
-     (CS_PLATFORM != CS_P_CC3200 && CS_PLATFORM != CS_P_MSP432))
+#if !(defined(__ARMCC_VERSION) || defined(__ICCARM__)) &&         \
+    (!defined(CS_PLATFORM) ||                                     \
+     (CS_PLATFORM != CS_P_CC3200 && CS_PLATFORM != CS_P_MSP432 && \
+      CS_PLATFORM != CS_P_NXP_LPC))
 #include <sys/time.h>
 #endif
 #else
@@ -1722,10 +1727,7 @@ const char *c_strnstr(const char *s, const char *find, size_t slen) {
   return NULL;
 }
 
-/*
- * ARM C Compiler doesn't have strdup, so we provide it
- */
-#if defined(__ARMCC_VERSION)
+#if CS_ENABLE_STRDUP
 char *strdup(const char *src) {
   size_t len = strlen(src) + 1;
   char *ret = malloc(len);
@@ -1765,6 +1767,24 @@ void cs_from_hex(char *to, const char *p, size_t len) {
   }
   *to = '\0';
 }
+
+#if CS_ENABLE_TO64
+int64_t cs_to64(const char *s) {
+  int64_t result = 0;
+  int64_t neg = 1;
+  while (*s && isspace((unsigned char) *s)) s++;
+  if (*s == '-') {
+    neg = -1;
+    s++;
+  }
+  while (isdigit((unsigned char) *s)) {
+    result *= 10;
+    result += (*s - '0');
+    s++;
+  }
+  return result * neg;
+}
+#endif
 
 #endif /* EXCLUDE_COMMON */
 #ifdef MG_MODULE_LINES
@@ -4946,7 +4966,6 @@ struct file_upload_state {
 
 void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
                             mg_fu_fname_fn local_name_fn) {
-  struct mg_str lfn;
   switch (ev) {
     case MG_EV_HTTP_PART_BEGIN: {
       struct mg_http_multipart_part *mp =
@@ -4955,8 +4974,8 @@ void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
           (struct file_upload_state *) calloc(1, sizeof(*fus));
       mp->user_data = NULL;
 
-//      struct mg_str lfn = local_name_fn(nc, mg_mk_str(mp->file_name));
-//	  struct mg_str *lfn = mg_get_http_header(hm, "Range");
+      struct mg_str lfn = local_name_fn(nc, mg_mk_str(mp->file_name));
+      LOG(LL_DEBUG, ("Uploading %s -> %s", mp->file_name, lfn.p));
       if (lfn.p == NULL || lfn.len == 0) {
         LOG(LL_ERROR, ("%p Not allowed to upload %s", nc, mp->file_name));
         mg_printf(nc,
@@ -4971,7 +4990,7 @@ void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
       fus->lfn = (char *) malloc(lfn.len + 1);
       memcpy(fus->lfn, lfn.p, lfn.len);
       fus->lfn[lfn.len] = '\0';
-      if (lfn.p != mp->file_name) free((char *) lfn.p);
+//      if (lfn.p != mp->file_name) free((char *) lfn.p);
       LOG(LL_DEBUG,
           ("%p Receiving file %s -> %s", nc, mp->file_name, fus->lfn));
       fus->fp = fopen(fus->lfn, "w");
@@ -5039,12 +5058,12 @@ void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
       if (mp->status >= 0 && fus->fp != NULL) {
         LOG(LL_DEBUG, ("%p Uploaded %s (%s), %d bytes", nc, mp->file_name,
                        fus->lfn, (int) fus->num_recd));
-        mg_printf(nc,
+        /*mg_printf(nc,
                   "HTTP/1.1 200 OK\r\n"
                   "Content-Type: text/plain\r\n"
                   "Connection: close\r\n\r\n"
                   "Ok, %s - %d bytes.\r\n",
-                  mp->file_name, (int) fus->num_recd);
+                  mp->file_name, (int) fus->num_recd);*/
       } else {
         LOG(LL_ERROR, ("Failed to store %s (%s)", mp->file_name, fus->lfn));
         /*
@@ -8597,7 +8616,7 @@ void mg_mqtt_disconnect(struct mg_connection *nc) {
  */
 
 /* Amalgamated: #include "mongoose/src/internal.h" */
-/* Amalgamated: #include "mongoose/src/mqtt-broker.h" */
+/* Amalgamated: #include "mongoose/src/mqtt-server.h" */
 
 #if MG_ENABLE_MQTT_BROKER
 
@@ -8611,16 +8630,11 @@ static void mg_mqtt_session_init(struct mg_mqtt_broker *brk,
 }
 
 static void mg_mqtt_add_session(struct mg_mqtt_session *s) {
-  s->next = s->brk->sessions;
-  s->brk->sessions = s;
-  s->prev = NULL;
-  if (s->next != NULL) s->next->prev = s;
+  LIST_INSERT_HEAD(&s->brk->sessions, s, link);
 }
 
 static void mg_mqtt_remove_session(struct mg_mqtt_session *s) {
-  if (s->prev == NULL) s->brk->sessions = s->next;
-  if (s->prev) s->prev->next = s->next;
-  if (s->next) s->next->prev = s->prev;
+  LIST_REMOVE(s, link);
 }
 
 static void mg_mqtt_destroy_session(struct mg_mqtt_session *s) {
@@ -8638,7 +8652,7 @@ static void mg_mqtt_close_session(struct mg_mqtt_session *s) {
 }
 
 void mg_mqtt_broker_init(struct mg_mqtt_broker *brk, void *user_data) {
-  brk->sessions = NULL;
+  LIST_INIT(&brk->sessions);
   brk->user_data = user_data;
 }
 
@@ -8664,7 +8678,6 @@ static void mg_mqtt_broker_handle_connect(struct mg_mqtt_broker *brk,
 
 static void mg_mqtt_broker_handle_subscribe(struct mg_connection *nc,
                                             struct mg_mqtt_message *msg) {
-
   struct mg_mqtt_session *ss = (struct mg_mqtt_session *) nc->user_data;
   uint8_t qoss[512];
   size_t qoss_len = 0;
@@ -8677,7 +8690,6 @@ static void mg_mqtt_broker_handle_subscribe(struct mg_connection *nc,
        (pos = mg_mqtt_next_subscribe_topic(msg, &topic, &qos, pos)) != -1;) {
     qoss[qoss_len++] = qos;
   }
-
 
   ss->subscriptions = (struct mg_mqtt_topic_expression *) realloc(
       ss->subscriptions, sizeof(*ss->subscriptions) * qoss_len);
@@ -8723,7 +8735,8 @@ static void mg_mqtt_broker_handle_publish(struct mg_mqtt_broker *brk,
       if (mg_mqtt_match_topic_expression(s->subscriptions[i].topic,
                                          &msg->topic)) {
         char buf[100], *p = buf;
-        mg_asprintf(&p, sizeof(buf), "%.*s", (int) msg->topic.len, msg->topic.p);
+        mg_asprintf(&p, sizeof(buf), "%.*s", (int) msg->topic.len,
+                    msg->topic.p);
         if (p == NULL) {
           return;
         }
@@ -8750,6 +8763,7 @@ void mg_mqtt_broker(struct mg_connection *nc, int ev, void *data) {
   switch (ev) {
     case MG_EV_ACCEPT:
       mg_set_protocol_mqtt(nc);
+      nc->user_data = NULL; /* Clear up the inherited pointer to broker */
       break;
     case MG_EV_MQTT_CONNECT:
       mg_mqtt_broker_handle_connect(brk, nc);
@@ -8770,7 +8784,7 @@ void mg_mqtt_broker(struct mg_connection *nc, int ev, void *data) {
 
 struct mg_mqtt_session *mg_mqtt_next(struct mg_mqtt_broker *brk,
                                      struct mg_mqtt_session *s) {
-  return s == NULL ? brk->sessions : s->next;
+  return s == NULL ? LIST_FIRST(&brk->sessions) : LIST_NEXT(s, link);
 }
 
 #endif /* MG_ENABLE_MQTT_BROKER */
@@ -10245,7 +10259,7 @@ int gettimeofday(struct timeval *tp, void *tzp) {
  * All rights reserved
  */
 
-#if CS_PLATFORM == CS_P_NRF52 && defined(__ARMCC_VERSION)
+#if (CS_PLATFORM == CS_P_NRF51 || CS_PLATFORM == CS_P_NRF52) && defined(__ARMCC_VERSION)
 int gettimeofday(struct timeval *tp, void *tzp) {
   /* TODO */
   tp->tv_sec = 0;
@@ -11535,7 +11549,7 @@ void sl_restart_cb(struct mg_mgr *mgr) {
 
 #if MG_NET_IF == MG_NET_IF_LWIP_LOW_LEVEL
 
-#include <inttypes.h>
+#include <stdint.h>
 
 struct mg_lwip_conn_state {
   union {
