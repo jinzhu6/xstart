@@ -4966,6 +4966,7 @@ struct file_upload_state {
 
 void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
                             mg_fu_fname_fn local_name_fn) {
+  struct mg_str lfn;
   switch (ev) {
     case MG_EV_HTTP_PART_BEGIN: {
       struct mg_http_multipart_part *mp =
@@ -4974,7 +4975,7 @@ void mg_file_upload_handler(struct mg_connection *nc, int ev, void *ev_data,
           (struct file_upload_state *) calloc(1, sizeof(*fus));
       mp->user_data = NULL;
 
-      struct mg_str lfn = local_name_fn(nc, mg_mk_str(mp->file_name));
+      lfn = local_name_fn(nc, mg_mk_str(mp->file_name));
       LOG(LL_DEBUG, ("Uploading %s -> %s", mp->file_name, lfn.p));
       if (lfn.p == NULL || lfn.len == 0) {
         LOG(LL_ERROR, ("%p Not allowed to upload %s", nc, mp->file_name));

@@ -1,11 +1,8 @@
 ar = Array();
-ar.add("Das");
-ar.add("ist");
-ar.add(1);
-obj = ar.add("Test");
+ar.add("A");
+ar.add("B");
+ar.add(3);
+obj = ar.add("Four");
 
-print(obj+" is at index "+ar.find(obj)+"\n");
-
-foreach(e in ar) {
-	print(e + " ");
-}
+foreach(e in ar) {print(e + " "); }
+print("\n"+obj+" is at index "+ar.find(obj)+"\n");

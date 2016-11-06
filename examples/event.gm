@@ -1,10 +1,10 @@
 global eventHandler = function(e) {
-	log("Frame: " + this.toString() + " - Received event: "+e.toString());
+	log("Frame: " + this.string() + " - Received event: "+e.string());
 	log("    key: " + e.key + "   text: " + e.text + "  x: " + e.x + "  y: " + e.y + "  button: " + e.button + "\n");
 	if(e.id == "Close") { exit(); }
 };
 
-frame = Frame("main", 50, 50, 640, 480, "#ffffff").toggle().showCursor(true);
+frame = Frame("main", 50, 50, 640, 480, "#ffffff").toggle().cursor(true);
 frame.root["texture"] = Texture("images/texture.png", 50, 50, 640-100, 480-100);
 frame.root["texture"].onKeyDown = eventHandler;
 frame.root["texture"].onKeyUp = eventHandler;

@@ -1,7 +1,7 @@
 #include "lib/Keyboard.gm"
 
 global KEYS = Map();
-global FRAME = Frame("Game Example", 50, 50, 640, 480, "#000030");
+global FRAME = Frame("Game Example", 50, 50, 640, 480, "#000030").toggle().cursor(true);
 FRAME.onKeyDown = function(evt) { if(evt.key < 255){KEYS[evt.key] = true;} };
 FRAME.onKeyUp = function(evt) { if(evt.key==KEY_ESCAPE){FRAME.close();} if(evt.key < 255){KEYS[evt.key] = false;} };
 FRAME.root["ship"] = Texture("images/ship1.png", 320, 240);

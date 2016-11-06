@@ -1,10 +1,10 @@
 m = Map();
-m.set("das", "das!");
-m.set("ist", "ist!");
-m.set("ein", "ein!");
+m.set("this", "This!");
+m.set("is", "IS!");
+m.set("a", " A ");
 m.set("test", "Test!");
 m.set("number", 1.23);
-m.set("das", null);
+m.set("a", null);
 
 foreach(e in m) {
 	print(" " + m[e]);
