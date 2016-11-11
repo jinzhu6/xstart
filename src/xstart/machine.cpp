@@ -133,12 +133,18 @@ bool LogThreadStatus(gmThread* thread, void* context) {
 gmuint32 _nextThreadTS = 0;
 bool FindNextTimestampThreadCallback(gmThread* thread, void* context) {
 	if(thread->GetState() == gmThread::SLEEPING) {
-		_nextThreadTS = thread->GetTimeStamp() - machine->GetTime();
+		gmuint32 t = thread->GetTimeStamp() - machine->GetTime();
+		if(t < _nextThreadTS) _nextThreadTS = t;
 		if(_nextThreadTS < 0) _nextThreadTS = 0;
 		return true;
 	}
 
 	if(thread->GetState() == gmThread::RUNNING) {
+		_nextThreadTS = 0;
+		return true;
+	}
+
+	if(thread->GetState() == gmThread::SYS_YIELD) {
 		_nextThreadTS = 0;
 		return true;
 	}
@@ -206,7 +212,7 @@ bool MachineRunFile(const char* file) {
 
 	while(true) {
 		// find timestamp for next thread
-		_nextThreadTS = 0;
+		_nextThreadTS = 2000;  // 2 seconds max to sleep
 		machine->ForEachThread(FindNextTimestampThreadCallback, 0);
 		if(_nextThreadTS > 2) { TimeSleep( (float)(_nextThreadTS) / 1000.0 ); }
 
