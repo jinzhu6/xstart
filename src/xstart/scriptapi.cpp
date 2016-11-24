@@ -514,13 +514,13 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("popup", Script_Popup, "popup({string} info)", "Opens a message box with the given information.");
 	MachineRegisterFunction("ask", Script_Ask, " {string} ask({string} question)", "Prompts the user for a line of input on the console.");
 	MachineRegisterFunction("redirect", Script_Redirect, "redirect({string} file)", "Redirects the console output to a file of the given name.");
-	MachineRegisterFunction("load", Script_LoadConfig, " {string} get({string} key)", "Loads a config string from 'config.ini'.");
+	MachineRegisterFunction("load", Script_LoadConfig, " {string} load({string} key)", "Loads a config string from 'config.ini'.");
 	MachineRegisterFunction("save", Script_SaveConfig, "save({string} key, {string} value)", "Saves a config string into 'config.ini'. If it does not exist, the file will be created.");
 	MachineRegisterFunction("instance", Script_CreateInstance, "{object} instance({string} class)", "Creates an instance from a class type name. Used for introspection.");
 	MachineRegisterFunction("markdown", Script_Markdown, "markdown({string} fileIn, {string} fileOut)", "Loads a markdown file and saves the HTML to another file.");
 	MachineRegisterFunction("pause", Script_Pause, "pause( {float} s)", "Pauses the execution of the whole process for the given time in seconds. Reduces CPU usage of real-time applications.");
 	MachineRegisterFunction("eval", Script_Eval, "eval({string} code)", "Execute given code on the same script context, meaning, it has access to global functions and variables.");
-	MachineRegisterFunction("callstack", Script_Callstack, "{string} callstack()", "Returns the current callback as string.");
+	MachineRegisterFunction("callstack", Script_Callstack, "{string} callstack()", "Returns the current callstack as a string.");
 	MachineRegisterFunction("debug", Script_EnableConsoleDebug, "debug({int} level)", "Enable/Disable console debug messages.");
 	MachineRegisterFunction("colors", Script_EnableConsoleColors, "colors({int} enable)", "Enable/Disable console colors.");
 	MachineRegisterFunction("arg", Script_GetArguments, "{string} arg({int} number)", "Get command-line arguments.");

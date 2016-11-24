@@ -2,8 +2,8 @@
 #define SETUP_FILE "xstart-setup"
 
 [Setup]
-AppName=xStart Development Kit
-DefaultGroupName=xStart Development Kit
+AppName=xstart Development Kit
+DefaultGroupName=xstart Development Kit
 UninstallDisplayIcon={app}\icon.ico
 PrivilegesRequired=none
 DefaultDirName={pf}\xstart\
@@ -28,7 +28,7 @@ ChangesAssociations=yes
 Compression=lzma2/normal
 
 [Files]
-Source: *; Excludes: ".git,.gitignore,build,src,extras,scripts,build*.bat,make.bat,CMakeLists.txt,_OLD,_SETUP,Debug,Release,MinSizeRel,*.bak,video.m*"; DestDir: {app}; Flags: recursesubdirs;
+Source: *; Excludes: ".git,.gitignore,build,src,extras,scripts,build*.bat,make.bat,CMakeLists.txt,_OLD,_SETUP,Debug,Release,MinSizeRel,*.bak,video.m*,fonts"; DestDir: {app}; Flags: recursesubdirs;
 ;Source: "bin\vcredist_x86.exe"; DestDir: "{app}"; Flags: deleteafterinstall
 
 ;[Run]

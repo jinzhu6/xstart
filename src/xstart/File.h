@@ -113,6 +113,7 @@ public:
 		fileName = file;
 		Log(LOG_DEBUG, "Opening file '%s' in mode '%s'.", file, mode);
 		int count = 0;
+		hf = fopen(file, mode);
 		while(!hf && count++ < 3) {
 			hf = fopen(file, mode);
 			TimeSleep(0.1);
@@ -210,7 +211,7 @@ public:
 		seekBegin(position);
 		return ReturnThis(a_thread);
 	}
-	
+
 	unsigned long tell() {
 		return ftell(hf);
 	}
@@ -218,7 +219,7 @@ public:
 		a_thread->PushInt(tell());
 		return GM_OK;
 	}
-	
+
 public:
 	long bytesRead;
 	std::string fileName;

@@ -142,8 +142,8 @@ public:
 				break;
 			case '&':
 			case '\0':
-				dst = (char*)malloc(value.length());
-				mg_url_decode(value.c_str(), value.length(), dst, value.length(), 1);
+				dst = (char*)malloc(value.length()+2);
+				mg_url_decode(value.c_str(), value.length(), dst, value.length()+2, 1);
 				value = dst;
 				free(dst);
 				vars->set(key, value);

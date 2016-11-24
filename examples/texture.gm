@@ -1,4 +1,5 @@
-frame = Frame("main", 50, 50, 640, 480, "#ffffff").toggle().showCursor(true);
+global frame = Frame("main", 50, 50, 640, 480, "#ffffff").toggle().cursor(true);
 frame.root["texture"] = Texture("images/earth-bg.jpg", 0, 0, 640, 480);
+frame.root["texture"].onMouseDown = function(evt) { evt.node.rotate += 0.1; };
 
-while(true) { frame.render(); yield(); }
+while(frame.render()) { yield(); }

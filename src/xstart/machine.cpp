@@ -128,6 +128,32 @@ bool LogThreadStatus(gmThread* thread, void* context) {
 }
 
 /******************************************************************************
+* FindNextTimestampThreadCallback
+*******************************************************************************/
+gmuint32 _nextThreadTS = 0;
+bool FindNextTimestampThreadCallback(gmThread* thread, void* context) {
+	if(thread->GetState() == gmThread::SLEEPING) {
+		gmuint32 t = thread->GetTimeStamp() - machine->GetTime();
+		if(t < _nextThreadTS) _nextThreadTS = t;
+		if(_nextThreadTS < 0) _nextThreadTS = 0;
+		return true;
+	}
+
+	if(thread->GetState() == gmThread::RUNNING) {
+		_nextThreadTS = 0;
+		return true;
+	}
+
+	if(thread->GetState() == gmThread::SYS_YIELD) {
+		_nextThreadTS = 0;
+		return true;
+	}
+
+	return true;
+
+}
+
+/******************************************************************************
 * MachineRunFile
 *******************************************************************************/
 bool MachineRunFile(const char* file) {
@@ -182,9 +208,15 @@ bool MachineRunFile(const char* file) {
 
 	// execute and log errors
 	int deltaTime = 0;
-	int lastTime = (int)(TimeGet() * 1000.0);   //timeGetTime();
+	int lastTime = (int)(TimeGet() * 1000.0);
 
 	while(true) {
+		// find timestamp for next thread
+		_nextThreadTS = 2000;  // 2 seconds max to sleep
+		machine->ForEachThread(FindNextTimestampThreadCallback, 0);
+		if(_nextThreadTS > 2) { TimeSleep( (float)(_nextThreadTS) / 1000.0 ); }
+
+		// execute script till next sleep/yield/exception
 		int num_threads = machine->Execute(deltaTime);
 
 		// Update delta time
@@ -217,9 +249,6 @@ bool MachineRunFile(const char* file) {
 
 //		TimeSleep(double(10-deltaTime)/1000.0);
 		if(num_threads <= 0) {
-			/*if(errorLog.length() > 0) {
-				system("pause");
-			}*/
 			break;
 		}
 	}
