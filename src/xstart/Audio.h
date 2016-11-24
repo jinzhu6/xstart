@@ -565,6 +565,8 @@ public:
 		Pa_Initialize();
 		dataIn = new AudioData();
 		dataOut = new AudioData();
+		socketOut = 0;
+		socketIn = 0;
 
 		BindFunction("open", (SCRIPT_FUNCTION)&AudioDevice::gm_open, "[this] open({int} sampleRate, {int} channels, {int} bufferSize, {int} deviceInIndex, {int} deviceOutIndex)", "Opens the audio device with the given settings. If the device is already open it will be closed first.");
 		BindFunction("close", (SCRIPT_FUNCTION)&AudioDevice::gm_close, "[this] close()", "Closes the audio device.");
@@ -575,6 +577,8 @@ public:
 		BindFunction("process", (SCRIPT_FUNCTION)&AudioDevice::gm_process);
 		BindMember("input", &dataIn, TYPE_OBJECT, 0);
 		BindMember("output", &dataOut, TYPE_OBJECT, 0);
+		BindMember("socketOut", &socketOut, TYPE_OBJECT, 0);
+//		BindMember("socketIn", &socketIn, TYPE_OBJECT, 0);
 		dataIn->SetCppOwned(true);
 		dataOut->SetCppOwned(true);
 	}
@@ -789,6 +793,17 @@ public:
 		// clear output buffer first
 		this->dataOut->clearRange(this->dataOut->writeCursor, bufferBytesSizeOut, 0);
 
+		// socket sound input (experimental)
+		if (this->socketIn) {
+			int len = this->socketIn->receive(sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels);
+			if (len > 0) {
+				//Log(LOG_INFO, "Audio input from socket (%d).", len);
+				if (len > sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels) { len = sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels; }
+				if (len < sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels) { Log(LOG_DEBUG, "Audio socket input underrun by %d bytes.", (sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels) - len); }
+				// TODO: memcpy(out, device->socketIn->data->data, len); this->dataOut->writeBytes()
+			}
+		}
+
 		for(std::list<AudioData*>::iterator i = this->buffers.begin(); i != this->buffers.end();) {
 			AudioData* buffer = *i;
 
@@ -852,6 +867,11 @@ public:
 			} else { i++; }
 		}
 
+		// send buffer to socket-out
+		if (this->socketOut) {
+			this->socketOut->send((const unsigned char*)output, numSamplesPerChannel * sizeof(float) * this->dataOut->format.nChannels);
+		}
+
 		// copy buffer to port-audio for playback
 		if(output) { this->dataOut->readBytes((unsigned char*)output, bufferBytesSizeOut); }
 	}
@@ -867,6 +887,8 @@ public:
 	AudioData* dataOut;
 	std::list<AudioData*> buffers;
 	volatile bool locked;
+	Socket* socketOut;
+	SocketListener* socketIn;
 };
 
 
