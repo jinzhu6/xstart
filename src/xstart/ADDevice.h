@@ -66,7 +66,7 @@ public:
 
 	int Initialize(gmThread* a_thread) {
 		if(a_thread->GetNumParams() > 0) {
-			return gm_connect(a_thread);
+			gm_connect(a_thread);
 		}
 		return GM_OK;
 	}
