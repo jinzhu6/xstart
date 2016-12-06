@@ -23,7 +23,7 @@ public:
 		BindFunction("close", (SCRIPT_FUNCTION)&Socket::gm_close);
 		BindFunction("send", (SCRIPT_FUNCTION)&Socket::gm_send);
 		BindFunction("receive", (SCRIPT_FUNCTION)&Socket::gm_receive);
-		BindFunction("setTimeout", (SCRIPT_FUNCTION)&Socket::gm_setTimeout, "[this] setTimeout({int} seconds)", "Sets the timeout (in seconds) to wait for data while receiving. A value of 0 sets the socket to non-blocking.");
+		BindFunction("setTimeout", (SCRIPT_FUNCTION)&Socket::gm_setTimeout, "[this] setTimeout({int} milliseconds)", "Sets the timeout (in milliseconds) to wait for data while receiving. A value of 0 sets the socket to non-blocking.");
 		BindMember("data", &data, TYPE_OBJECT, 0, "[Data] data", "Received data buffer. You may use <i>toString()</i> on this to get a string representation.");
 	}
 	~Socket() {
@@ -109,7 +109,7 @@ public:
 
 	int receive(int max) {
 		if(!socket) { Log(LOG_ERROR, "Attempt to receive from non-opened socket!");  return 0; }
-		int res = socket->Receive(data->size);
+		int res = socket->Receive(max);
 		if(res > 0) {
 			data->resize(res);
 			data->insert(socket->GetData(), res, 0);
@@ -275,6 +275,10 @@ public:
 		int res = socket->Receive(data->size);
 		if(res == -1) {
 			CSimpleSocket::CSocketError err = socket->GetSocketError();
+			if (err == CSimpleSocket::SocketBufferToSmall) {
+				Log(LOG_ERROR, "The buffer on the socket listener was too small, try increasing the max.size!");
+				return 0;
+			}
 			if(err != CSimpleSocket::SocketEwouldblock) {
 				Log(LOG_DEBUG, "There was an error on the socket while receiving (%d)!", err);
 				return 0;

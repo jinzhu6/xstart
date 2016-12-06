@@ -578,7 +578,7 @@ public:
 		BindMember("input", &dataIn, TYPE_OBJECT, 0);
 		BindMember("output", &dataOut, TYPE_OBJECT, 0);
 		BindMember("socketOut", &socketOut, TYPE_OBJECT, 0);
-//		BindMember("socketIn", &socketIn, TYPE_OBJECT, 0);
+		BindMember("socketIn", &socketIn, TYPE_OBJECT, 0);
 		dataIn->SetCppOwned(true);
 		dataOut->SetCppOwned(true);
 	}
@@ -797,10 +797,11 @@ public:
 		if (this->socketIn) {
 			int len = this->socketIn->receive(sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels);
 			if (len > 0) {
-				//Log(LOG_INFO, "Audio input from socket (%d).", len);
+				Log(LOG_INFO, "Audio input from socket (%d).", len);
 				if (len > sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels) { len = sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels; }
 				if (len < sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels) { Log(LOG_DEBUG, "Audio socket input underrun by %d bytes.", (sizeof(float) * numSamplesPerChannel * this->dataOut->format.nChannels) - len); }
 				// TODO: memcpy(out, device->socketIn->data->data, len); this->dataOut->writeBytes()
+				memcpy(this->dataOut->data, this->socketIn->data->data, len);
 			}
 		}
 

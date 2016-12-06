@@ -146,6 +146,7 @@ public:
 		SocketConnectionReset,     ///< Connection was forcibly closed by the remote host.
 		SocketAddressInUse,        ///< Address already in use.
 		SocketInvalidPointer,      ///< Pointer type supplied as argument is invalid.
+		SocketBufferToSmall,
 		SocketEunknown             ///< Unknown error please report to mark@carrierlabs.com
 	} CSocketError;
 

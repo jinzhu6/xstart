@@ -888,6 +888,8 @@ void CSimpleSocket::TranslateSocketError(void) {
 	case WSAEFAULT:
 		SetSocketError(CSimpleSocket::SocketInvalidPointer);
 		break;
+	case WSAEMSGSIZE:
+		SetSocketError(CSimpleSocket::SocketBufferToSmall);
 	default:
 		SetSocketError(CSimpleSocket::SocketEunknown);
 		break;
