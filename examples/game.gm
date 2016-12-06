@@ -13,8 +13,8 @@ while(FRAME.render()) {
     local dt = t - prevT;
     prevT = t;
 
-    if(KEYS[KEY_LEFT])  { FRAME.root["ship"].rotate -= 1.0 * dt; }
-    if(KEYS[KEY_RIGHT]) { FRAME.root["ship"].rotate += 1.0 * dt; }
+    if(KEYS[KEY_LEFT])  { FRAME.root["ship"].rotate -= 5.0 * dt; }
+    if(KEYS[KEY_RIGHT]) { FRAME.root["ship"].rotate += 5.0 * dt; }
 
-    sleep(1.0/30.0); // run at 30 fps max
+    sleep(1.0/60.0-dt); // run at 30 fps max
 }

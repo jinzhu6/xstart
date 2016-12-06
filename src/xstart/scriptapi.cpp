@@ -539,8 +539,8 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("format", 0, "{string} format({string} format, ...)", "Like printf() in C. Formats a string by using %d, %s, %f, %c, %b, %x, %e and multiple input parameters.");
 
 	// math functions
-	MachineRegisterFunction("abs, floor, ceil, round, cos, sin, tan, acos, asin, deg2rad, rad2deg", 0, "{float} cos({float} p)", "Common math functions with one parameters.");
-	MachineRegisterFunction("sqrt, power, atan, atan2, log, min, max", 0, "{float} cos({float} x, {float} y)", "Common math functions two parameters.");
+	MachineRegisterFunction("abs, floor, ceil, round, cos, sin, tan, acos, asin, deg2rad, rad2deg", 0, "{float} ...({float} p)", "Common math functions with one parameters.");
+	MachineRegisterFunction("sqrt, power, atan, atan2, log, min, max", 0, "{float} ...({float} x, {float} y)", "Common math functions two parameters.");
 	MachineRegisterFunction("clamp", 0, "{float} clamp({float} min, {float} value, {float} max)", "Returns the clamped value.");
 
 	// string functions
