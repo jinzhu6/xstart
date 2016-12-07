@@ -10,7 +10,7 @@ global OnKeyDown = function(e) {
 	FRAME.root["info"].text = "Blur: "+BLUR;
 };
 
-global FRAME = Frame("Shader Example", 200, 100, DIM_X, DIM_Y).toggle().showCursor(true);
+global FRAME = Frame("Shader Example", 200, 100, DIM_X, DIM_Y).toggle().cursor(true);
 FRAME.onKeyDown = OnKeyDown;
 
 global SHADER = Shader("shaders/basic.vs", "shaders/blur.fs");
@@ -23,7 +23,7 @@ FRAME.root["shader"]["image"] = Texture("images/earth-bg.jpg", 0, 0, DIM_X, DIM_
 FRAME.root["help"] = Text("Press + and - to adjust blur filter size.", Font("fonts/liberation/LiberationSerif-Bold.ttf", 20));
 FRAME.root["info"] = Text("Blur: "+BLUR, Font("fonts/liberation/LiberationMono-Bold.ttf", 20), 0, 30);
 
-while(1) {
+while(true) {
     FRAME.render();
     yield();
 }

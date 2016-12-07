@@ -1,6 +1,6 @@
-global FRAME = Frame("utf8", 50,50, 800,380, "#ffffff").toggle().showCursor(true);
+global FRAME = Frame("UTF-8", 50,50, 800,380, "#ffffff").toggle().cursor(true);
 FRAME.root["text1"] = Text("ازمان برای آزادی", Font("fonts/farsi/FreeFarsi.ttf", 80, true), 800-10,10, "#000000").update().right();
-FRAME.root["text2"] = Text("Ich liebe Bücher (123)²", Font("fonts/amiri/amiri-regular.ttf", 80, false), 800-10,120, "#000000").update().right();
+FRAME.root["text2"] = Text("Ich lese Bücher (123)²", Font("fonts/amiri/amiri-regular.ttf", 80, false), 800-10,120, "#000000").update().right();
 FRAME.root["text3"] = Text("أنا أحب الكتب", Font("fonts/amiri/amiri-regular.ttf", 80, true), 800-10,230, "#000000").update().right();
 
 while(true) { FRAME.render(); sleep(0.1); }
