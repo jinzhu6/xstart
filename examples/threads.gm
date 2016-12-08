@@ -1,0 +1,12 @@
+
+function LogAlive(text) {
+    while(true) {
+        sleep(4.0);
+        log(text);
+    }
+}
+
+thread(function() { sleep(1.0); log("hello"); });
+thread(function() { sleep(2.0); log("world"); });
+thread(function() { sleep(3.0); log("!!!"); });
+thread(LogAlive, "alive!");

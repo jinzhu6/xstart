@@ -1,0 +1,11 @@
+body { position:relative; margin:1% 4% 4% 4%; font-family: Rubik; font-size: 19px; }
+h1 { font-family: Quicksand; font-size:46px; text-weight: bold;  background-color:rgba(80,180,255,0.3); }
+h2 { font-size:32px;  background-color:rgba(80,180,255,0.1); }
+h3 { font-size:25px;   }
+h4 { font-size:22px;   }
+h5 { font-size:20px;   }
+h6 { font-size:18px;   }
+code { display: block; padding:10px; border-radius: 10px; font-family: "Ubuntu Mono"; line-height:1.2; font-size:20px; width:85%; white-space: pre; background-color:rgba(40,90,255,0.3); }
+i { color: #333300; }
+a { color: #0000a0; text-decoration: underline; padding:5px; margin: 5px; background-color: #a0d0d0; border-radius: 5px; }
+a:hover { color: #00a0ff; }

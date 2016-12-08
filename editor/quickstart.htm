@@ -1,0 +1,151 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link href="./quickstart_files/css" rel="stylesheet">
+	<link href="./quickstart_files/wiki.css" rel="stylesheet" type="text/css">
+	<link href="./quickstart_files/checkbox.css" rel="stylesheet" type="text/css">
+	<link href="./quickstart_files/github.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h1>XStart Quickstart</h1>
+
+<h2>Quickstart</h2>
+
+<p>The best way to learn XStart is to look at the example scripts that are included.
+Look at the examples in the “examples” folder or open the shortcut in the Windows start-menu.
+If you have some experience with scripting languages like Javascript or Lua it is likely that you
+can start almost immediately, learning XStart in the progress.</p>
+
+<h2>Variable Scope</h2>
+
+<p>In XStart variables and functions should be declard as global or local to specify their scope. If ommited it is assumed that the scope is local. If access from everywhere is wanted, the global keyword should be used. To set a previously declared global variable in another scope (function) to a new value, again the global keyboard must be specified, otherwise a new local version is created.</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="keyword">global</span> A <span class="keyword operator">=</span> <span class="constant numeric">1</span>;
+<span class="function call">log</span>(<span class="string">"A is "</span><span class="keyword operator">+</span>A);
+<span class="storage function">function</span> <span class="entity name function">ChangeA</span>(newA) { <span class="keyword">global</span> A <span class="keyword operator">=</span> newA; }
+<span class="function call">ChangeA</span>(<span class="constant numeric">2</span>);
+<span class="function call">log</span>(<span class="string">"A is "</span><span class="keyword operator">+</span>A);
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<h2>Native Types</h2>
+
+<p>Native types do not create an object when declared. They can only hold a single value of the given type. GM-Script knows the following native types:</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="keyword">int</span>
+<span class="keyword">float</span>
+<span class="keyword">string</span>
+<span class="keyword">function</span>
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<p>Converting from one type to the other is possible by using a method call as follows:</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow">(<span class="constant numeric">25.5</span>).<span class="keyword">int</span>();
+<span class="string">"12.5"</span>.<span class="keyword">float</span>();
+(<span class="constant numeric">1.1</span>).<span class="keyword">string</span>();
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<h2>Functions</h2>
+
+<p>In GM-Script a function definition is like an object creation and assignment to a variable:</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="keyword">global</span> MyFunction <span class="keyword operator">=</span> <span class="keyword">function</span>(a,b) { <span class="keyword">return</span> a<span class="keyword operator">+</span>b; };
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<p>You can see, that a function is an object, and the function-object is assigned to a variable named “MyFunction” in this example. Also you may have noticed that you must put a semicolon (;) at the end of the definition.</p>
+
+<p>But there is also a shortcut for this that mimics a common semantics of other languages:</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow">global <span class="entity name function">MyFunction</span>(a,b) { <span class="keyword">return</span> a<span class="keyword operator">+</span>b; }
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<p>Also note, in this example, we made the functions global, this way they are accessible in another scopes.</p>
+
+<h2>This</h2>
+
+<p>Pointing to the object itself in a method (object member function) can be done with the “this”-keyword.</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="keyword">global</span> <span class="storage function">function</span> <span class="entity name function">NewObject</span>(name) {
+        local o <span class="keyword operator">=</span> <span class="keyword">Object</span>();
+        o.name <span class="keyword operator">=</span> name;
+        o.PrintName <span class="keyword operator">=</span> <span class="keyword">function</span>() { <span class="function call">log</span>(<span class="string">"My name is "</span> <span class="keyword operator">+</span> <span class="keyword">this</span>.name); };
+        <span class="keyword">return</span> o;
+}
+
+<span class="keyword">global</span> MyObject <span class="keyword operator">=</span> <span class="function call">NewObject</span>(<span class="string">"Alf"</span>);
+MyObject.<span class="function call">PrintName</span>();
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<h2>Tables</h2>
+
+<p>Every object in XStart has a table to store functions and variables. Also build-in variables and functions can be overwritten.</p>
+
+<p>To set custom or build-in variables or functions, the bracket operator or the dot operator is used:</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="keyword">object</span>[<span class="string">"url"</span>] <span class="keyword operator">=</span> <span class="string">"http://www.xstart.io/"</span>;
+<span class="keyword">object</span>.url <span class="keyword operator">=</span> <span class="string">"http://www.xstart.io/"</span>;
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<p>Both methods are equivalent, same for reading:</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow">local url <span class="keyword operator">=</span> <span class="keyword">object</span>[<span class="string">"url"</span>];
+local url <span class="keyword operator">=</span> <span class="keyword">object</span>.url;
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<h2>Method Chaining</h2>
+
+<p>Some build-in object functions (methods) are simple enough that they do not need return a result of the call, instead they return the object itself. This allows method chaining.</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="keyword">global</span> FRAME <span class="keyword operator">=</span> <span class="function call">Frame</span>(<span class="string">"Example"</span>, <span class="constant numeric">50</span>, <span class="constant numeric">50</span>, <span class="constant numeric">800</span>, <span class="constant numeric">600</span>, "<span class="meta preprocessor">#<span class="constant numeric">6080060</span>").toggle().cursor(true);</span>
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<p>To see which methods can be chained, look in the reference documentation for functions that return “[this]”.</p>
+
+<h2>Containers</h2>
+
+<p>There are three container classes in Xstart: Array, List and Map. They should explain itself pretty much.</p>
+
+<p>For now, look into the reference-documentation:</p>
+
+<p><a href="http://xstart.io/help.htm#Array">Array</a>
+<a href="http://xstart.io/help.htm#List">List</a>
+<a href="http://xstart.io/help.htm#Map">Map</a></p>
+
+<h2>Coroutines</h2>
+
+<p>XStart has no support for native threads and all operations are blocking. This does not mean that XStart does not use native threads to accelerate some operations. For example, expensive image operations use OpenMP to increase their performance.</p>
+
+<p>In the script however, the execution is sequential. This gives the benefit of not having to deal with multithrading issues. XStart scripting is not build to compete with the fastest languages but to give a tool for rapid development and prototyping.</p>
+
+<p>However, what XStart does support are coroutines by using the thread() keyword in the scripting language.</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="storage function">function</span> <span class="entity name function">LogAlive</span>(text) {
+        <span class="keyword">while</span>(<span class="constant language">true</span>) {
+                <span class="function call">sleep</span>(<span class="constant numeric">4.0</span>);
+                <span class="function call">log</span>(text);
+        }
+}
+
+<span class="function call">thread</span>(<span class="keyword">function</span>() { <span class="function call">sleep</span>(<span class="constant numeric">1.0</span>); <span class="function call">log</span>(<span class="string">"hello"</span>); });
+<span class="function call">thread</span>(<span class="keyword">function</span>() { <span class="function call">sleep</span>(<span class="constant numeric">2.0</span>); <span class="function call">log</span>(<span class="string">"world"</span>); });
+<span class="function call">thread</span>(<span class="keyword">function</span>() { <span class="function call">sleep</span>(<span class="constant numeric">3.0</span>); <span class="function call">log</span>(<span class="string">"!!!"</span>); });
+<span class="function call">thread</span>(LogAlive, <span class="string">"alive!"</span>);
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<h2>Scene Graph</h2>
+
+<p>For tools and automation tasks XStart can be used without a window or rendering context.
+If however graphics and a user interface is needed, the build-in scene graph is a simple to use but powerful tool.
+First thing needed is a Frame, every Frame object has a default root scene-node where the tree begins rendering. Adding a scene-node to the table of another scene-node will add it to the graph tree.</p>
+
+<pre data-trimmed="true" class=""><code data-language="c" class="rainbow"><span class="keyword">global</span> FRAME <span class="keyword operator">=</span> <span class="function call">Frame</span>(<span class="string">"Scene Graph"</span>, <span class="constant numeric">50</span>, <span class="constant numeric">50</span>, <span class="constant numeric">800</span>, <span class="constant numeric">600</span>, "<span class="meta preprocessor">#<span class="constant numeric">608060</span>").toggle().cursor(true);</span>
+FRAME.root[<span class="string">"image"</span>] <span class="keyword operator">=</span> <span class="function call">Texture</span>(<span class="string">"images/button.png"</span>), <span class="constant numeric">200</span>, <span class="constant numeric">200</span>);
+
+<span class="keyword">while</span>(FRAME.<span class="function call">render</span>()) {
+<span class="function call">sleep</span>(<span class="constant numeric">1.0</span>/<span class="constant numeric">30.0</span>);
+}
+</code><div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></pre>
+
+<h2>Events</h2>
+
+<p>Every scene-node and the frame do receive input events. For now, look at the example and the reference-documentation.</p>
+
+<p><a href="http://xstart.io/help.htm#Event">Event</a></p><script src="./quickstart_files/rainbow-custom.min.js.Download"></script><br></body></html>

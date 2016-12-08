@@ -5,7 +5,7 @@ FRAME.root["found"] = Texture("images/face_detect.png", 0,0, 0,0);
 
 global DETECTOR = Detector("haar/haarcascade_frontalface_default.xml");
 
-while(1) {
+while(true) {
     FRAME.root["camera"].update();
 	local numFindings = DETECTOR.detect(FRAME.root["camera"].snapshotBitmap().flipY().flipX(), 200);
 

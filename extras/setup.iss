@@ -1,9 +1,8 @@
-//#define SETUP_FILE "xstart-"+GetDateTimeString("dddd_dd/mm_(hh:nn)", '.', '-');
 #define SETUP_FILE "xstart-setup"
 
 [Setup]
-AppName=xstart Development Kit
-DefaultGroupName=xstart Development Kit
+AppName=XStart Development Kit
+DefaultGroupName=XStart Development Kit
 UninstallDisplayIcon={app}\icon.ico
 PrivilegesRequired=none
 DefaultDirName={pf}\xstart\
@@ -28,21 +27,23 @@ ChangesAssociations=yes
 Compression=lzma2/normal
 
 [Files]
-Source: *; Excludes: ".git,.gitignore,build,src,extras,scripts,build*.bat,make.bat,CMakeLists.txt,_OLD,_SETUP,Debug,Release,MinSizeRel,*.bak,video.m*,fonts"; DestDir: {app}; Flags: recursesubdirs;
+Source: *; Excludes: ".git,.gitignore,build,src,extras,_extras,scripts,build*.bat,make.bat,CMakeLists.txt,_OLD,_SETUP,Debug,Release,MinSizeRel,*.bak,video.m*,fonts"; DestDir: {app}; Flags: recursesubdirs;
 ;Source: "bin\vcredist_x86.exe"; DestDir: "{app}"; Flags: deleteafterinstall
 
-;[Run]
+[Run]
+Filename: "{app}\editor\quickstart.htm"; Description: "Read Quickstart"; Flags: postinstall shellexec skipifsilent
 ;Filename: "{app}\vcredist_x86.exe"; Parameters: "/q:a /c:""VCREDI~3.EXE /q:a /c:""""msiexec /i vcredist.msi /qn"""" """; WorkingDir: {app}; StatusMsg: "Installing Micosoft's C/C++ runtime ...";
 
 ;[Tasks]
 ;Name: startup; Description: "Run SBC-Connect on startup";
 
 [Icons]
-Name: "{group}\xStart Editor"; Filename: "{app}\editor\scite.exe";
-Name: "{group}\xStart Reference"; Filename: "{app}\editor\help.htm";
-Name: "{group}\xStart Console"; Filename: "{app}\bin\xstart.exe";
-Name: "{group}\xStart Examples"; Filename: "{app}\examples\";
-Name: "{userdesktop}\xStart Editor"; Filename: "{app}\editor\scite.exe";
+Name: "{group}\XStart Editor"; Filename: "{app}\editor\scite.exe";
+Name: "{group}\XStart Quickstart"; Filename: "{app}\editor\quickstart.htm";
+Name: "{group}\XStart Reference"; Filename: "{app}\editor\help.htm";
+Name: "{group}\XStart Console"; Filename: "{app}\bin\xstart.exe";
+Name: "{group}\XStart Examples"; Filename: "{app}\examples\";
+Name: "{userdesktop}\XStart Editor"; Filename: "{app}\editor\scite.exe";
 
 [Registry]
 Root: HKCR; Subkey: ".gm"; ValueType: string; ValueName: ""; ValueData: "GM-Script"; Flags: uninsdeletevalue
