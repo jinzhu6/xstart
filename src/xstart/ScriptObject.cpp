@@ -90,6 +90,7 @@ void GM_CDECL Script_Object_SetDot(gmThread* a_thread, gmVariable* a_operands) {
 				object->_setMember<ScriptObject*>(key, o);
 				object->table->Set(a_thread->GetMachine(), a_operands[2], a_operands[1]);
 			} else {
+				// FIX: here we can set script-bound member objects to null
 				object->_setMember<ScriptObject*>(key, 0);
 				object->table->Set(a_thread->GetMachine(), a_operands[2], a_operands[1]);
 			}

@@ -6,12 +6,25 @@ FRAME.onKeyDown = function(e) { if(e.key == KEY_ESCAPE) { exit(); } };
 FRAME.root = NodeEx();
 FRAME.root.center().middle();
 
-FRAME.root["ship"] = Texture("examples/images/face_detect.png", 320,240).center().middle();
-FRAME.root["ship"]["body"] = Texture("examples/images/ship1.png", 0, 0).center().middle();
-FRAME.root["ship"]["body"].onMouseDown = function(e) { this.rotate = 0.0; };
+FRAME.root["world"] = NodeEx();
+
+FRAME.root["world"]["ship"] = Texture("examples/images/face_detect.png", 320,240).center().middle();
+FRAME.root["world"]["ship"]["body"] = Texture("examples/images/ship1.png", 0, 0).center().middle();
+FRAME.root["world"]["ship"]["body"].onMouseDown = function(e) { this.rotate = 0.0; };
+
+global NUM_SHIPS = 0;
+global function AddShip() {
+    //global NUM_SHIPS;
+    FRAME.root["world"]["ship_"+NUM_SHIPS] = Texture("examples/images/ship1.png", random(640), random(480)).center().middle();
+    global NUM_SHIPS = NUM_SHIPS + 1;
+}
+
+for(i=0; i<100; ++i) {
+    AddShip();
+}
 
 while(FRAME.render()) {
     //FRAME.root.rotation.z += 0.1;
-    FRAME.root["ship"].rotation.z += 0.1;
+    FRAME.root["world"]["ship"].rotation.z += 0.1;
     sleep(1.0/60.0);
 }
