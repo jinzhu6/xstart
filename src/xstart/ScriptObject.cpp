@@ -87,7 +87,10 @@ void GM_CDECL Script_Object_SetDot(gmThread* a_thread, gmVariable* a_operands) {
 		case TYPE_OBJECT:
 			o = (ScriptObject*)a_operands[1].GetUserSafe(GM_TYPE_OBJECT);
 			if(o) {
-				object->_setMember<ScriptObject*>( key, o );
+				object->_setMember<ScriptObject*>(key, o);
+				object->table->Set(a_thread->GetMachine(), a_operands[2], a_operands[1]);
+			} else {
+				object->_setMember<ScriptObject*>(key, 0);
 				object->table->Set(a_thread->GetMachine(), a_operands[2], a_operands[1]);
 			}
 			break;

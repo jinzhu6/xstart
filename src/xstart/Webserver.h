@@ -27,7 +27,7 @@ public:
 		//BindFunction("sendData", (SCRIPT_FUNCTION)&HttpServer::gm_sendData, "[this] sendData([Data] data)", "When called inside the request-handler, it sends the content of a Data object back to the client.");
 		BindFunction("send404", (SCRIPT_FUNCTION)&HttpServer::gm_send404, "[this] send404()", "When called inside the request-handler, it sends a a 404 error back to the client.");
 		BindFunction("sendAuthRequest", (SCRIPT_FUNCTION)&HttpServer::gm_sendAuthRequest, "[this] sendAuthRequest({string} message)", "When called inside the request-handler, it sends a authorizsation request ('401 Access Denied') back to the client.");
-		BindFunction("parseForm", (SCRIPT_FUNCTION)&HttpServer::gm_parseForm, "[Map] parseForm({string} getOrPostVars)", "Parses vars in an get or post string to a [Map] object.");
+		BindFunction("parseForm", (SCRIPT_FUNCTION)&HttpServer::gm_parseForm, "[Map] parseForm({string} getOrPostVars)", "Parses a get or post request to a [Map] object.");
 	}
 
 	~HttpServer() {

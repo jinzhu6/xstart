@@ -226,8 +226,8 @@ public:
 		GM_CHECK_NUM_PARAMS(2);
 		GM_CHECK_STRING_PARAM(addr, 0);
 		GM_CHECK_INT_PARAM(port, 1);
-		a_thread->PushInt(this->listen(addr, port, 1));
-		return GM_OK;
+		if (this->listen(addr, port, 1)) { return ReturnThis(a_thread); }
+		else { a_thread->PushInt(0); return GM_OK; }
 	}
 
 	Socket* accept() {

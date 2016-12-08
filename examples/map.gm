@@ -7,5 +7,5 @@ m.set("number", 1.23);
 m.set("a", null);
 
 foreach(e in m) {
-	print(" " + m[e]);
+	println(e + "=" + m[e]);
 }
