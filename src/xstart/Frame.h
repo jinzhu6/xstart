@@ -99,7 +99,7 @@ public:
 			a_thread->ParamString(5, color, "#ffffff");
 		}
 
-		if(a_thread->GetNumParams() >= 5) {
+		if(a_thread->GetNumParams() >= 4) {
 			open((int)x, (int)y, (int)dim_x, (int)dim_y, color);
 		}
 
