@@ -331,8 +331,7 @@ public:
 	bool drawText(Font* font, const char* text, int x, int y, const char* solidColor = "#ffffffff", int outline = 0, const char* outlineColor = "#ffffff00") {
 		_check();
 		ImageSwapRB(image);
-		font->drawToImage(image, text, solidColor, x, y, 0, outlineColor);
-//		ImageSavePNG(image, "test.png");
+		font->drawToImage(image, text, solidColor, x, y, outline, outlineColor);
 		ImageSwapRB(image);
 		_upload();
 		return true;

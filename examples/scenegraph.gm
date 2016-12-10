@@ -1,12 +1,27 @@
 #include "lib/Keyboard.gm"
 
-global FRAME = Frame("Scene-Graph Example", 50,50, 640,480, "#336633").toggle().cursor(true);
-FRAME.onKeyDown = function(e) { if(e.key == KEY_ESCAPE) { exit(); } };
+global KEYS = Map();
 
-FRAME.root = NodeEx();
+global FRAME = Frame("Scene-Graph Example", 50,50, 640,480, "#336633").toggle().cursor(true);
+FRAME.onKeyDown = function(evt) { if(evt.key < 255) {KEYS[evt.key] = true;} };
+FRAME.onKeyUp = function(evt) { if(evt.key==KEY_ESCAPE) {FRAME.close();} if(evt.key < 255) {KEYS[evt.key] = false;} };
+
+FRAME.root["ship"] = NodeEx(0, 320,240);
+FRAME.root["ship"].pivot.x = 320;
+FRAME.root["ship"].pivot.y = 240;
+FRAME.root["ship"]["image"] = Texture("examples/images/ship1.png", 320,240).center().middle();
+
+while(FRAME.render()) {
+    //FRAME.root["ship"]["image"].rotation.z += 0.1;
+    FRAME.root["ship"].rotation.z += 0.01;
+    sleep(0.01);
+}
+
+
+/*FRAME.root = NodeEx();
 FRAME.root.center().middle();
 
-FRAME.root["world"] = NodeEx();
+FRAME.root["world"] = NodeEx("",320,240).center().middle();
 
 FRAME.root["world"]["ship"] = Texture("examples/images/face_detect.png", 320,240).center().middle();
 FRAME.root["world"]["ship"]["body"] = Texture("examples/images/ship1.png", 0, 0).center().middle();
@@ -23,8 +38,17 @@ for(i=0; i<100; ++i) {
     AddShip();
 }
 
+local prevT = time();
 while(FRAME.render()) {
+    local t = time();
+    local dt = t - prevT;
+    prevT = t;
+
     //FRAME.root.rotation.z += 0.1;
     FRAME.root["world"]["ship"].rotation.z += 0.1;
-    sleep(1.0/60.0);
+    if(KEYS[KEY_LEFT])  { FRAME.root["world"].rotation.z -= 5.0 * dt; }
+    if(KEYS[KEY_RIGHT]) { FRAME.root["world"].rotation.z += 5.0 * dt; }
+
+sleep(1.0/60.0);
 }
+*/

@@ -59,16 +59,33 @@ public:
 		if(!visible) { return; }
 		if(!valid) { update(); }
 
+		// get parent model matrix
+		GLdouble parentMx[16];
+		glMatrixMode(GL_MODELVIEW);
+		glGetDoublev(GL_MODELVIEW_MATRIX, parentMx);
+
 		// apply transformations
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
-//		glTranslatef(position->x - pivot->x, position->y - pivot->y, position->z - pivot->z);
+		glLoadIdentity();
 		glTranslatef(position->x, position->y, position->z);
+//		glScalef(scaling->x * scaling->z, scaling->y * scaling->z, 1.0);
 		glRotatef(rotation->x*(180.0f/3.14159265f), 1.0, 0.0, 0.0);
 		glRotatef(rotation->y*(180.0f/3.14159265f), 0.0, 1.0, 0.0);
 		glRotatef(rotation->z*(180.0f/3.14159265f), 0.0, 0.0, 1.0);
-		glScalef(scaling->x * scaling->z, scaling->y * scaling->z, 1.0);
-		// TODO: Scaling goes here!
+		glTranslatef(-pivot->x, -pivot->y, -pivot->z);
+
+		// get nodes matrix
+		GLdouble nodeMx[16];
+		glMatrixMode(GL_MODELVIEW);
+		glGetDoublev(GL_MODELVIEW_MATRIX, nodeMx);
+		
+		// multiply parent with current matrix
+		//glMultMatrixd(parentMx);
+		glLoadMatrixd(parentMx);
+		glMultMatrixd(nodeMx);
+		//glLoadMatrixd(nodeMx);
+		//glMultMatrixd(parentMx);
 		
 		// enable scissor clipping
 		if(clipLeft >= 0.0) {
