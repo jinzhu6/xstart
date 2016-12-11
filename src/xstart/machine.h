@@ -22,7 +22,7 @@ std::string MachineGlobalHelp();
 int MachineCreateClassInstance(gmThread* a_thread, const char* typeName);
 std::string MachineGetClassList();
 void RegisterCommonAPI();
-char* PreprocessScript(const char* file);
+char* PreprocessScript(const char* file, gmMachine* machine);
 void SetLibraryPath(const char* path);
 std::string FindFile(const char* file);
 

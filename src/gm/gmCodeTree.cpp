@@ -551,7 +551,7 @@ int gmerror(char * a_message)
   gmCodeTree & ct = gmCodeTree::Get();
   if(ct.GetLog())
   {
-    ct.GetLog()->LogEntry("error (%d) %s", gmlineno, a_message);
+    ct.GetLog()->LogEntry("%d: %s", gmlineno, a_message);
   }
   return 0;
 }

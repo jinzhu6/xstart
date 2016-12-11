@@ -6,3 +6,4 @@ obj = ar.add("Four");
 
 foreach(e in ar) {print(e + " "); }
 print("\n"+obj+" is at index "+ar.find(obj)+"\n");
+

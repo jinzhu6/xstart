@@ -69,7 +69,7 @@ public:
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef(position->x, position->y, position->z);
-//		glScalef(scaling->x * scaling->z, scaling->y * scaling->z, 1.0);
+		glScalef(scaling->x * scaling->z, scaling->y * scaling->z, 1.0);
 		glRotatef(rotation->x*(180.0f/3.14159265f), 1.0, 0.0, 0.0);
 		glRotatef(rotation->y*(180.0f/3.14159265f), 0.0, 1.0, 0.0);
 		glRotatef(rotation->z*(180.0f/3.14159265f), 0.0, 0.0, 1.0);
@@ -81,11 +81,8 @@ public:
 		glGetDoublev(GL_MODELVIEW_MATRIX, nodeMx);
 		
 		// multiply parent with current matrix
-		//glMultMatrixd(parentMx);
 		glLoadMatrixd(parentMx);
 		glMultMatrixd(nodeMx);
-		//glLoadMatrixd(nodeMx);
-		//glMultMatrixd(parentMx);
 		
 		// enable scissor clipping
 		if(clipLeft >= 0.0) {

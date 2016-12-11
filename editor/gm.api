@@ -5,7 +5,7 @@ string ascii(int ascii)
 string system(string command)
 start(string command) : bool
 (or) int random( (optional) float (or) int max) : float
-time() : float
+time((optional) float time) : float
 print(string)
 println(string)
 log(string message)
@@ -15,27 +15,41 @@ fatal(string error)
 popup(string info)
 string ask(string question)
 redirect(string file)
-string get(string key)
+string load(string key)
 save(string key, string value)
 instance(string class) : object
+markdown(string fileIn, string fileOut)
 pause( float s)
 eval(string code)
 callstack() : string
 debug(int level)
 colors(int enable)
 arg(int number) : string
+include(string file)
 sound(string file)
 askFile() : string
 monitor(int index) : Rect
+_mapKey(int key, int mode) : int
 yield()
-sleep(float time
+sleep(float time)
+type(any any) : string
+format(string format, ...) : string
+...(float p) : float
+...(float x, float y) : float
+clamp(float min, float value, float max) : float
+ string.length() : int
+ string.upper() : string
+ string.lower() : string
+ string.find(string search, int startIndex) : int
+ string.setAt(int index, int set) : string
+ string.trimLeft(string str) : string
 Object((optional) string id)
-toString() : string
+string() : string
 id : string
 _key : string
 _table : table
 Array((optional) string id)
-toString() : string
+string() : string
 add(Object object) : Object
 remove(int index) : this
 find(Object object) : int
@@ -45,7 +59,7 @@ id : string
 _key : string
 _table : table
 List((optional) string id)
-toString() : string
+string() : string
 count() : int
 clear() : this
 first() : Object
@@ -54,8 +68,7 @@ fromIndex(int index) : Object
 pop() : this
 popFirst() : this
 popLast() : this
-randomPop(Object object) : this
-remove(Object object) : this
+remove(int index) : Object
 push(Object object) : this
 pushBack(Object object) : this
 pushFront(Object object) : this
@@ -63,15 +76,44 @@ id : string
 _key : string
 _table : table
 Map((optional) string id)
-toString() : string
+string() : string
 get(string key) : Object
 set(string key, object value) : this
 length() : int
 id : string
 _key : string
 _table : table
+File((optional)string file, (optional)string mode="rb")
+string() : string
+open(string fileName, string mode) : this
+close()
+write(string data, (optional) int length) : this
+read( (optional) int length) : string
+exists(string fileName) : int
+delete(string fileName) : bool
+rename(string source, string destination) : bool
+seek(int position) : this
+tell() : int
+size() : int
+id : string
+_key : string
+_table : table
+bytes : int
+Date((optional) string id)
+string() : string
+id : string
+_key : string
+_table : table
+year : int
+month : int
+day : int
+hour : int
+minute : int
+second : int
+_weekday : int
+_yearday : int
 Data((optional) string id)
-toString() : string
+string() : string
 loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
@@ -87,82 +129,14 @@ size : int
 loop : bool
 readCursor : int
 writeCursor : int
-Vector((optional) float x, (optional) float y, (optional) float z)  or  (Vector copy)
-toString() : string
-id : string
-_key : string
-_table : table
-x : float
-y : float
-z : float
-Color((optional) string id)
-toString() : string
-fromStringRGBA(string rgba) : this
-toStringRGBA() : string
-updateYCbCr() : this
-updateRGB() : this
-id : string
-_key : string
-_table : table
-r : float
-g : float
-b : float
-a : float
-y : float
-cb : float
-cr : float
-h : float
-s : float
-v : float
-Rect((optional) string id)
-toString() : string
-id : string
-_key : string
-_table : table
-left : float
-top : float
-right : float
-bottom : float
-Date((optional) string id)
-toString() : string
-id : string
-_key : string
-_table : table
-year : int
-month : int
-day : int
-hour : int
-minute : int
-second : int
-_weekday : int
-_yearday : int
-File((optional)string file, (optional)string mode="rb")
-toString() : string
-open(string fileName, string mode) : this
-close()
-write(string data, (optional) int length) : this
-read( (optional) int length) : string
-exists(string fileName) : int
-delete(string fileName) : bool
-seek(int position) : this
-tell() : int
-size() : int
-id : string
-_key : string
-_table : table
-bytes : int
-toString() : string
-id : string
-_key : string
-_table : table
 XMLDocument((optional) string id)
-toString() : string
+string() : string
 id : string
 _key : string
 _table : table
 root : object
 XMLNode((optional) string id)
-toString() : string
+string() : string
 add(Object object) : Object
 remove(int index) : this
 find(Object object) : int
@@ -175,44 +149,13 @@ name : string
 content : string
 isCDATA : int
 attributes : object
-Bitmap(string imageFile)
-toString() : string
-create(int width, int height) : this
-load(string file) : int
-save(string file) : int
-clear(string color) : this
-flipX() : this
-flipY() : this
-swapRB() : this
-resize(int width, int height, int bilinear : this
-duplicate() : Bitmap
-cut(int x, int y, int width, int height) : Bitmap
-paste(Bitmap, int x, int y
-softenEdge(int width)
-multiply(Bitmap mask, float offset, float scale)
-saturateMask(Bitmap mask, float offset, float scale)
-getWidth() : int
-getHeight() : int
-id : string
-_key : string
-_table : table
-Font(string fontFile, (optional) int fontSize), (optional) int righToLeft
-toString() : string
-load(string fontFile, int fontSize) : this
-measure(string text, (optional) int outlineWidth) : Vector
-drawText(Texture texture, string text, string color, int x, int y), (optional) int outlineWidth, string outlineColor : int
-drawBitmap(Bitmap bitmap, string text, string color, int x, int y), (optional) int outlineWidth, string outlineColor : Bitmap
-id : string
-_key : string
-_table : table
-rightToLeft : int
 Frame(string id, int pos_x, int pos_y, int width, int height, (optional) string color)
-toString() : string
+string() : string
 _open(int pos_x, int pos_y, int width, int height, (optional) string color) : this
 close() : this
-render() : this
+render() : bool
 toggle() : this
-showCursor(int show) : this
+cursor(int show) : this
 setDimensions(int width, int height) : this
 id : string
 _key : string
@@ -223,11 +166,11 @@ height : float
 mirrorX : int
 mirrorY : int
 Event((optional) string id)
-toString() : string
+string() : string
 id : string
 _key : string
 _table : table
-sender : Object
+node : Object
 key : int
 text : string
 button : int
@@ -236,12 +179,12 @@ y : float
 prevX : float
 prevY : float
 Handler((optional) string id)
-toString() : string
+string() : string
 id : string
 _key : string
 _table : table
 Node((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -271,7 +214,7 @@ height : float
 depth : float
 rotate : float
 NodeEx((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -304,7 +247,7 @@ shader : Shader
 useShader : int
 color : Color
 Texture((optional) string file, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height), (optional) string clearColor
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -349,7 +292,7 @@ color : Color
 clearColor : string
 opacity : float
 Canvas((optional) string file, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height), (optional) string clearColor
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -408,7 +351,7 @@ color : Color
 clearColor : string
 opacity : float
 Text(string text, string font, int x, int y, string color)
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -459,8 +402,92 @@ outline : int
 password : int
 passwordLength : int
 outlineColor : string
+Mesh((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
+string() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+loadObj(string file) : this
+setPosition(int index, float x, float y, float z) : this
+setTexCoord(int index, float u, float v, float w) : this
+setNormal(int index) : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+texture : object
+texture0 : object
+texture1 : object
+texture2 : object
+texture3 : object
+Box(Texture texture, float width, float height)
+string() : string
+update() : this
+render() : this
+hit(float x, float y) : int
+setClipRegion(float left, float top, float right, float bottom) : this
+getChild(int index) : Node
+left() : this
+center() : this
+right() : this
+top() : this
+middle() : this
+bottom() : this
+loadObj(string file) : this
+setPosition(int index, float x, float y, float z) : this
+setTexCoord(int index, float u, float v, float w) : this
+setNormal(int index) : this
+id : string
+_key : string
+_table : table
+visible : int
+position : Vector
+pivot : Vector
+dimension : Vector
+rotation : Vector
+scaling : Vector
+scale : float
+x : float
+y : float
+z : float
+width : float
+height : float
+depth : float
+rotate : float
+shader : Shader
+useShader : int
+color : Color
+texture : object
+texture0 : object
+texture1 : object
+texture2 : object
+texture3 : object
 Shader(string vertexShaderFile, string fragmentShaderFile)
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -497,7 +524,7 @@ depth : float
 rotate : float
 active : int
 Framebuffer((optional) string file, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height), (optional) string clearColor
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -543,7 +570,7 @@ clearColor : string
 opacity : float
 enabled : int
 Recorder((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -580,8 +607,76 @@ enabled : int
 record : int
 recordWidth : int
 recordHeight : int
+Bitmap(string imageFile)
+string() : string
+create(int width, int height) : this
+load(string file) : int
+save(string file) : int
+clear(string color) : this
+flipX() : this
+flipY() : this
+swapRB() : this
+resize(int width, int height, int bilinear : this
+duplicate() : Bitmap
+cut(int x, int y, int width, int height) : Bitmap
+paste(Bitmap, int x, int y
+softenEdge(int width)
+multiply(Bitmap mask, float offset, float scale)
+saturateMask(Bitmap mask, float offset, float scale)
+getWidth() : int
+getHeight() : int
+id : string
+_key : string
+_table : table
+Font(string fontFile, (optional) int fontSize), (optional) int righToLeft
+string() : string
+load(string fontFile, int fontSize) : this
+measure(string text, (optional) int outlineWidth) : Vector
+drawText(Texture texture, string text, string color, int x, int y), (optional) int outlineWidth, string outlineColor : int
+drawBitmap(Bitmap bitmap, string text, string color, int x, int y), (optional) int outlineWidth, string outlineColor : Bitmap
+id : string
+_key : string
+_table : table
+rightToLeft : int
+Vector((optional) float x, (optional) float y, (optional) float z)  or  (Vector copy)
+string() : string
+set(float x, float y, float z : this
+id : string
+_key : string
+_table : table
+x : float
+y : float
+z : float
+Color((optional) string id)
+string() : string
+fromStringRGBA(string rgba) : this
+toStringRGBA() : string
+updateYCbCr() : this
+updateRGB() : this
+id : string
+_key : string
+_table : table
+r : float
+g : float
+b : float
+a : float
+y : float
+cb : float
+cr : float
+h : float
+s : float
+v : float
+Rect((optional) string id)
+string() : string
+id : string
+_key : string
+_table : table
+left : float
+top : float
+right : float
+bottom : float
 Detector((optional) string file)
-toString() : string
+string() : string
 loadHaarCascade(sting file) : int
 detect(Bitmap bitmap, int minSize) : int
 getFinding(int index) : Rect
@@ -589,14 +684,14 @@ id : string
 _key : string
 _table : table
 Socket((optional) string id)
-toString() : string
-setTimeout(int seconds) : this
+string() : string
+setTimeout(int milliseconds) : this
 id : string
 _key : string
 _table : table
 data : Data
 Listener((optional) string id)
-toString() : string
+string() : string
 setTimeout(int seconds) : this
 id : string
 _key : string
@@ -604,32 +699,19 @@ _table : table
 data : Data
 client : string
 HttpServer(string port, (optional) string docroot, (optional) bool dirListing)
-toString() : string
+string() : string
 poll(float timeoutSeconds) : this
 onRequest(string url, string get, string post, string auth)
 sendFile((optional)string file)
 send(string data) : this
 send404() : this
 sendAuthRequest(string message) : this
-id : string
-_key : string
-_table : table
-Serial((optional) string id)
-toString() : string
-open((optional) string port, (optional) int baudrate) : this
-close() : this
-flush() : this
-peek() : int
-write(string data) : this
-writeData(Data data) : this
-read(float timeoutSeconds) : string
-read(int maxChar, int endChar, float timeoutSeconds) : string
-readData(int maxChar, float timeoutSeconds) : Data
+parseForm(string getOrPostVars) : Map
 id : string
 _key : string
 _table : table
 AudioDevice(int sampleRate, int channels, int bufferSize, int deviceInIndex, int deviceOutIndex)
-toString() : string
+string() : string
 open(int sampleRate, int channels, int bufferSize, int deviceInIndex, int deviceOutIndex) : this
 close() : this
 pause() : this
@@ -641,8 +723,10 @@ _key : string
 _table : table
 input : object
 output : object
+socketOut : object
+socketIn : object
 AudioDeviceInfo(int index, (optional) string name, (optional) string api, (optional) int minOutputChannels, (optional) int minInputChannels)
-toString() : string
+string() : string
 getDevice(int index, (optional) string name, (optional) string api, (optional) int minInputChannels, (optional) int minOutputChannels) : this
 id : string
 _key : string
@@ -660,7 +744,7 @@ lowOutputLatency : float
 highInputLatency : float
 highOutputLatency : float
 AudioFile(string file)
-toString() : string
+string() : string
 loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
@@ -684,7 +768,7 @@ playing : int
 volume : float
 bytesAvailable : int
 AudioFilter(AudioData source)
-toString() : string
+string() : string
 loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
@@ -711,7 +795,7 @@ source : AudioData
 history : AudioData
 outputFile : string
 AudioPitch(AudioData source)
-toString() : string
+string() : string
 loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
@@ -739,7 +823,7 @@ history : AudioData
 outputFile : string
 pitch : float
 AudioDelay(AudioData source)
-toString() : string
+string() : string
 loadRaw(string file) : this
 saveRaw(string file) : this
 appendRaw(string file) : this
@@ -767,13 +851,8 @@ history : AudioData
 outputFile : string
 delay : float
 delayVolume : float
-Dmx((optional) string id)
-toString() : string
-id : string
-_key : string
-_table : table
 Video(string file, int pos_x, int pos_y, int width, int height)
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -826,8 +905,57 @@ useShader : int
 color : Color
 clearColor : string
 opacity : float
+string() : string
+id : string
+_key : string
+_table : table
+Sound(string file)
+string() : string
+open(string file) : int
+close() : this
+play(int loop) : this
+stop() : this
+isPlaying() : int
+id : string
+_key : string
+_table : table
+Serial((optional) string id)
+string() : string
+open((optional) string port, (optional) int baudrate) : this
+close() : this
+flush() : this
+peek() : int
+write(string data) : this
+writeData(Data data) : this
+read(float timeoutSeconds) : string
+read(int maxChar, int endChar, float timeoutSeconds) : string
+readData(int maxChar, float timeoutSeconds) : Data
+id : string
+_key : string
+_table : table
+ADDevice((optional) string deviceId)
+string() : string
+connect((optional) string deviceId) : int
+disconnect() : this
+findAnalogRange(int channel, float volt) : int
+getAnalogValue(int channel, int range) : int
+getAnalogVolt(int channel, int range) : float
+setAnalogVolt(int channel, float volt) : this
+getDigitalBits(int channel) : int
+setDigitalBits(int channel, int bits) : this
+id : string
+_key : string
+_table : table
+handle : int
+device : string
+connected : int
+Dmx((optional) string id)
+string() : string
+id : string
+_key : string
+_table : table
 Camera(sting (or) int device, int pos_x, int pos_y, int width, int height, int bits
-toString() : string
+string() : string
 update() : this
 render() : this
 hit(float x, float y) : int
@@ -884,199 +1012,3 @@ useShader : int
 color : Color
 clearColor : string
 opacity : float
-0.735 |  DEBUG-INFO: Garbage collection of [Array] at [100ff08]
-0.735 |  DEBUG-INFO: Garbage collection of [File] at [1020150]
-0.735 |  DEBUG-INFO: Garbage collection of [File] at [104fdf8]
-0.735 |  DEBUG-INFO: Closing file '..\editor\gm.properties.a'.
-0.735 |  DEBUG-INFO: Garbage collection of [Object] at [1044568]
-0.735 |  DEBUG-INFO: Garbage collection of [Array] at [1050280]
-0.735 |  DEBUG-INFO: Garbage collection of [List] at [10b8f38]
-0.735 |  DEBUG-INFO: Garbage collection of [Map] at [104ff00]
-0.735 |  DEBUG-INFO: Garbage collection of [Data] at [10bead0]
-0.735 |  DEBUG-INFO: Garbage collection of [Vector] at [356d990]
-0.735 |  DEBUG-INFO: Garbage collection of [Color] at [358e670]
-0.735 |  DEBUG-INFO: Garbage collection of [Rect] at [358ea40]
-0.735 |  DEBUG-INFO: Garbage collection of [Date] at [35b6710]
-0.735 |  DEBUG-INFO: Garbage collection of [File] at [35b8820]
-0.735 |  DEBUG-INFO: Garbage collection of [Midi] at [35b8d38]
-0.750 |  DEBUG-INFO: Garbage collection of [XMLDocument] at [35cdbf0]
-0.750 |  DEBUG-INFO: Garbage collection of [XMLNode] at [35baf60]
-0.750 |  DEBUG-INFO: Garbage collection of [Bitmap] at [1043e28]
-0.750 |  DEBUG-INFO: Garbage collection of [Font] at [36035e0]
-0.750 |  DEBUG-INFO: Garbage collection of [Frame] at [3603ff0]
-0.750 |  DEBUG-INFO: Garbage collection of [Event] at [362ce48]
-0.750 |  DEBUG-INFO: Garbage collection of [Handler] at [1044bc0]
-0.750 |  DEBUG-INFO: Garbage collection of [Node] at [363eed8]
-0.750 |  DEBUG-INFO: Garbage collection of [NodeEx] at [3769f30]
-0.750 |  DEBUG-INFO: Garbage collection of [Texture] at [37a8c48]
-0.750 |  DEBUG-INFO: Garbage collection of [Canvas] at [37e19e0]
-0.750 |  DEBUG-INFO: Garbage collection of [Text] at [38711c8]
-0.750 |  DEBUG-INFO: Garbage collection of [Shader] at [388ee38]
-0.750 |  DEBUG-INFO: Garbage collection of [Framebuffer] at [38ca010]
-0.750 |  DEBUG-INFO: Garbage collection of [Recorder] at [3937178]
-0.750 |  DEBUG-INFO: Garbage collection of [Detector] at [39791c0]
-0.750 |  DEBUG-INFO: Garbage collection of [Socket] at [38c4fb8]
-0.750 |  DEBUG-INFO: Garbage collection of [Listener] at [398d1e0]
-0.750 |  DEBUG-INFO: Garbage collection of [HttpServer] at [398d3e0]
-0.766 |  DEBUG-INFO: Garbage collection of [Serial] at [39ec6c0]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioDevice] at [39ee960]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioDeviceInfo] at [3a4f448]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioFile] at [3a4f7f0]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioFilter] at [3a33d98]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioPitch] at [3a1da98]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioDelay] at [3ad1f08]
-0.766 |  DEBUG-INFO: Garbage collection of [Dmx] at [1044908]
-0.766 |  DEBUG-INFO: Garbage collection of [Video] at [3ad2db0]
-0.766 |  DEBUG-INFO: Garbage collection of [Camera] at [3b48e60]
-0.766 |  DEBUG-INFO: Garbage collection of [File] at [39f4b50]
-0.766 |  DEBUG-INFO: Closing file '..\editor\gm.properties.b'.
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37c01c8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfb38]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfe08]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be3c8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be4b8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5648]
-0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [38b4688]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5fa8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5af8]
-0.766 |  DEBUG-INFO: Garbage collection of [Color] at [392b448]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6818]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6908]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5738]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5eb8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6098]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5468]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c69f8]
-0.766 |  DEBUG-INFO: Garbage collection of [Dmx] at [1043f10]
-0.766 |  DEBUG-INFO: Garbage collection of [Map] at [100e618]
-0.766 |  DEBUG-INFO: Garbage collection of [File] at [1020408]
-0.766 |  DEBUG-INFO: Garbage collection of [Texture] at [102a0d0]
-0.766 |  DEBUG-INFO: Garbage collection of [Node] at [10295f0]
-0.766 |  DEBUG-INFO: Garbage collection of [Camera] at [1045130]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioPitch] at [10442b0]
-0.766 |  DEBUG-INFO: Garbage collection of [XMLNode] at [1023a50]
-0.766 |  DEBUG-INFO: Garbage collection of [Video] at [1044480]
-0.766 |  DEBUG-INFO: Garbage collection of [Serial] at [10297c0]
-0.766 |  DEBUG-INFO: Garbage collection of [Frame] at [10274d8]
-0.766 |  DEBUG-INFO: Garbage collection of [Midi] at [10214f8]
-0.766 |  DEBUG-INFO: Garbage collection of [Framebuffer] at [102a2a0]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioFile] at [10441c8]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioDevice] at [10298a8]
-0.766 |  DEBUG-INFO: Garbage collection of [NodeEx] at [102a470]
-0.766 |  DEBUG-INFO: Garbage collection of [Data] at [10167e0]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioDeviceInfo] at [102a1b8]
-0.766 |  DEBUG-INFO: Garbage collection of [HttpServer] at [1029a78]
-0.766 |  DEBUG-INFO: Garbage collection of [Date] at [101bd18]
-0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [1029f00]
-0.766 |  DEBUG-INFO: Garbage collection of [Rect] at [101bc30]
-0.766 |  DEBUG-INFO: Garbage collection of [Socket] at [102a388]
-0.766 |  DEBUG-INFO: Garbage collection of [Event] at [1029c48]
-0.766 |  DEBUG-INFO: Garbage collection of [List] at [100e430]
-0.766 |  DEBUG-INFO: Garbage collection of [Bitmap] at [1026b48]
-0.766 |  DEBUG-INFO: Garbage collection of [Recorder] at [10296d8]
-0.766 |  DEBUG-INFO: Garbage collection of [Canvas] at [1029b60]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioDelay] at [1043a88]
-0.766 |  DEBUG-INFO: Garbage collection of [Color] at [101bb48]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [10169c8]
-0.766 |  DEBUG-INFO: Garbage collection of [Detector] at [1029990]
-0.766 |  DEBUG-INFO: Garbage collection of [AudioFilter] at [1044d90]
-0.766 |  DEBUG-INFO: Garbage collection of [Text] at [1029e18]
-0.766 |  DEBUG-INFO: Garbage collection of [Font] at [1026c30]
-0.766 |  DEBUG-INFO: Garbage collection of [Handler] at [1029d30]
-0.766 |  DEBUG-INFO: Garbage collection of [Listener] at [1029fe8]
-0.766 |  DEBUG-INFO: Garbage collection of [Array] at [100e348]
-0.766 |  DEBUG-INFO: Garbage collection of [XMLDocument] at [1023968]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5be8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6278]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5cd8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5828]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c50a8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5378]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5dc8]
-0.766 |  DEBUG-INFO: Garbage collection of [Color] at [3b41030]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6ae8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5558]
-0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [3ad1170]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6188]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c5288]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6458]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6548]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c4ec8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [38c6638]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b46708]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b458f8]
-0.766 |  DEBUG-INFO: Garbage collection of [Color] at [3b47150]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45f88]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45538]
-0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [3ad13e0]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b46618]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45808]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45bc8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45718]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b45e98]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3b46e88]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf3b8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bec38]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be5a8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be878]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37c00d8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be698]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37beff8]
-0.766 |  DEBUG-INFO: Garbage collection of [Color] at [3845800]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf2c8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bea58]
-0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [37e3018]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bef08]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be968]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfd18]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37be788]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfef8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf868]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bee18]
-0.766 |  DEBUG-INFO: Garbage collection of [Shader] at [384dc68]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf1d8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfa48]
-0.766 |  DEBUG-INFO: Garbage collection of [Color] at [38b41d0]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf778]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bed28]
-0.766 |  DEBUG-INFO: Garbage collection of [Map] at [35bb1b8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf958]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf4a8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf598]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bf688]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [37bfc28]
-0.766 |  DEBUG-INFO: Garbage collection of [Node] at [3607a98]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [361e438]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [36045b0]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3604958]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3614e20]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3619da0]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [3734ce0]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [361eac8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [371b708]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [371b7f8]
-0.766 |  DEBUG-INFO: Garbage collection of [Vector] at [372b8f0]
-0.766 |  DEBUG-INFO: Garbage collection of [Data] at [397cf48]
-0.782 |  DEBUG-INFO: Garbage collection of [Data] at [398d2e8]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735190]
-0.782 |  DEBUG-INFO: Garbage collection of [Shader] at [376e068]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735460]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3734fb0]
-0.782 |  DEBUG-INFO: Garbage collection of [Color] at [379a890]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735af0]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735550]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [37350a0]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3734dd0]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735910]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735640]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735730]
-0.782 |  DEBUG-INFO: Garbage collection of [AudioData] at [3a33ef0]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3734ec0]
-0.782 |  DEBUG-INFO: Garbage collection of [Shader] at [37aa1f0]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735370]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735280]
-0.782 |  DEBUG-INFO: Garbage collection of [Color] at [37dd578]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735820]
-0.782 |  DEBUG-INFO: Garbage collection of [Vector] at [3735a00]
-0.782 |  DEBUG-INFO: Garbage collection of [AudioData] at [3a34b28]
-0.782 |  DEBUG-INFO: Garbage collection of [AudioData] at [3ad2468]

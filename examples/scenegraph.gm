@@ -1,15 +1,24 @@
-#include "lib/Keyboard.gm"
+include("Array.gm");
+include("lib/Keyboard.gm");
 
+global SCREEN = Vector(800,600,0);
 global KEYS = Map();
+global MOUSE = Vector(0,0,0);
+global FONT = Font("examples/fonts/liberation/LiberationMono-Bold.ttf", 30);
 
-global FRAME = Frame("Scene-Graph Example", 50,50, 640,480, "#336633").toggle().cursor(true);
+global FRAME = Frame("Scene-Graph Example", 50,50, SCREEN.x,SCREEN.y, "#336633").toggle().cursor(true);
 FRAME.onKeyDown = function(evt) { if(evt.key < 255) {KEYS[evt.key] = true;} };
 FRAME.onKeyUp = function(evt) { if(evt.key==KEY_ESCAPE) {FRAME.close();} if(evt.key < 255) {KEYS[evt.key] = false;} };
+FRAME.onMouseMove = function(evt) { MOUSE.x = evt.x; MOUSE.y = evt.y; };
 
-FRAME.root["ship"] = NodeEx(0, 320,240);
-FRAME.root["ship"].pivot.x = 320;
-FRAME.root["ship"].pivot.y = 240;
-FRAME.root["ship"]["image"] = Texture("examples/images/ship1.png", 320,240).center().middle();
+FRAME.root["ui"] = NodeEx(null, 0, 0, SCREEN.x, SCREEN.y);
+FRAME.root["ui"]["debug"] = NodeEx();
+FRAME.root["ui"]["debug"]["mpos"] = Text("Mouse Position", FONT, 20, 20, "#ffffff");
+
+FRAME.root["ship"] = NodeEx(0, SCREEN.x/2,SCREEN.y/2);
+FRAME.root["ship"].pivot.x = SCREEN.x/2;
+FRAME.root["ship"].pivot.y = SCREEN.y/2;
+FRAME.root["ship"]["image"] = Texture("examples/images/ship1.png", SCREEN.x/2,SCREEN.y/2).center().middle();
 
 while(FRAME.render()) {
     //FRAME.root["ship"]["image"].rotation.z += 0.1;

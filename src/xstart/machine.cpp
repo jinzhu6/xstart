@@ -169,7 +169,7 @@ bool MachineRunFile(const char* file) {
 
 	// load, preprocess and save script
 	Log(LOG_DEBUG, "Preprocessing script ...");
-	char* buffer = PreprocessScript(file);
+	char* buffer = PreprocessScript(file, machine);
 	Log(LOG_DEBUG, "Saving temporary script to '%s'...", fileTemp);
 	FileSaveBuffer(fileTemp, buffer, strlen(buffer));
 	free(buffer);
@@ -177,15 +177,18 @@ bool MachineRunFile(const char* file) {
 	// load temporary script file
 	Log(LOG_DEBUG, "Loading temporary script ...");
 	coDword fileSize = 0;
-	FileReadText(fileTemp, 0, &fileSize);
+	//FileReadText(fileTemp, 0, &fileSize);
+	//buffer = (char*)malloc(fileSize);
+	//FileReadText(fileTemp, buffer, 0);
+	FileReadText(file, 0, &fileSize);
 	buffer = (char*)malloc(fileSize);
-	FileReadText(fileTemp, buffer, 0);
+	FileReadText(file, buffer, 0);
 
 	// execute buffer
 	Log(LOG_DEBUG, "Executing ...");
 	//machine->AddSourceCode((char*)buffer, "_xstart.gm.bak");
 	//int errors = machine->CheckSyntax((char*)buffer);
-	int errors = machine->ExecuteString((char*)buffer, NULL, false, "_xstart.gm.bak");
+	int errors = machine->ExecuteString((char*)buffer, NULL, false, file/*"_xstart.gm.bak"*/);
 	
 	// show compile errors
 	if(errors) {
@@ -196,7 +199,7 @@ bool MachineRunFile(const char* file) {
 			char trimmedMessage[2048];
 			strtrim(trimmedMessage, message);
 			if(strlen(trimmedMessage) > 0) {
-				Log(LOG_COMPILE, "%s", trimmedMessage);
+				Log(LOG_COMPILE, "%s(%s)", file, trimmedMessage);
 			}
 		}
 
@@ -214,7 +217,7 @@ bool MachineRunFile(const char* file) {
 		// find timestamp for next thread
 		_nextThreadTS = 2000;  // 2 seconds max to sleep
 		machine->ForEachThread(FindNextTimestampThreadCallback, 0);
-		if(_nextThreadTS > 2) { TimeSleep( (float)(_nextThreadTS) / 1000.0 ); }
+		if(_nextThreadTS > 2) { /*Log(LOG_INFO, "sleeping for %d", _nextThreadTS);*/ TimeSleep( (float)(_nextThreadTS) / 1000.0 ); }
 
 		// execute script till next sleep/yield/exception
 		int num_threads = machine->Execute(deltaTime);

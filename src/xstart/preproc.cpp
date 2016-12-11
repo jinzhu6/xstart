@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <corela.h>
+#include <gm/gmMachine.h>
 
 static char _libPath[1024];
 
@@ -17,7 +18,7 @@ std::string FindFile(const char* file) {
 }
 
 // Fast preprocessor
-char* _PreprocessScript(const char* file, char* out, unsigned long* cursor, unsigned long* maxSize, CONT* definitions, CONT* ifdefStack) {
+char* _PreprocessScript(const char* file, char* out, unsigned long* cursor, unsigned long* maxSize, CONT* definitions, CONT* ifdefStack, gmMachine* machine) {
 	// if no output buffer was given, create one.
 	if(!out) {
 		*cursor = 0;
@@ -44,6 +45,9 @@ char* _PreprocessScript(const char* file, char* out, unsigned long* cursor, unsi
 	}
 	char* buffer = (char*)malloc(fsize);
 	FileReadText(file, buffer, 0);
+
+	// FIX: add source code to script engine
+	machine->AddSourceCode(buffer, file);
 
 	// variables for parsing
 	coDword fileCursor = 0;
@@ -87,7 +91,7 @@ char* _PreprocessScript(const char* file, char* out, unsigned long* cursor, unsi
 				param[i] = '\0';
 
 				// do include ...
-				out = _PreprocessScript(param, out, cursor, maxSize, definitions, ifdefStack);
+				out = _PreprocessScript(param, out, cursor, maxSize, definitions, ifdefStack, machine);
 //				(*cursor)--;  // trim trailing null-byte
 				/*} else if(strncmp(command, "define", 16) == 0) {
 					// parse parameter
@@ -122,7 +126,7 @@ char* _PreprocessScript(const char* file, char* out, unsigned long* cursor, unsi
 	return out;
 }
 
-char* PreprocessScript(const char* file) {
+char* PreprocessScript(const char* file, gmMachine* machine) {
 	CONT* definitions = cnew();
 	CONT* ifdefStack = cnew();
 
@@ -133,7 +137,7 @@ char* PreprocessScript(const char* file) {
 #endif
 
 	unsigned long cursor=0, maxSize=0;
-	char* buffer = _PreprocessScript(file, 0, &cursor, &maxSize, definitions, ifdefStack);
+	char* buffer = _PreprocessScript(file, 0, &cursor, &maxSize, definitions, ifdefStack, machine);
 
 	// TODO!!!
 	while(ccount(definitions)) {
@@ -147,150 +151,3 @@ char* PreprocessScript(const char* file) {
 
 	return buffer;
 }
-
-
-
-
-#if 0
-
-protected Dictionary<string, string> definitions = new Dictionary<string, string>();
-
-public string PreprocessScript(string script, string scriptId="n/a", int _cline = 0) {
-	if (_cline == 0) {
-		_cline = 1;
-		definitions = new Dictionary<string, string>();
-
-	}
-
-	cline = _cline;
-
-	List<bool> ifdefStack = new List<bool>();
-
-
-	cline++;
-	string newScript = "/* ----- ScriptId: " + scriptId + "*/ " + Environment.NewLine;
-	string[] lines = script.Split('\n');
-
-	foreach(string line in lines) {
-		string l = line.Trim();
-		if (l.Length > 0 && l[0] == '#') {
-			string[] pp;
-			pp = l.Split(' ','=');
-			string cmd = pp[0].Trim().ToLower();
-			string par = l.Substring(pp[0].Length).Trim();
-
-			if (cmd == "#include") {
-				if (ifdefStack.Count > 0 && !ifdefStack[ifdefStack.Count - 1]) {
-					continue;
-				}
-
-				if (pp.Length > 1) {
-					if (par[0] == '"') {
-						newScript += PreprocessScript(MediaIO.LoadTextFromFile(par.Split('"')[1]), par.Split('"')[1], cline);
-					} else if (par[0] == '<') {
-						newScript += PreprocessScript(MediaIO.LoadTextFromFile(Client.GetResource(par.Substring(1, par.Length - 2))), par.Substring(1, par.Length - 2), cline);
-					} else {
-						newScript += PreprocessScript(MediaIO.LoadTextFromFile(par), par, cline);
-					}
-					cline++;
-					newScript += "/* ----- ScriptId: " + scriptId + "*/ " + Environment.NewLine;
-				}
-			}
-
-			if (cmd == "#define") {
-				if (ifdefStack.Count > 0 && !ifdefStack[ifdefStack.Count - 1]) {
-					continue;
-				}
-
-				if (definitions.ContainsKey(pp[1].Trim())) {
-					definitions.Remove(pp[1].Trim());
-				}
-
-				if (pp.Length > 1) {
-					if(pp.Length < 3) {
-						definitions.Add(pp[1].Trim(), "1");
-					} else {
-						definitions.Add(pp[1].Trim(),pp[2].Trim());
-					}
-				}
-			}
-
-			if (cmd == "#undef") {
-				if (ifdefStack.Count > 0 && !ifdefStack[ifdefStack.Count - 1]) {
-					continue;
-				}
-
-				if (pp.Length > 1) {
-					if (definitions.ContainsKey(pp[1].Trim())) {
-						definitions.Remove(pp[1].Trim());
-					}
-				}
-			}
-
-			if (cmd == "#ifdef" || cmd == "#if") {
-				if (pp.Length > 1) {
-					if (definitions.ContainsKey(par)) {
-						if (ifdefStack.Count > 0) {
-							if (ifdefStack[ifdefStack.Count - 1]) {
-								ifdefStack.Add(true);
-							} else {
-								ifdefStack.Add(false);
-							}
-						} else {
-							ifdefStack.Add(true);
-						}
-					} else {
-						ifdefStack.Add(false);
-					}
-				}
-			}
-
-			if (cmd == "#ifndef" || cmd == "#ifnot") {
-				if (pp.Length > 1) {
-					if (!definitions.ContainsKey(par)) {
-						if (ifdefStack.Count > 0) {
-							if (ifdefStack[ifdefStack.Count - 1]) {
-								ifdefStack.Add(true);
-							} else {
-								ifdefStack.Add(false);
-							}
-						} else {
-							ifdefStack.Add(true);
-						}
-					} else {
-						ifdefStack.Add(false);
-					}
-				}
-			}
-
-			if (cmd == "#else") {
-				if (ifdefStack.Count > 1) {
-					if (ifdefStack[ifdefStack.Count - 2]) {
-						ifdefStack[ifdefStack.Count - 1] = !ifdefStack[ifdefStack.Count - 1];
-					}
-				} else if(ifdefStack.Count > 0) {
-					ifdefStack[ifdefStack.Count - 1] = !ifdefStack[ifdefStack.Count - 1];
-				}
-			}
-
-			if (cmd == "#endif") {
-				ifdefStack.RemoveAt(ifdefStack.Count - 1);
-			}
-		} else {
-			string lineHead = ""; // "/* " + cline.ToString() + " */";
-			if (ifdefStack.Count == 0) {
-				cline++;
-				newScript += lineHead + line.TrimEnd('\r', '\n') + Environment.NewLine;
-			} else if (ifdefStack[ifdefStack.Count - 1]) {
-				cline++;
-				newScript += lineHead + line.TrimEnd('\r', '\n') + Environment.NewLine;
-			}
-		}
-	}
-
-	return newScript;
-}
-}
-
-
-#endif

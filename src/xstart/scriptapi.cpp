@@ -486,6 +486,59 @@ int GM_CDECL Script_Markdown(gmThread* a_thread) {
 }
 
 
+#include <gm/gmStreamBuffer.h>
+int GM_CDECL Script_Include(gmThread* a_thread) {
+	GM_CHECK_STRING_PARAM(file, 0);
+	
+	// find library file
+	std::string libFile = FindFile(file);
+
+	// load file content in a buffer
+	coDword fileSize = 0;
+	FileReadText(libFile.c_str(), 0, &fileSize);
+	char* buffer = (char*)malloc(fileSize);
+	FileReadText(libFile.c_str(), buffer, 0);
+
+	// check source for errors
+	int errors = machine->CheckSyntax((char*)buffer);
+
+	// show compile errors
+	if(errors) {
+		bool first = true;
+		const char* message;
+
+		while((message = machine->GetLog().GetEntry(first))) {
+			char trimmedMessage[2048];
+			strtrim(trimmedMessage, message);
+			if(strlen(trimmedMessage) > 0) {
+				Log(LOG_COMPILE, "%s(%s)", libFile.c_str(), trimmedMessage);
+			}
+		}
+
+		machine->GetLog().Reset();
+
+		free(buffer);
+		
+		//GM_EXCEPTION_MSG("file not found");
+		//return GM_EXCEPTION;
+		exit(-1);
+		return GM_EXCEPTION;
+	}
+
+	// add source to machine
+	gmStreamBufferDynamic *stream = new gmStreamBufferDynamic();
+	machine->CompileStringToLib(buffer, *stream);
+	machine->ExecuteLib(*stream, 0, true, file, 0);
+	machine->AddSourceCode(buffer, file);
+	delete stream;
+
+	// free buffer
+	free(buffer);
+
+	return GM_OK;
+}
+
+
 /*int GM_CDECL Script_Format(gmThread* a_thread) {
 
 }*/
@@ -524,6 +577,7 @@ void RegisterCommonAPI() {
 	MachineRegisterFunction("debug", Script_EnableConsoleDebug, "debug({int} level)", "Enable/Disable console debug messages.");
 	MachineRegisterFunction("colors", Script_EnableConsoleColors, "colors({int} enable)", "Enable/Disable console colors.");
 	MachineRegisterFunction("arg", Script_GetArguments, "{string} arg({int} number)", "Get command-line arguments.");
+	MachineRegisterFunction("include", Script_Include, "include({string} file)", "Includes a script file.");
 #ifdef _WIN32
 	// TODO: implement at least sound() and askFile() for linux too.
 	MachineRegisterFunction("sound", Script_PlaySound, "sound({string} file)", "Plays a sound file. (This is a simple and inefficient way to play a sound file)");
