@@ -243,9 +243,7 @@ bool Script_Object_Find(ScriptObject* o) {
 }
 
 void Script_Objects_Print() {
-	if(!SCRIPT_OBJECTS) {
-		return;
-	}
+	if(!SCRIPT_OBJECTS) { return; }
 
 	if(ccount(SCRIPT_OBJECTS) == 0) {
 		Log(LOG_DEBUG, "Final garbage-collection successfull, no ScriptObjects remaining.");

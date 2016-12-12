@@ -25,6 +25,7 @@ OutputBaseFilename={#SETUP_FILE}
 SourceDir=..
 ChangesAssociations=yes
 Compression=lzma2/normal
+LicenseFile=COPYING
 
 [Files]
 Source: *; Excludes: ".git,.gitignore,build,src,extras,_extras,scripts,build*.bat,make.bat,CMakeLists.txt,_OLD,_SETUP,Debug,Release,MinSizeRel,*.bak,video.m*,fonts"; DestDir: {app}; Flags: recursesubdirs;

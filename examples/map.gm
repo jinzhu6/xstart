@@ -6,6 +6,4 @@ m.set("test", "Test!");
 m.set("number", 1.23);
 m.set("a", null);
 
-foreach(e in m) {
-	println(e + "=" + m[e]);
-}
+foreach(e in m) println(e + "=" + m[e]);

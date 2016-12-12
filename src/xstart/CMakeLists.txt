@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/xstart ${CMAKE_SOURCE_DIR}/src/corela ${CMAKE_SOURCE_DIR}/src/freetype ${CMAKE_SOURCE_DIR}/src/cairo ${CMAKE_SOURCE_DIR}/src/opencv2 ${CMAKE_SOURCE_DIR}/src/libnova ${CMAKE_SOURCE_DIR}/src/midifile ${CMAKE_SOURCE_DIR}/src/mongoose ${CMAKE_SOURCE_DIR}/src/markdown)
+include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src/xstart ${CMAKE_SOURCE_DIR}/src/corela ${CMAKE_SOURCE_DIR}/src/freetype ${CMAKE_SOURCE_DIR}/src/cairo ${CMAKE_SOURCE_DIR}/src/opencv2 ${CMAKE_SOURCE_DIR}/src/libnova ${CMAKE_SOURCE_DIR}/src/midifile ${CMAKE_SOURCE_DIR}/src/mongoose ${CMAKE_SOURCE_DIR}/src/markdown ${CMAKE_SOURCE_DIR}/src/astyle)
 
 if(${CMAKE_GENERATOR} MATCHES "Visual Studio")
     set(CMAKE_CXX_FLAGS "/D _USE_32BIT_TIME_T")
@@ -21,7 +21,7 @@ add_executable(xstart icon.ico ${FILE_LIST_CPP} ${FILE_LIST_C} ${FILE_LIST_H} ${
 #include_directories(${OPENGL_INCLUDE_DIRS})
 #target_link_libraries(xstart gmscript expat freetype pixman cairo zlib ssockets opencv2 corela ogg vorbis astro soundy ${OPENGL_LIBRARIES})
 #target_link_libraries(xstart gmscript expat freetype cairo zlib ssockets opencv2 pixman corela midifile portaudio libnodave soundtouch libsoxr mongoose)
-target_link_libraries(xstart gmscript expat freetype cairo zlib ssockets opencv2 pixman corela midifile portaudio soundtouch libsoxr mongoose markdown)
+target_link_libraries(xstart gmscript expat freetype cairo zlib ssockets opencv2 pixman corela midifile portaudio soundtouch libsoxr mongoose markdown astyle)
 
 if(WIN32)
     target_link_libraries(xstart wsock32 ws2_32 winmm dsound ogg vorbis soundy) # libnova

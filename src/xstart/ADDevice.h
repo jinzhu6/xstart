@@ -21,7 +21,7 @@ typedef int (*fn_ad_close) (int adh);
 typedef int (*fn_ad_discrete_in) (int adh, int cha, int range, unsigned int* data);
 typedef int (*fn_ad_set_line_direction) (int adh, int cha, unsigned int mask);
 typedef int (*fn_ad_find_best_range) (int adh, int cha, int* range, double min, double max);
-
+typedef int (*fn_ad_sample_to_float) (int adh, int cha, int range, int data, float *f);
 
 class ADDevice : public ScriptObject {
 public:
@@ -44,6 +44,7 @@ public:
 			ad_discrete_in = (fn_ad_discrete_in)DLLGetFunctionPtr("libad4.dll", "ad_discrete_in");
 			ad_set_line_direction = (fn_ad_set_line_direction)DLLGetFunctionPtr("libad4.dll", "ad_set_line_direction");
 			ad_find_best_range = (fn_ad_find_best_range)DLLGetFunctionPtr("libad4.dll", "ad_find_best_range");
+			ad_sample_to_float = (fn_ad_sample_to_float)DLLGetFunctionPtr("libad4.dll", "ad_sample_to_float");
 		}
 
 		BindMember("handle", &adh, TYPE_INT, 0, "{int} handle", "Internal libAD device handle, if the device is not connected the handle is -1.");
@@ -58,6 +59,7 @@ public:
 		BindFunction("setAnalogVolt", (SCRIPT_FUNCTION)&ADDevice::gm_setAnalogVolt, "[this] setAnalogVolt({int} channel, {float} volt)", "Sets the voltage of the given channel.");
 		BindFunction("getDigitalBits", (SCRIPT_FUNCTION)&ADDevice::gm_getDigitalBits, "{int} getDigitalBits({int} channel)", "Get the bitmask of the given digital channel.");
 		BindFunction("setDigitalBits", (SCRIPT_FUNCTION)&ADDevice::gm_setDigitalBits, "[this] setDigitalBits({int} channel, {int} bits)", "Set the bitmask of the given digital channel.");
+		BindFunction("setLineDirection", (SCRIPT_FUNCTION)&ADDevice::gm_setLineDirection);
 	}
 
 	~ADDevice() {
@@ -114,6 +116,17 @@ public:
 		return ReturnThis(a_thread);
 	}
 
+	int setLineDirection(int cha, int mask) {
+		ad_set_line_direction(adh, cha, mask);
+		return 1;
+	}
+	int gm_setLineDirection(gmThread* a_thread) {
+		GM_CHECK_INT_PARAM(cha, 0);
+		GM_CHECK_INT_PARAM(mask, 1);
+		setLineDirection(cha, mask);
+		return GM_OK;
+	}
+
 	int findAnalogRange(int cha, double volt) {
 		int rc, range;
 		rc = ad_find_best_range(adh, AD_CHA_TYPE_ANALOG_IN | cha, &range, -volt, volt);
@@ -136,19 +149,20 @@ public:
 	}
 	int gm_getAnalogValue(gmThread* a_thread) {
 		GM_CHECK_INT_PARAM(cha, 0);
-		GM_CHECK_INT_PARAM(range, 0);
+		GM_CHECK_INT_PARAM(range, 1);
 		a_thread->PushInt( getAnalogValue(cha, range) );
 		return GM_OK;
 	}
 
 	float getAnalogVolt(int cha, int range) {
 		float data;
-		ad_analog_in(adh, cha, range, &data);
+		ad_set_line_direction(adh, cha, 0x00);
+		ad_analog_in(adh, cha | AD_CHA_TYPE_ANALOG_IN, range, &data);
 		return data;
 	}
 	int gm_getAnalogVolt(gmThread* a_thread) {
 		GM_CHECK_INT_PARAM(cha, 0);
-		GM_CHECK_INT_PARAM(range, 0);
+		GM_CHECK_INT_PARAM(range, 1);
 		a_thread->PushFloat( getAnalogVolt(cha, range) );
 		return GM_OK;
 	}
@@ -200,6 +214,7 @@ private:
 	fn_ad_discrete_in ad_discrete_in;
 	fn_ad_set_line_direction ad_set_line_direction;
 	fn_ad_find_best_range ad_find_best_range;
+	fn_ad_sample_to_float ad_sample_to_float;
 };
 
 

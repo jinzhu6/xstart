@@ -487,6 +487,11 @@ int GM_CDECL Script_Markdown(gmThread* a_thread) {
 
 
 #include <gm/gmStreamBuffer.h>
+typedef void(__stdcall* fpError)(int errorNumber, const char* errorMessage);
+typedef char* (__stdcall* fpAlloc)(unsigned long memoryNeeded);
+char* __stdcall AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
+char* __stdcall ASMemoryAlloc(unsigned long memoryNeeded);
+void  __stdcall ASErrorHandler(int errorNumber, const char* errorMessage);
 int GM_CDECL Script_Include(gmThread* a_thread) {
 	GM_CHECK_STRING_PARAM(file, 0);
 	
@@ -498,6 +503,12 @@ int GM_CDECL Script_Include(gmThread* a_thread) {
 	FileReadText(libFile.c_str(), 0, &fileSize);
 	char* buffer = (char*)malloc(fileSize);
 	FileReadText(libFile.c_str(), buffer, 0);
+
+	// use AStyle on buffer
+	const char* options = "--add-one-line-brackets --keep-one-line-blocks --keep-one-line-statements";
+	char* textOut = AStyleMain(buffer, options, ASErrorHandler, ASMemoryAlloc);
+	free(buffer);
+	buffer = textOut;
 
 	// check source for errors
 	int errors = machine->CheckSyntax((char*)buffer);
@@ -511,13 +522,14 @@ int GM_CDECL Script_Include(gmThread* a_thread) {
 			char trimmedMessage[2048];
 			strtrim(trimmedMessage, message);
 			if(strlen(trimmedMessage) > 0) {
-				Log(LOG_COMPILE, "%s(%s)", libFile.c_str(), trimmedMessage);
+				Log(LOG_COMPILE, "%s:%s", libFile.c_str(), trimmedMessage);
 			}
 		}
 
 		machine->GetLog().Reset();
 
-		free(buffer);
+		//free(buffer);
+		delete buffer;
 		
 		//GM_EXCEPTION_MSG("file not found");
 		//return GM_EXCEPTION;
@@ -533,7 +545,8 @@ int GM_CDECL Script_Include(gmThread* a_thread) {
 	delete stream;
 
 	// free buffer
-	free(buffer);
+	//free(buffer);
+	delete buffer;
 
 	return GM_OK;
 }

@@ -44,7 +44,8 @@ command.is.filter.0.*.gm=1
 command.quiet.0.*.gm=1
 command.shortcut.0.*.gm=F9
 command.save.before.0.*.gm=1
-command.0.*.gm=$(SciteDefaultHome)\..\bin\format.bat $(FileNameExt)
+#command.0.*.gm=$(SciteDefaultHome)\..\bin\format.bat $(FileNameExt)
+command.0.*.gm=$(SciteDefaultHome)\AStyle --style=attach --add-one-line-brackets --keep-one-line-blocks --keep-one-line-statements $(FileNameExt)
 
 command.name.1.*.gm=Package
 command.is.filter.1.*.gm=0

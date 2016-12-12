@@ -6,6 +6,11 @@
 #include <gm/gmMathLib.h>  // some extra functionality on math
 #include "ScriptObject.h"
 #include "machine.h"
+//#include "astyle/astyle_main.h"
+
+typedef void (__stdcall* fpError)(int errorNumber, const char* errorMessage);
+typedef char* (__stdcall* fpAlloc)(unsigned long memoryNeeded);
+char* __stdcall AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
 
 typedef struct CLASS_CONSTRUCTOR {
 	std::string typeName;
@@ -153,12 +158,22 @@ bool FindNextTimestampThreadCallback(gmThread* thread, void* context) {
 
 }
 
+// Allocate memory for the Artistic Style formatter.
+char* __stdcall ASMemoryAlloc(unsigned long memoryNeeded) {
+	char* buffer = new char[memoryNeeded];
+	return buffer;
+}
+void  __stdcall ASErrorHandler(int errorNumber, const char* errorMessage) {
+	Log(LOG_COMPILE, "astyle error %d:%s", errorNumber, errorMessage);
+}
+
 /******************************************************************************
 * MachineRunFile
 *******************************************************************************/
 bool MachineRunFile(const char* file) {
 	// temporary file
 	char fileTemp[4096];
+
 #ifdef _WIN32
 	char* appdata = getenv("APPDATA");
 	sprintf(fileTemp, "%s\\%s", appdata, "xstart.gm");
@@ -184,6 +199,12 @@ bool MachineRunFile(const char* file) {
 	buffer = (char*)malloc(fileSize);
 	FileReadText(file, buffer, 0);
 
+	// use AStyle on buffer
+	const char* options = "--add-one-line-brackets --keep-one-line-blocks --keep-one-line-statements";
+	char* textOut = AStyleMain(buffer, options, ASErrorHandler, ASMemoryAlloc);
+	free(buffer);
+	buffer = textOut;
+
 	// execute buffer
 	Log(LOG_DEBUG, "Executing ...");
 	//machine->AddSourceCode((char*)buffer, "_xstart.gm.bak");
@@ -199,13 +220,14 @@ bool MachineRunFile(const char* file) {
 			char trimmedMessage[2048];
 			strtrim(trimmedMessage, message);
 			if(strlen(trimmedMessage) > 0) {
-				Log(LOG_COMPILE, "%s(%s)", file, trimmedMessage);
+				Log(LOG_COMPILE, "%s:%s", file, trimmedMessage);
 			}
 		}
 
 		machine->GetLog().Reset();
 
-		free(buffer);
+		//free(buffer);
+		delete buffer;
 		return false;
 	}
 
@@ -257,7 +279,8 @@ bool MachineRunFile(const char* file) {
 	}
 
 	// cleanup
-	free(buffer);
+	//free(buffer);
+	delete buffer;
 	return true;
 }
 
