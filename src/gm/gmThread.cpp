@@ -1309,7 +1309,7 @@ bool gmThread::Touch(int a_extra)
 
 void gmThread::LogCallStack()
 {
-  m_machine->GetLog().LogEntry(GM_NL"callstack..");
+  m_machine->GetLog().LogEntry(GM_NL"Callstack:");
   gmStackFrame * frame = m_frame;
   int base = m_base;
   const gmuint8 * ip = m_instruction;

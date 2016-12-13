@@ -2,8 +2,9 @@
 #include <strtrim.h>
 #include <gm/gmThread.h>
 #include <gm/gmMachine.h>
-#include <gm/gmStringLib.h>  // some extra functionality on strings
-#include <gm/gmMathLib.h>  // some extra functionality on math
+#include <gm/gmStringLib.h>
+#include <gm/gmMathLib.h>
+#include <gm/gmDebug.h>
 #include "ScriptObject.h"
 #include "machine.h"
 //#include "astyle/astyle_main.h"
@@ -113,6 +114,7 @@ void MachineCreate(bool debug) {
 	// bind gamemonkeys default string library
 	gmBindStringLib(machine);
 	gmBindMathLib(machine);
+	gmBindDebugLib(machine);
 
 	// create object type (ScriptObject)
 	GM_TYPE_OBJECT = machine->CreateUserType("Object");

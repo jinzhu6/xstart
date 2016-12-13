@@ -88,6 +88,8 @@ public:
 	Handler() : ScriptObject() {
 		id = "Handler";
 		help = "MAY NOT BE OF USE IN SCRIPTS. Base class for all [Node] objects that receive events of type [Event].";
+		evt = new Event();
+		BindMember("event", &evt, TYPE_OBJECT, 0, "[Event] event", "Last occoured event.");
 		isEventHandler = true;
 	}
 
@@ -101,7 +103,8 @@ public:
 
 public:
 
-	List* events;
+	//List* events;
+	Event* evt;
 };
 
 
@@ -113,9 +116,11 @@ static int OnEventGlobal(FRAME_EVENT* fe) {
 		return 0;
 	}
 
-	Event* e = new Event();
-	e->userObject = machine->AllocUserObject(e, GM_TYPE_OBJECT);
-	machine->AddCPPOwnedGMObject(e->userObject);
+//	Event* e = new Event();
+	Event* e = receiver->evt;
+
+//	e->userObject = machine->AllocUserObject(e, GM_TYPE_OBJECT);
+//	machine->AddCPPOwnedGMObject(e->userObject);
 
 	e->x = (float)fe->x;
 	e->y = (float)fe->y;
@@ -168,7 +173,7 @@ static int OnEventGlobal(FRAME_EVENT* fe) {
 		break;
 	}
 
-	machine->RemoveCPPOwnedGMObject(e->userObject);
+//	machine->RemoveCPPOwnedGMObject(e->userObject);
 
 	return 0;
 }

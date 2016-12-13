@@ -251,8 +251,8 @@ public:
 
 	~AudioFilter() {
 		if(hf) { fclose(hf); hf =0; }
-//		delete source;
-		delete history;
+		SCRIPT_OBJECT_DELETE(source);
+		SCRIPT_OBJECT_DELETE(history);
 	}
 
 	int Initialize(gmThread* a_thread) {
@@ -561,6 +561,7 @@ public:
 		id = "AudioDevice";
 		ctor = "({int} sampleRate, {int} channels, {int} bufferSize, {int} deviceInIndex, {int} deviceOutIndex)";
 		help = "Audio device for recording, playing and processing audio.";
+		deferedGC = false;
 
 		Pa_Initialize();
 		dataIn = new AudioData();
@@ -585,8 +586,8 @@ public:
 
 	~AudioDevice() {
 		close();
-		delete(dataIn);
-		delete(dataOut);
+		SCRIPT_OBJECT_DELETE(dataIn);
+		SCRIPT_OBJECT_DELETE(dataOut);
 		Pa_Terminate();
 	}
 
@@ -600,7 +601,9 @@ public:
 		Log(LOG_INFO, "Closing Audio device ...");
 		WAIT_FOR_SOUNDCALLBACK();
 		for (std::list<AudioData*>::iterator i = this->buffers.begin(); i != this->buffers.end(); i++) {
-			this->stop((AudioData*)*i);
+			// check if object is not GC'ed
+			if(Script_Object_Find(*i))
+				this->stop((AudioData*)*i);
 		}
 		while (this->buffers.size() > 0) {
 			this->stop(this->buffers.front());

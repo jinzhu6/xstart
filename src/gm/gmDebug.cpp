@@ -741,7 +741,7 @@ static gmFunctionEntry s_debugLib[] =
     \brief debug will cause a the debugger to break at this point while running.
   */
   
-  {"debug", gmdDebug},
+  {"break", gmdDebug},
 };
 
 

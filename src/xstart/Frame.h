@@ -17,6 +17,7 @@ public:
 		id = "Frame";
 		help = "Window frame for rendering output. The frame uses a scene-graph to draw its content, see @root member.";
 		ctor = "({string} id, {int} pos_x, {int} pos_y, {int} width, {int} height, (optional) {string} color)";
+		deferedGC = true;
 
 		internalHandle = 0;
 		width = 0.0;

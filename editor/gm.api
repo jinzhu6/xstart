@@ -160,6 +160,7 @@ setDimensions(int width, int height) : this
 id : string
 _key : string
 _table : table
+event : Event
 root : Node
 width : float
 height : float
@@ -183,6 +184,7 @@ string() : string
 id : string
 _key : string
 _table : table
+event : Event
 Node((optional) string id, (optional) float pos_x, (optional) float pos_y, (optional) float width, (optional) float height)
 string() : string
 update() : this
@@ -199,6 +201,7 @@ bottom() : this
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -229,6 +232,7 @@ bottom() : this
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -272,6 +276,7 @@ _center()
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -331,6 +336,7 @@ drawText(Font font, string text, int x, int y, string solidColor, (optional) int
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -376,6 +382,7 @@ _center()
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -422,6 +429,7 @@ setNormal(int index) : this
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -464,6 +472,7 @@ setNormal(int index) : this
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -508,6 +517,7 @@ setInt(int n) : this
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -549,6 +559,7 @@ _center()
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -587,6 +598,7 @@ getFrame(int index) : Texture
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -886,6 +898,7 @@ update() : this
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -993,6 +1006,7 @@ snapshotBitmap((optional)Bitmap dst) : Bitmap
 id : string
 _key : string
 _table : table
+event : Event
 visible : int
 position : Vector
 pivot : Vector
@@ -1012,3 +1026,5 @@ useShader : int
 color : Color
 clearColor : string
 opacity : float
+0.188 |  WARNING: Remaining ScriptObject instances:
+0.188 |  WARNING:  * [16edaa8] Frame

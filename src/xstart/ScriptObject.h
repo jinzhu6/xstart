@@ -60,6 +60,7 @@ typedef int (ScriptObject::*SCRIPT_FUNCTION)(gmThread*);
 // ************************************************************************
 extern std::string FindFile(const char* file);
 #define _FILE(file) FindFile(file).c_str()
+#define SCRIPT_OBJECT_DELETE(x) {if(Script_Object_Find(x)){delete x;}x=0;}
 
 
 typedef enum SCRIPT_FUNCTION_PARAMS {
@@ -111,6 +112,7 @@ public:
 		isRenderable = false;
 		isEventHandler = false;
 		cppOwned = false;
+		deferedGC = false;
 
 		table = machine->AllocTableObject();
 		machine->AddCPPOwnedGMObject(table);
@@ -503,6 +505,7 @@ public:
 	bool isRenderable;    // to detect scene nodes
 	bool isEventHandler;  // to detect event handler nodes
 	bool cppOwned;
+	int deferedGC;
 	std::string id;   // id is set to class name initially but can be changed in script
 	std::string _key;
 	std::string help;

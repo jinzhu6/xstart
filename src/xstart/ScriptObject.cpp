@@ -155,6 +155,10 @@ void GM_CDECL Script_Object_Destruct(gmMachine* a_machine, gmUserObject* a_objec
 			Log(LOG_ERROR, "GC failed, object not or no longer known: [%s] at [%x]", object->id.c_str(), object);
 			return;
 		}
+		if (object->deferedGC) {
+			Log(LOG_DEBUG, "GC of object [%s] at [%x] is defered", object->id.c_str(), object);
+			return;
+		}
 		Log(LOG_DEBUG, "Garbage collection of [%s] at [%x]", object->id.c_str(), object);
 		delete object;
 	}
@@ -257,6 +261,7 @@ void Script_Objects_Print() {
 		ScriptObject* o = (ScriptObject*)cidata(ci);
 		Log(LOG_WARNING, " * [%x] %s", o, o->id.c_str());
 		ci = cinext(ci);
+		delete o;
 	}
 }
 
