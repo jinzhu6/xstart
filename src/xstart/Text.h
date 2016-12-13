@@ -25,13 +25,13 @@ public:
 		password = 0;
 		passwordLength = 0;
 
-		BindMember("font", &font, TYPE_OBJECT);
-		BindMember("text", &text, TYPE_STRING);
-		BindMember("color", &color, TYPE_STRING);
-		BindMember("outline", &outline, TYPE_INT);
-		BindMember("password", &password, TYPE_INT);
-		BindMember("passwordLength", &passwordLength, TYPE_INT);
-		BindMember("outlineColor", &outlineColor, TYPE_STRING);
+		BindMember("font", &font, TYPE_OBJECT, 0, "[Font] font", "Font used for rendering the text.");
+		BindMember("text", &text, TYPE_STRING, 0, "{string} text", "Text to render. Change this value to update the rendered text.");
+		BindMember("color", &color, TYPE_STRING, 0, "{string} color", "Color used to fill the rendered text.");
+		BindMember("outline", &outline, TYPE_INT, 0, "{int} outline", "Outline size.");
+		BindMember("outlineColor", &outlineColor, TYPE_STRING, 0, "{string} outlineColor", "Color used to render the outline.");
+		BindMember("password", &password, TYPE_INT, 0, "{int} password", "Text is a password, characters will not render.");
+		BindMember("passwordLength", &passwordLength, TYPE_INT, 0, "{int} passwordLength");
 	}
 
 	virtual int Initialize(gmThread* a_thread) {

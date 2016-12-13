@@ -1053,7 +1053,7 @@ bool gmCodeGenPrivate::GenExprOpPreIncDec(const gmCodeTreeNode * a_node, gmByteC
   }
   else
   {
-    if(m_log) m_log->LogEntry("illegal l-value for '++/--' operator, line %d", a_node->m_lineNumber);
+    if(m_log) m_log->LogEntry("%d: illegal l-value for '++/--' operator", a_node->m_lineNumber);
     return false;
   }
 
@@ -1314,7 +1314,7 @@ bool gmCodeGenPrivate::GenExprOpAssign(const gmCodeTreeNode * a_node, gmByteCode
   }
   else
   {
-    if(m_log) m_log->LogEntry("error (%d) illegal l-value for '=' operator", a_node->m_lineNumber);
+    if(m_log) m_log->LogEntry("%d: illegal l-value for '=' operator", a_node->m_lineNumber);
     return false;
   }
 

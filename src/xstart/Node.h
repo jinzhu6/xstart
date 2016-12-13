@@ -36,13 +36,13 @@ public:
 		BindMember("rotation", &rotation, TYPE_OBJECT, 0, "[Vector] rotation", "Rotation around the @center .");
 		BindMember("scaling", &scaling, TYPE_OBJECT, 0, "[Vector] scaling", "Scaling of the node.");
 		BindMember("scale", &scaling->z, TYPE_FLOAT, 0, "{float} scale", "Alias to @scaling .z");
+		BindMember("rotate", &rotation->z, TYPE_FLOAT, 0, "{float} rotate", "Alias to @rotation .z");
 		BindMember("x", &position->x, TYPE_FLOAT, 0, "{float} x", "Alias to @position .x");
 		BindMember("y", &position->y, TYPE_FLOAT, 0, "{float} y", "Alias to @position .y");
 		BindMember("z", &position->z, TYPE_FLOAT, 0, "{float} z", "Alias to @position .z");
 		BindMember("width", &dimension->x,  TYPE_FLOAT, 0, "{float} width", "Alias to @dimension .x");
 		BindMember("height", &dimension->y, TYPE_FLOAT, 0, "{float} height", "Alias to @dimension .y");
 		BindMember("depth", &dimension->z,  TYPE_FLOAT, 0, "{float} depth", "Alias to @dimension .z");
-		BindMember("rotate", &rotation->z, TYPE_FLOAT, 0, "{float} rotate", "Alias to @rotation .z");
 
 		BindFunction("update", (SCRIPT_FUNCTION)&Node::gm_update, "[this] update()", "Force this node to update its contents and states. May be needed if the node is changed by the script after initialization.");
 		BindFunction("render", (SCRIPT_FUNCTION)&Node::gm_render, "[this] render()", "Renders the node and all its childs inside the selected frame.");
@@ -143,26 +143,18 @@ public:
 		GLfloat mx[16];
 		glGetFloatv(GL_MODELVIEW_MATRIX, mx);
 
-		if(!this->visible) {
-			return false;
-		}
-
-		bool hit = this->hit(e->x - mx[12], e->y - mx[13]);
-		//bool hitPrev = this->hit(e->prevX - mx[12], e->prevY - mx[13]);
-
-		if (hit && !hitPrev) e->id = "MouseEnter";
-		if (!hit && hitPrev) e->id = "MouseLeave";
+		if(!this->visible) { return false; }
 
 		if(e->id == "MouseMove" || e->id == "MouseDown" || e->id == "MouseUp") {
-			if(hit) {
-				if(::HandleEvent(e, this)) { return true; }
-			}
+			bool hit = this->hit(e->x - mx[12], e->y - mx[13]);
+			if (e->id == "MouseMove" && hit && !hitPrev) e->id = "MouseEnter";
+			if (e->id == "MouseMove" && !hit && hitPrev) e->id = "MouseLeave";
+			hitPrev = hit;
+			if(hit) { if(::HandleEvent(e, this)) { return true; } }
 		} else {
 			if(::HandleEvent(e, this)) { return true; }
 		}
 
-		hitPrev = hit;
-		
 		return HandleEventChilds(e);
 	}
 
@@ -177,7 +169,7 @@ public:
 	}
 
 	virtual void update() {
-		//RaiseEvent(EVENT_UPDATE, this);
+		RaiseEvent(EVENT_UPDATE, this);
 		validate();
 	}
 	int gm_update(gmThread* a_thread) {
@@ -194,7 +186,7 @@ public:
 	}
 
 	virtual void render() {
-		//RaiseEvent(EVENT_RENDER, this);
+		RaiseEvent(EVENT_RENDER, this);
 		RenderChilds();
 	}
 	int gm_render(gmThread* a_thread) {

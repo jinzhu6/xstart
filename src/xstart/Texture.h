@@ -88,6 +88,7 @@ public:
 	}
 
 	void render() {
+		RaiseEvent(EVENT_RENDER, this);
 		if(texture) {
 			glColor4f(1.0,1.0,1.0,opacity);
 			//RenderTextureQuad(texture, position->x, position->y, pivot->x * scaling->x * scaling->z, pivot->y * scaling->y * scaling->z, dimension->x * scaling->x * scaling->z, dimension->y * scaling->y * scaling->z, 0, rotation->z, 1.0, opacity);
