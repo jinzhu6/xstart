@@ -114,8 +114,8 @@
 	// define utf-16 bit text for the platform
 	typedef unsigned short utf16_t;
 	// define pointers to callback error handler and memory allocation
-	typedef void (__stdcall* fpError)(int errorNumber, const char* errorMessage);
-	typedef char* (__stdcall* fpAlloc)(unsigned long memoryNeeded);
+	typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
+	typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
 
 #endif  // #ifdef ASTYLE_LIB
 

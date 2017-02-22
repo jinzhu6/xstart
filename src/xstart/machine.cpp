@@ -9,9 +9,11 @@
 #include "machine.h"
 //#include "astyle/astyle_main.h"
 
-typedef void (__stdcall* fpError)(int errorNumber, const char* errorMessage);
-typedef char* (__stdcall* fpAlloc)(unsigned long memoryNeeded);
-char* __stdcall AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
+#define STDCALL
+
+typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
+typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
+char* STDCALL AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
 
 typedef struct CLASS_CONSTRUCTOR {
 	std::string typeName;
@@ -161,11 +163,11 @@ bool FindNextTimestampThreadCallback(gmThread* thread, void* context) {
 }
 
 // Allocate memory for the Artistic Style formatter.
-char* __stdcall ASMemoryAlloc(unsigned long memoryNeeded) {
+char* STDCALL ASMemoryAlloc(unsigned long memoryNeeded) {
 	char* buffer = new char[memoryNeeded];
 	return buffer;
 }
-void  __stdcall ASErrorHandler(int errorNumber, const char* errorMessage) {
+void  STDCALL ASErrorHandler(int errorNumber, const char* errorMessage) {
 	Log(LOG_COMPILE, "astyle error %d:%s", errorNumber, errorMessage);
 }
 

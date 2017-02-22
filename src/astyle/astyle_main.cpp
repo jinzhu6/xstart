@@ -3554,7 +3554,7 @@ using namespace astyle;
  *                                                            /EXPORT:AStyleGetVersion=_AStyleGetVersion@0
  * No /EXPORT is required for x64
  */
-char* __stdcall AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc)
+char* STDCALL AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc)
 {
 	if (fpErrorHandler == NULL)         // cannot display a message if no error handler
 		return NULL;
