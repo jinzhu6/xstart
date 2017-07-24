@@ -487,10 +487,10 @@ int GM_CDECL Script_Markdown(gmThread* a_thread) {
 
 
 #include <gm/gmStreamBuffer.h>
-#define STDCALL
+/*#define STDCALL
 typedef void(STDCALL* fpError)(int errorNumber, const char* errorMessage);
 typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
-char* STDCALL AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
+char* STDCALL AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);*/
 char* STDCALL ASMemoryAlloc(unsigned long memoryNeeded);
 void  STDCALL ASErrorHandler(int errorNumber, const char* errorMessage);
 int GM_CDECL Script_Include(gmThread* a_thread) {

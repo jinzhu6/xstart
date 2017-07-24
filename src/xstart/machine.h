@@ -4,6 +4,7 @@
 #include <gm/gmThread.h>
 #include <gm/gmMachine.h>
 #include <gm/gmCall.h>
+#include "astyle/astyle_main.h"
 
 extern gmType GM_TYPE_OBJECT;  // script object types (will be set by GM)
 

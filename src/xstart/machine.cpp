@@ -7,13 +7,20 @@
 #include <gm/gmDebug.h>
 #include "ScriptObject.h"
 #include "machine.h"
-//#include "astyle/astyle_main.h"
 
+/*
+#ifdef _WIN32
+#ifndef STDCALL
+#define STDCALL __stdcall
+#else
 #define STDCALL
+#endif
+#endif
 
 typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
 typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
 char* STDCALL AStyleMain(const char* pSourceIn, const char* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
+*/
 
 typedef struct CLASS_CONSTRUCTOR {
 	std::string typeName;
