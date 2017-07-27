@@ -1,20 +1,14 @@
-#include "lib/Keyboard.gm"
+include("lib/Keyboard.gm");
 
 global KEYS = Map();
 global FRAME = Frame("Game Example", 50, 50, 640, 480, "#000030").toggle().cursor(true);
 FRAME.onKeyDown = function(evt) { if(evt.key < 255) {KEYS[evt.key] = true;} };
 FRAME.onKeyUp = function(evt) { if(evt.key==KEY_ESCAPE) {FRAME.close();} if(evt.key < 255) {KEYS[evt.key] = false;} };
-FRAME.root["ship"] = Texture("images/ship1.png", 320, 240);
-FRAME.root["ship"].pivot = Vector(FRAME.root["ship"].width/2, FRAME.root["ship"].height/2);
+//FRAME.root["ship"] = Texture("images/ship1.png", 320, 240);
+//FRAME.root["ship"].pivot = Vector(FRAME.root["ship"].width/2, FRAME.root["ship"].height/2);
 
-local prevT = time();
 while(FRAME.render()) {
-    local t = time();
-    local dt = t - prevT;
-    prevT = t;
-
-    if(KEYS[KEY_LEFT])  { FRAME.root["ship"].rotate -= 5.0 * dt; }
-    if(KEYS[KEY_RIGHT]) { FRAME.root["ship"].rotate += 5.0 * dt; }
-
-    sleep(1.0/60.0-dt); // run at 30 fps max
+//    if(KEYS[KEY_LEFT])  { FRAME.root["ship"].rotate -= FRAME.dt; }
+//    if(KEYS[KEY_RIGHT]) { FRAME.root["ship"].rotate += FRAME.dt; }
+    sleep(1.0/30.0-dt); // run at 30 fps max
 }

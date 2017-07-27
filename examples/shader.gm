@@ -5,7 +5,7 @@ global BLUR = 2;
 global OnKeyDown = function(e) {
     global BLUR;
     log("key: "+e.key);
-	if((e.key == 187 || e.key == 107 || e.key == 35 || e.key == 86) && BLUR < 5) { BLUR += 1; SHADER.setInt("FILTER_SIZE", BLUR); }
+	if((e.key == 187 || e.key == 107 || e.key == 35 || e.key == 86) && BLUR < 8) { BLUR += 1; SHADER.setInt("FILTER_SIZE", BLUR); }
 	if((e.key == 189 || e.key == 109 || e.key == 61 || e.key == 82) && BLUR > 0) { BLUR -= 1; SHADER.setInt("FILTER_SIZE", BLUR); }
 	FRAME.root["info"].text = "Blur: "+BLUR;
 };
@@ -13,15 +13,15 @@ global OnKeyDown = function(e) {
 global FRAME = Frame("Shader Example", 200, 100, DIM_X, DIM_Y).toggle().cursor(true);
 FRAME.onKeyDown = OnKeyDown;
 
+// always create shaders -after- you created a frame! shaders need an OpenGL context.
 global SHADER = Shader("shaders/basic.vs", "shaders/blur.fs");
 SHADER.setInt("FILTER_SIZE", BLUR);
 SHADER.setFloat2("FILTER_SCALE", 1.0 / DIM_X * 2.0, 1.0 / DIM_Y * 2.0);
 
 FRAME.root["shader"] = SHADER;
 FRAME.root["shader"]["image"] = Texture("images/earth-bg.jpg", 0, 0, DIM_X, DIM_Y);
-
 FRAME.root["help"] = Text("Press + and - to adjust blur filter size.", Font("fonts/liberation/LiberationSerif-Bold.ttf", 20));
-FRAME.root["info"] = Text("Blur: "+BLUR, Font("fonts/liberation/LiberationMono-Bold.ttf", 20), 0, 30);
+FRAME.root["info"] = Text("Blur: "+BLUR, Font("fonts/liberation/LiberationMono-Bold.ttf", 20), 20, 35);
 
 while(true) {
     FRAME.render();

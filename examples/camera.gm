@@ -1,6 +1,6 @@
 global WIDTH = 640; global HEIGHT = 480;
-global FRAME = Frame("Camera Test", 50, 50, WIDTH, HEIGHT, "#ff00ff").toggle();
-FRAME.onKeyDown = function(e) {   if(e.key == 'C') { e.sender.root["camera"].config(); }   };
+global FRAME = Frame("Camera Test", 50, 50, WIDTH, HEIGHT, "#ff00ff").toggle().cursor(true);
+FRAME.onKeyDown = function(e) {   if(e.key == 'C') { FRAME.root["camera"].config(); }   };
 FRAME.root["camera"] = Camera(0, 0, 0, 640, 480, 0);
 pause(3.0);  // wait for camera to be ready
 

@@ -29,12 +29,14 @@ public:
 		clearRGBA[2] = 1.0;
 		clearRGBA[3] = 0.0;
 		root = new Node();
+		prevTime = TimeGet() + 100000.0;
 
 		BindMember("root", &root, TYPE_OBJECT, 0, "[Node] root", "Scene graph node, initially set to an empty Node object, see [Node].");
 		BindMember("width", &width, TYPE_FLOAT, 0, "{float} width", "(Experimental) Virtual frame width.");
 		BindMember("height", &height, TYPE_FLOAT, 0, "{float} height", "(Experimental) Virtual frame height.");
 		BindMember("mirrorX", &mirrorX, TYPE_INT, 0, "{int} mirrorX", "(Experimental) Set to non-zero Mirror screen horizontal.");
 		BindMember("mirrorY", &mirrorY, TYPE_INT, 0, "{int} mirrorY", "(Experimental) Set to non-zero Mirror screen vertically.");
+		BindMember("dt", &dt, TYPE_FLOAT, 0, "{float} dt", "Delta time between frame updates (flip).");
 
 		BindFunction("_open", (SCRIPT_FUNCTION)&Frame::gm_open, "[this] _open({int} pos_x, {int} pos_y, {int} width, {int} height, (optional) {string} color)", "Opens the frame on the given coordinates.");
 		BindFunction("close", (SCRIPT_FUNCTION)&Frame::gm_close, "[this] close()", "Closes the window. Please note that any textures, shaders and other assets may be internally destroyed if no other window has a valid context on these.");
@@ -199,6 +201,13 @@ public:
 	}
 
 	void flip() {
+		float t = TimeGet();
+		dt = t - prevTime;
+		prevTime = t;
+		if (dt < 0.0) dt = 0.0;
+		if (dt > 1.0) dt = 1.0;
+		prevTime = TimeGet();
+
 		FrameFlip((FRAME*)internalHandle);
 	}
 	int gm_flip(gmThread* a_thread) {
@@ -323,6 +332,7 @@ public:
 public:
 	void* internalHandle;
 	float width, height;
+	float dt, prevTime;
 	Node* root;
 	float clearRGBA[4];
 	int mirrorX;

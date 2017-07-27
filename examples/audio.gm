@@ -9,6 +9,7 @@ for(i=0; true; i+=1) {
 // play some sound
 global DEVICE = AudioDevice(22050, 2, 512, -1, 3);
 global SOUND = AudioFile("misc/snap.wav").convert(22050,16);
+if(!sound) exit();
 DEVICE.play(SOUND);
 sleep(2.0);
 DEVICE.close();
