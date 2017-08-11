@@ -148,7 +148,6 @@ int GM_CDECL Script_System(gmThread* a_thread) {
 	return GM_OK;
 }
 
-//#include <Windows.h>
 int GM_CDECL Script_System_Async(gmThread* a_thread) {
 	GM_CHECK_NUM_PARAMS(1);
 	GM_CHECK_STRING_PARAM(sys, 0);
