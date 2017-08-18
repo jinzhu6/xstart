@@ -1,0 +1,27 @@
+// creating server
+global SERVER = Listener("server");
+if(!SERVER.listen("255.255.255.255", 8085)) { fatal("Error while creating server!"); }
+SERVER.setTimeout(0);
+
+// creating client
+global CLIENT = Socket("client");
+
+thread(function() {
+    sleep(2.0);
+    log("connecting client...");
+    if(!CLIENT.open("127.0.0.1", 8085)) { fatal("Error connecting client to server!"); }
+    CLIENT.send("hi");
+});
+
+while(true) {
+    //log("waiting for connection...");
+    client = SERVER.accept();
+    if(client) {
+        log("connection to client successfull.");
+        reclen = client.receive(1024);
+        if(reclen) { log(format("received %d bytes...", reclen)); }
+
+
+    }
+    sleep(0.1);
+}
